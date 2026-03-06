@@ -7,7 +7,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "index": "node --env-file=.env --import tsx/esm src/indexer/run.ts",
+    "index:dry": "node --env-file=.env --import tsx/esm src/indexer/run.ts --dry-run",
+    "index:force": "node --env-file=.env --import tsx/esm src/indexer/run.ts --force",
+    "index:watch": "node --env-file=.env --import tsx/esm src/indexer/run.ts --watch"
   },
   "repository": {
     "type": "git",
@@ -23,6 +27,8 @@
   "homepage": "https://github.com/projectnamedate/coefficient#readme",
   "dependencies": {
     "@libsql/client": "^0.17.0",
+    "@solana/spl-stake-pool": "^1.1.8",
+    "@solana/web3.js": "^1.98.4",
     "d3": "^7.9.0",
     "d3-sankey": "^0.12.3",
     "drizzle-orm": "^0.45.1",
@@ -41,6 +47,7 @@
     "eslint": "^10.0.2",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }
