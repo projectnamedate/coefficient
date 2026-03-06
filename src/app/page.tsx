@@ -1,12 +1,19 @@
 import { StatCard } from "@/components/ui/stat-card";
 import { PoolTable } from "@/components/scorecard/pool-table";
-import { MOCK_POOLS } from "@/lib/mock-data";
+import { getPoolsWithScores, getLatestScoredEpoch, getEpochInfo } from "@/db/queries";
 
-export default function ScorecardPage() {
-  const totalStake = MOCK_POOLS.reduce((sum, p) => sum + p.activeSolStaked, 0);
-  const avgScore = Math.round(
-    MOCK_POOLS.reduce((sum, p) => sum + p.networkHealthScore, 0) / MOCK_POOLS.length
-  );
+export const dynamic = "force-dynamic";
+
+export default async function ScorecardPage() {
+  const pools = await getPoolsWithScores();
+  const latestEpoch = await getLatestScoredEpoch();
+  const epochInfo = latestEpoch ? await getEpochInfo(latestEpoch) : null;
+
+  const totalStake = pools.reduce((sum, p) => sum + p.activeSolStaked, 0);
+  const totalValidators = new Set(pools.flatMap(() => [])).size; // will be real when we have delegations
+  const avgScore = pools.length
+    ? Math.round(pools.reduce((sum, p) => sum + p.networkHealthScore, 0) / pools.length)
+    : 0;
 
   return (
     <div>
@@ -35,7 +42,7 @@ export default function ScorecardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-6">
           <StatCard
             label="Pools Tracked"
-            value={MOCK_POOLS.length.toString()}
+            value={pools.length.toString()}
             subtext="Multi-validator only"
           />
           <StatCard
@@ -44,9 +51,9 @@ export default function ScorecardPage() {
             subtext="SOL across all pools"
           />
           <StatCard
-            label="Unique Validators"
-            value="597"
-            subtext="Receiving delegation"
+            label="Epoch"
+            value={latestEpoch?.toString() ?? "—"}
+            subtext={epochInfo ? `Nakamoto: ${epochInfo.nakamotoCoefficient}` : "Loading..."}
           />
           <StatCard
             label="Avg Health Score"
@@ -59,7 +66,7 @@ export default function ScorecardPage() {
       {/* Table */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden backdrop-blur-sm">
-          <PoolTable pools={MOCK_POOLS} />
+          <PoolTable pools={pools} />
         </div>
 
         <p className="text-xs text-beige/25 mt-4 text-center font-mono">
