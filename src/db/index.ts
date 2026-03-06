@@ -6,10 +6,13 @@ if (url.startsWith("libsql://")) {
   url = url.replace("libsql://", "https://");
 }
 
+// Strip whitespace/newlines that Vercel env vars may introduce
+const authToken = (process.env.TURSO_AUTH_TOKEN ?? "").replace(/\s+/g, "");
+
 export const db = drizzle({
   connection: {
     url,
-    authToken: process.env.TURSO_AUTH_TOKEN,
+    authToken,
   },
   schema,
 });
