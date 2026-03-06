@@ -1,8 +1,8 @@
-import { db } from "../../db/index.js";
+import { db } from "../../db/index";
 import { eq, sql, inArray } from "drizzle-orm";
-import * as schema from "../../db/schema.js";
-import { log, warn } from "../config.js";
-import type { PoolScoreResult } from "../scoring/index.js";
+import * as schema from "../../db/schema";
+import { log, warn } from "../config";
+import type { PoolScoreResult } from "../scoring/index";
 
 function chunk<T>(arr: T[], size: number): T[][] {
   return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>

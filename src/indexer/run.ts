@@ -17,13 +17,13 @@ import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, parseFlags, log, warn, fatal } from "./config.js";
-import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/solana-rpc.js";
-import { fetchStakeWizValidators } from "./fetchers/stakewiz.js";
-import { fetchMarinadeValidators } from "./fetchers/marinade.js";
-import { fetchAllPoolDelegations } from "./fetchers/stake-pools.js";
-import { computeAllPoolScores } from "./scoring/index.js";
-import { computeNakamoto } from "./scoring/nakamoto-impact.js";
+import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, parseFlags, log, warn, fatal } from "./config";
+import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/solana-rpc";
+import { fetchStakeWizValidators } from "./fetchers/stakewiz";
+import { fetchMarinadeValidators } from "./fetchers/marinade";
+import { fetchAllPoolDelegations } from "./fetchers/stake-pools";
+import { computeAllPoolScores } from "./scoring/index";
+import { computeNakamoto } from "./scoring/nakamoto-impact";
 import {
   isEpochIndexed,
   writeEpoch,
@@ -33,8 +33,8 @@ import {
   writePoolDelegations,
   writeSandwichList,
   writePoolScores,
-} from "./writers/db-writer.js";
-import { POOL_REGISTRY } from "./data/pool-registry.js";
+} from "./writers/db-writer";
+import { POOL_REGISTRY } from "./data/pool-registry";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

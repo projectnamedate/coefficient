@@ -1,4 +1,4 @@
-import { STAKEWIZ_API, fetchWithTimeout, log, warn } from "../config.js";
+import { STAKEWIZ_API, fetchWithTimeout, log, warn } from "../config";
 
 export interface StakeWizValidator {
   vote_identity: string;

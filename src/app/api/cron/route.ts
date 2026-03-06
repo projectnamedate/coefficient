@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
+import { runIndexer } from "@/indexer/cron-entry";
 
-export const maxDuration = 60; // Allow up to 60s (Vercel Pro)
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  // Verify cron secret to prevent unauthorized calls
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    // Dynamic import to avoid bundling the indexer with the Next.js app
-    const { runIndexer } = await import("../../../indexer/cron-entry.js");
     const result = await runIndexer();
     return NextResponse.json(result);
   } catch (err) {

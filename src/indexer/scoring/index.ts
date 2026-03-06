@@ -3,16 +3,16 @@
  * Computes all 8 sub-scores and the weighted composite for each pool.
  */
 
-import { SCORE_WEIGHTS } from "../../lib/types.js";
-import { scoreSmallValidatorBias } from "./small-validator-bias.js";
-import { scoreSelfDealing } from "./self-dealing.js";
-import { scoreMevSandwich } from "./mev-sandwich.js";
-import { scoreNakamotoImpact, computeNakamoto } from "./nakamoto-impact.js";
-import { scoreValidatorSetSize } from "./validator-set-size.js";
-import { scoreGeographicDiversity } from "./geographic-diversity.js";
-import { scoreCommissionDiscipline } from "./commission-discipline.js";
-import { scoreTransparency } from "./transparency.js";
-import { log } from "../config.js";
+import { SCORE_WEIGHTS } from "../../lib/types";
+import { scoreSmallValidatorBias } from "./small-validator-bias";
+import { scoreSelfDealing } from "./self-dealing";
+import { scoreMevSandwich } from "./mev-sandwich";
+import { scoreNakamotoImpact, computeNakamoto } from "./nakamoto-impact";
+import { scoreValidatorSetSize } from "./validator-set-size";
+import { scoreGeographicDiversity } from "./geographic-diversity";
+import { scoreCommissionDiscipline } from "./commission-discipline";
+import { scoreTransparency } from "./transparency";
+import { log } from "../config";
 
 interface DelegationEntry {
   validatorPubkey: string;

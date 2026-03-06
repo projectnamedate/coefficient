@@ -1,4 +1,4 @@
-import { MARINADE_API, fetchWithTimeout, log, warn } from "../config.js";
+import { MARINADE_API, fetchWithTimeout, log, warn } from "../config";
 
 export interface MarinadeValidator {
   vote_account: string;

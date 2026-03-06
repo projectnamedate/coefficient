@@ -1,5 +1,5 @@
 import { Connection } from "@solana/web3.js";
-import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, log, fatal } from "../config.js";
+import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, log, fatal } from "../config";
 
 export interface EpochData {
   epoch: number;

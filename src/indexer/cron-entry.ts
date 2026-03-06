@@ -1,20 +1,16 @@
 /**
  * Cron entry point — importable version of the indexer for Vercel API routes.
  * Does not call process.exit() or use CLI flags.
+ * Avoids fs/path so it works in Vercel's serverless runtime.
  */
 
-import { Connection } from "@solana/web3.js";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-
-import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, log, warn } from "./config.js";
-import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/solana-rpc.js";
-import { fetchStakeWizValidators } from "./fetchers/stakewiz.js";
-import { fetchMarinadeValidators } from "./fetchers/marinade.js";
-import { fetchAllPoolDelegations } from "./fetchers/stake-pools.js";
-import { computeAllPoolScores } from "./scoring/index.js";
-import { computeNakamoto } from "./scoring/nakamoto-impact.js";
+import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, log, warn } from "./config";
+import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/solana-rpc";
+import { fetchStakeWizValidators } from "./fetchers/stakewiz";
+import { fetchMarinadeValidators } from "./fetchers/marinade";
+import { fetchAllPoolDelegations } from "./fetchers/stake-pools";
+import { computeAllPoolScores } from "./scoring/index";
+import { computeNakamoto } from "./scoring/nakamoto-impact";
 import {
   isEpochIndexed,
   writeEpoch,
@@ -24,20 +20,9 @@ import {
   writePoolDelegations,
   writeSandwichList,
   writePoolScores,
-} from "./writers/db-writer.js";
-import { POOL_REGISTRY } from "./data/pool-registry.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-function loadSandwichList() {
-  try {
-    const path = join(__dirname, "data", "sandwich-validators.json");
-    return JSON.parse(readFileSync(path, "utf-8"));
-  } catch {
-    return [];
-  }
-}
+} from "./writers/db-writer";
+import { POOL_REGISTRY } from "./data/pool-registry";
+import sandwichData from "./data/sandwich-validators.json";
 
 function classifyStakeTier(stake: number, medianStake: number, superminorityThreshold: number): string {
   if (stake >= superminorityThreshold) return "superminority";
@@ -116,12 +101,11 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
     });
   }
 
-  const sandwichData = loadSandwichList();
   const sandwichValidatorSet = new Set(sandwichData.map((e: any) => e.validator_pubkey));
 
   const poolDelegationMap = new Map<string, { validatorPubkey: string; delegatedSol: number }[]>();
   for (const pool of splPoolDelegations) {
-    if (pool.error) continue;
+    if ((pool as any).error) continue;
     poolDelegationMap.set(pool.poolId, pool.validators.map((v) => ({
       validatorPubkey: v.voteAccountAddress, delegatedSol: v.activeSol,
     })));

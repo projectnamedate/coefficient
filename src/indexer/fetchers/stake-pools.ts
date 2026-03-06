@@ -1,7 +1,7 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { stakePoolInfo } from "@solana/spl-stake-pool";
-import { LAMPORTS_PER_SOL, log, warn } from "../config.js";
-import { POOL_REGISTRY, type PoolRegistryEntry } from "../data/pool-registry.js";
+import { LAMPORTS_PER_SOL, log, warn } from "../config";
+import { POOL_REGISTRY, type PoolRegistryEntry } from "../data/pool-registry";
 
 export interface PoolDelegationData {
   poolId: string;
