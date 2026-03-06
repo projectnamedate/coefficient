@@ -1,0 +1,18 @@
+[
+  {
+    "validator_pubkey": "sandnMNSH8ZhPsLhkBPTkXBYCPnWBQFMBVFnjHTdXfT",
+    "name": "DeezNode",
+    "sandwich_percent": 42.5,
+    "source": "sandwiched.me",
+    "detected_date": "2025-05-01",
+    "notes": "Top sandwich attacker, extracted ~$13.4M/month"
+  },
+  {
+    "validator_pubkey": "mngo1VyrBFh29KaYZwRFb3VPpPvfL4KMPE4VHJtbTVz",
+    "name": "Mango Validator",
+    "sandwich_percent": 18.3,
+    "source": "sandwiched.me",
+    "detected_date": "2025-06-15",
+    "notes": "Known sandwich operator"
+  }
+]

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "tailwindcss-motion";
 
 @theme {
   --color-lavender: #b5b2d9;

@@ -1,0 +1,86 @@
+{
+  "jito": {
+    "selfDealingScore": 90,
+    "selfDealingNotes": "No token purchase required. MEV commission required but performance-based.",
+    "transparencyScore": 85,
+    "transparencyNotes": "Published criteria, public API, Jito Foundation governance"
+  },
+  "doublezero": {
+    "selfDealingScore": 70,
+    "selfDealingNotes": "Network membership fee structure, but no token flywheel",
+    "transparencyScore": 60,
+    "transparencyNotes": "Published criteria, some transparency around selection"
+  },
+  "blazestake": {
+    "selfDealingScore": 95,
+    "selfDealingNotes": "No token requirement. Community-governed delegation.",
+    "transparencyScore": 80,
+    "transparencyNotes": "Open governance, published criteria, community voting"
+  },
+  "jpool": {
+    "selfDealingScore": 90,
+    "selfDealingNotes": "No token purchase required for delegation",
+    "transparencyScore": 75,
+    "transparencyNotes": "Published criteria, scoring methodology available"
+  },
+  "phase": {
+    "selfDealingScore": 100,
+    "selfDealingNotes": "No token or self-delegation requirement. Simply prioritizes small validators.",
+    "transparencyScore": 85,
+    "transparencyNotes": "Published criteria, open application, clear mission"
+  },
+  "vault": {
+    "selfDealingScore": 0,
+    "selfDealingNotes": "Validators MUST buy $V tokens and stake through vSOL to qualify. Top 100 vSOL delegators share 40% of undirected stake. Classic token flywheel.",
+    "transparencyScore": 25,
+    "transparencyNotes": "Discord-only application, opaque board approval, Votex.so governance"
+  },
+  "dynosol": {
+    "selfDealingScore": 85,
+    "selfDealingNotes": "No direct token requirement",
+    "transparencyScore": 50,
+    "transparencyNotes": "Limited public documentation on delegation criteria"
+  },
+  "jagpool": {
+    "selfDealingScore": 95,
+    "selfDealingNotes": "No token flywheel",
+    "transparencyScore": 70,
+    "transparencyNotes": "Published delegation strategy focused on geographic diversity"
+  },
+  "stke": {
+    "selfDealingScore": 80,
+    "selfDealingNotes": "No direct token requirement",
+    "transparencyScore": 55,
+    "transparencyNotes": "Some published criteria"
+  },
+  "marinade": {
+    "selfDealingScore": 75,
+    "selfDealingNotes": "PSR auction model — validators bid for stake, which creates indirect self-dealing pressure",
+    "transparencyScore": 65,
+    "transparencyNotes": "Open source delegation strategy, but PSR auction opaque to outsiders"
+  },
+  "shinobi": {
+    "selfDealingScore": 85,
+    "selfDealingNotes": "No token requirement",
+    "transparencyScore": 70,
+    "transparencyNotes": "Community-run, published criteria"
+  },
+  "edgevana": {
+    "selfDealingScore": 50,
+    "selfDealingNotes": "Edgevana infrastructure customers may receive preferential delegation",
+    "transparencyScore": 60,
+    "transparencyNotes": "Some published criteria, but selection tied to infrastructure business"
+  },
+  "definity": {
+    "selfDealingScore": 90,
+    "selfDealingNotes": "No token flywheel",
+    "transparencyScore": 65,
+    "transparencyNotes": "Published criteria, geographic diversity focus"
+  },
+  "indiesol": {
+    "selfDealingScore": 95,
+    "selfDealingNotes": "No token requirement, indie validator focused",
+    "transparencyScore": 60,
+    "transparencyNotes": "Small community pool, limited formal documentation"
+  }
+}
