@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lavender: #b5b2d9;
+  --color-lavender-light: #d9daed;
+  --color-dark: #232323;
+  --color-beige: #cdc8bd;
+  --color-score-bad: #ae4845;
+  --color-score-good: #abd079;
+  --color-score-mid: #eee56e;
+  --color-info: #4e5fab;
+
+  --font-display: "Rigidly Thoughtfully", serif;
+  --font-body: "Proxima Nova", system-ui, -apple-system, sans-serif;
+}
+
+html {
+  font-family: var(--font-body);
+  color: var(--color-dark);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}

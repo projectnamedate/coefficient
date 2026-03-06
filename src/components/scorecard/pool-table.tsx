@@ -1,0 +1,165 @@
+"use client";
+
+import { Fragment, useState } from "react";
+import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, PoolScores } from "@/lib/types";
+import { ScoreBadge } from "@/components/ui/score-badge";
+
+function formatSol(amount: number): string {
+  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
+  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
+  return amount.toString();
+}
+
+function ScoreBar({ score, label, weight }: { score: number; label: string; weight: number }) {
+  const getBarColor = (s: number) => {
+    if (s >= 70) return "bg-score-good";
+    if (s >= 40) return "bg-score-mid";
+    return "bg-score-bad";
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="w-40 text-xs text-beige/60 shrink-0 flex justify-between">
+        <span>{label}</span>
+        <span className="text-beige/30">{(weight * 100).toFixed(0)}%</span>
+      </div>
+      <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all ${getBarColor(score)}`}
+          style={{ width: `${score}%` }}
+        />
+      </div>
+      <span className="text-xs font-mono w-8 text-right text-beige/50">{score}</span>
+    </div>
+  );
+}
+
+function ExpandedRow({ pool }: { pool: StakePool }) {
+  const scoreEntries = Object.entries(pool.scores) as [keyof PoolScores, number][];
+
+  return (
+    <tr>
+      <td colSpan={7} className="px-6 py-4 bg-white/[0.02]">
+        <div className="max-w-2xl space-y-2">
+          <h4 className="text-sm font-semibold text-lavender mb-3">Score Breakdown</h4>
+          {scoreEntries.map(([key, score]) => (
+            <ScoreBar
+              key={key}
+              score={score}
+              label={SCORE_LABELS[key]}
+              weight={SCORE_WEIGHTS[key]}
+            />
+          ))}
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+type SortKey = "networkHealthScore" | "activeSolStaked" | "validatorCount" | "medianApy";
+
+export function PoolTable({ pools }: { pools: StakePool[] }) {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey>("networkHealthScore");
+  const [sortDesc, setSortDesc] = useState(true);
+
+  const sorted = [...pools].sort((a, b) => {
+    const diff = a[sortKey] - b[sortKey];
+    return sortDesc ? -diff : diff;
+  });
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDesc(!sortDesc);
+    } else {
+      setSortKey(key);
+      setSortDesc(true);
+    }
+  };
+
+  const SortHeader = ({ k, children }: { k: SortKey; children: React.ReactNode }) => (
+    <th
+      onClick={() => handleSort(k)}
+      className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider cursor-pointer hover:text-lavender transition-colors select-none"
+    >
+      <span className="inline-flex items-center gap-1">
+        {children}
+        {sortKey === k && (
+          <span className="text-lavender">{sortDesc ? "\u2193" : "\u2191"}</span>
+        )}
+      </span>
+    </th>
+  );
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-white/10">
+            <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider w-8">
+              #
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">
+              Pool
+            </th>
+            <SortHeader k="networkHealthScore">Score</SortHeader>
+            <SortHeader k="activeSolStaked">Stake</SortHeader>
+            <SortHeader k="validatorCount">Validators</SortHeader>
+            <SortHeader k="medianApy">APY</SortHeader>
+            <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">
+              Program
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {sorted.map((pool, index) => (
+            <Fragment key={pool.id}>
+              <tr
+                onClick={() =>
+                  setExpandedId(expandedId === pool.id ? null : pool.id)
+                }
+                className={`border-b border-white/5 cursor-pointer transition-all duration-200 hover:bg-lavender/[0.04] ${
+                  expandedId === pool.id ? "bg-lavender/[0.06]" : ""
+                }`}
+              >
+                <td className="px-4 py-4 text-sm text-beige/25 font-mono tabular-nums">
+                  {index + 1}
+                </td>
+                <td className="px-4 py-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm font-semibold text-white">
+                      {pool.name}
+                    </span>
+                    <span className="text-xs text-lavender/50 font-mono">
+                      {pool.lstTicker}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-4 py-4">
+                  <ScoreBadge score={pool.networkHealthScore} />
+                </td>
+                <td className="px-4 py-4 text-sm text-beige/60 font-mono tabular-nums">
+                  {formatSol(pool.activeSolStaked)}
+                </td>
+                <td className="px-4 py-4 text-sm text-beige/60 font-mono tabular-nums">
+                  {pool.validatorCount}
+                </td>
+                <td className="px-4 py-4 text-sm text-beige/60 font-mono tabular-nums">
+                  {pool.medianApy}%
+                </td>
+                <td className="px-4 py-4">
+                  <span className="text-xs px-2 py-0.5 rounded bg-white/5 text-beige/40 font-mono">
+                    {pool.program}
+                  </span>
+                </td>
+              </tr>
+              {expandedId === pool.id && (
+                <ExpandedRow pool={pool} />
+              )}
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
