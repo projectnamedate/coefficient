@@ -46,14 +46,14 @@ export interface PoolDelegation {
 }
 
 export const SCORE_WEIGHTS = {
-  smallValidatorBias: 0.25,
-  selfDealing: 0.15,
+  smallValidatorBias: 0.15,
+  selfDealing: 0.20,
   mevSandwichPolicy: 0.15,
   nakamotoImpact: 0.15,
-  validatorSetSize: 0.10,
+  validatorSetSize: 0.15,
   geographicDiversity: 0.10,
-  commissionDiscipline: 0.05,
-  transparency: 0.05,
+  commissionDiscipline: 0.10,
+  transparency: 0,
 } as const;
 
 export const SCORE_LABELS: Record<keyof PoolScores, string> = {
@@ -64,5 +64,5 @@ export const SCORE_LABELS: Record<keyof PoolScores, string> = {
   validatorSetSize: "Validator Set Size",
   geographicDiversity: "Geographic Diversity",
   commissionDiscipline: "Commission Discipline",
-  transparency: "Transparency",
+  transparency: "Transparency", // weight=0, kept for schema compat
 };

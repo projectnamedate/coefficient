@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin "tailwindcss-motion";
 
+@font-face {
+  font-family: "BN Rigidly";
+  src: url("/fonts/BNRigidly-CustomRounding.otf") format("opentype");
+  font-display: swap;
+}
+
 @theme {
   --color-lavender: #b5b2d9;
   --color-lavender-light: #d9daed;
@@ -13,7 +19,7 @@
   --color-score-mid: #eee56e;
   --color-info: #4e5fab;
 
-  --font-display: "Rigidly Thoughtfully", serif;
+  --font-display: "BN Rigidly", "Rigidly Thoughtfully", serif;
   --font-body: "Proxima Nova", system-ui, -apple-system, sans-serif;
 }
 

@@ -1,0 +1,32 @@
+<svg width="220" height="40" viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wg" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0%" stop-color="#d9daed"/>
+      <stop offset="50%" stop-color="#b5b2d9"/>
+      <stop offset="100%" stop-color="#8a86b8"/>
+    </linearGradient>
+    <radialGradient id="ng" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b5b2d9" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#b5b2d9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Logomark scaled to 36px -->
+  <g transform="translate(2, 2) scale(0.3)">
+    <circle cx="60" cy="60" r="58" fill="url(#ng)"/>
+    <g stroke="#b5b2d9" stroke-width="0.7" opacity="0.15">
+      <line x1="45" y1="12" x2="28" y2="28"/><line x1="28" y1="28" x2="16" y2="48"/>
+      <line x1="16" y1="48" x2="14" y2="72"/><line x1="14" y1="72" x2="24" y2="92"/>
+      <line x1="24" y1="92" x2="42" y2="105"/><line x1="42" y1="105" x2="65" y2="108"/>
+      <line x1="65" y1="108" x2="85" y2="100"/><line x1="45" y1="12" x2="65" y2="14"/>
+      <line x1="65" y1="14" x2="85" y2="22"/><line x1="45" y1="12" x2="16" y2="48"/>
+      <line x1="28" y1="28" x2="14" y2="72"/><line x1="24" y1="92" x2="65" y2="108"/>
+    </g>
+    <circle cx="45" cy="12" r="5" fill="#b5b2d9"/><circle cx="65" cy="14" r="4" fill="#b5b2d9" opacity="0.7"/>
+    <circle cx="85" cy="22" r="3.5" fill="#b5b2d9" opacity="0.5"/><circle cx="28" cy="28" r="4.5" fill="#b5b2d9" opacity="0.85"/>
+    <circle cx="16" cy="48" r="5" fill="#b5b2d9"/><circle cx="14" cy="72" r="5" fill="#b5b2d9"/>
+    <circle cx="24" cy="92" r="4.5" fill="#b5b2d9" opacity="0.85"/><circle cx="42" cy="105" r="5" fill="#b5b2d9"/>
+    <circle cx="65" cy="108" r="4" fill="#b5b2d9" opacity="0.7"/><circle cx="85" cy="100" r="3.5" fill="#b5b2d9" opacity="0.5"/>
+  </g>
+  <!-- Wordmark: lowercase gradient, medium spacing -->
+  <text x="44" y="28" font-family="'BN Rigidly', serif" font-size="24" fill="url(#wg)" letter-spacing="3">coefficient</text>
+</svg>

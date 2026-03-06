@@ -36,7 +36,8 @@ function ScoreBar({ score, label, weight, index }: { score: number; label: strin
 }
 
 function ExpandedRow({ pool }: { pool: StakePool }) {
-  const scoreEntries = Object.entries(pool.scores) as [keyof PoolScores, number][];
+  const scoreEntries = (Object.entries(pool.scores) as [keyof PoolScores, number][])
+    .filter(([key]) => SCORE_WEIGHTS[key] > 0);
 
   return (
     <motion.tr

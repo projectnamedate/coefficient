@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { LogoMark, LogoWordmark } from "@/components/ui/logo";
 
 const navItems = [
   { href: "/", label: "Scorecard" },
   { href: "/flows", label: "Stake Flows" },
   { href: "/validators", label: "Validators" },
+  { href: "/about", label: "About" },
 ];
 
 export function Header() {
@@ -23,10 +25,9 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <span className="font-display text-xl text-lavender tracking-wide group-hover:text-lavender-light transition-colors duration-300">
-              Coefficient
-            </span>
-            <span className="text-[10px] text-beige/30 font-mono uppercase tracking-wider hidden sm:block">
+            <LogoMark size={28} className="transition-transform duration-300 group-hover:scale-110" />
+            <LogoWordmark className="hidden sm:block" />
+            <span className="text-[10px] text-beige/30 font-mono uppercase tracking-wider hidden md:block ml-1">
               by mythx
             </span>
           </Link>

@@ -1,5 +1,5 @@
 import { getDelegationFlows, getLatestScoredEpoch } from "@/db/queries";
-import { SankeyDiagram } from "@/components/flows/sankey-diagram";
+import { FlowExplorer } from "@/components/flows/flow-explorer";
 import { StatCard } from "@/components/ui/stat-card";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
@@ -21,7 +21,7 @@ export default async function FlowsPage() {
         eyebrow={`Epoch ${epoch ?? "—"}`}
         title="Stake"
         accent="Flows"
-        description="Visualize how SOL flows from stake pools to validators. See which pools feed the superminority vs. support the tail. Hover nodes to highlight connections."
+        description="Explore how SOL flows from stake pools to validators. Search for any pool or validator and click to see its delegation breakdown."
         gradient="green"
       />
 
@@ -35,15 +35,9 @@ export default async function FlowsPage() {
         </div>
       </AnimatedSection>
 
-      {/* Sankey */}
+      {/* Flow Explorer */}
       <AnimatedSection delay={0.2} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm p-4">
-          <SankeyDiagram data={flowData} />
-        </div>
-
-        <p className="text-xs text-beige/20 mt-4 text-center font-mono">
-          Line thickness = delegation size &middot; Hover to highlight connections
-        </p>
+        <FlowExplorer data={flowData} />
       </AnimatedSection>
     </div>
   );

@@ -63,9 +63,7 @@ export function HeroSection({
           transition={{ duration: 0.5, delay: 0.15, ease: [0.25, 0.4, 0.25, 1] }}
           className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight"
         >
-          {title}
-          <br />
-          <span className="text-lavender">{accent}</span>
+          {title} <span className="text-lavender">{accent}</span>
         </motion.h1>
 
         <motion.p

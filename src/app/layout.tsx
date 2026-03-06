@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Coefficient | Solana Stake Pool Health Dashboard",
   description:
     "Measuring which Solana stake pools help decentralize the network vs. concentrate power. Built by mythx.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
