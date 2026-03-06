@@ -1,8 +1,10 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, PoolScores } from "@/lib/types";
 import { ScoreBadge } from "@/components/ui/score-badge";
+import { AnimatedBar } from "@/components/ui/motion";
 
 function formatSol(amount: number): string {
   if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
@@ -10,25 +12,24 @@ function formatSol(amount: number): string {
   return amount.toString();
 }
 
-function ScoreBar({ score, label, weight }: { score: number; label: string; weight: number }) {
-  const getBarColor = (s: number) => {
-    if (s >= 70) return "bg-score-good";
-    if (s >= 40) return "bg-score-mid";
-    return "bg-score-bad";
-  };
+function getBarColor(s: number): string {
+  if (s >= 70) return "bg-score-good";
+  if (s >= 40) return "bg-score-mid";
+  return "bg-score-bad";
+}
 
+function ScoreBar({ score, label, weight, index }: { score: number; label: string; weight: number; index: number }) {
   return (
     <div className="flex items-center gap-3">
       <div className="w-40 text-xs text-beige/60 shrink-0 flex justify-between">
         <span>{label}</span>
-        <span className="text-beige/30">{(weight * 100).toFixed(0)}%</span>
+        <span className="text-beige/25">{(weight * 100).toFixed(0)}%</span>
       </div>
-      <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all ${getBarColor(score)}`}
-          style={{ width: `${score}%` }}
-        />
-      </div>
+      <AnimatedBar
+        percentage={score}
+        delay={index * 0.06}
+        colorClass={getBarColor(score)}
+      />
       <span className="text-xs font-mono w-8 text-right text-beige/50">{score}</span>
     </div>
   );
@@ -38,21 +39,27 @@ function ExpandedRow({ pool }: { pool: StakePool }) {
   const scoreEntries = Object.entries(pool.scores) as [keyof PoolScores, number][];
 
   return (
-    <tr>
-      <td colSpan={7} className="px-6 py-4 bg-white/[0.02]">
+    <motion.tr
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+    >
+      <td colSpan={7} className="px-6 py-4 bg-lavender/[0.03]">
         <div className="max-w-2xl space-y-2">
           <h4 className="text-sm font-semibold text-lavender mb-3">Score Breakdown</h4>
-          {scoreEntries.map(([key, score]) => (
+          {scoreEntries.map(([key, score], i) => (
             <ScoreBar
               key={key}
               score={score}
               label={SCORE_LABELS[key]}
               weight={SCORE_WEIGHTS[key]}
+              index={i}
             />
           ))}
         </div>
       </td>
-    </tr>
+    </motion.tr>
   );
 }
 
@@ -80,7 +87,7 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
   const SortHeader = ({ k, children }: { k: SortKey; children: React.ReactNode }) => (
     <th
       onClick={() => handleSort(k)}
-      className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider cursor-pointer hover:text-lavender transition-colors select-none"
+      className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider cursor-pointer hover:text-lavender transition-colors duration-200 select-none"
     >
       <span className="inline-flex items-center gap-1">
         {children}
@@ -114,10 +121,13 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
         <tbody>
           {sorted.map((pool, index) => (
             <Fragment key={pool.id}>
-              <tr
+              <motion.tr
                 onClick={() =>
                   setExpandedId(expandedId === pool.id ? null : pool.id)
                 }
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.03 }}
                 className={`border-b border-white/5 cursor-pointer transition-all duration-200 hover:bg-lavender/[0.04] ${
                   expandedId === pool.id ? "bg-lavender/[0.06]" : ""
                 }`}
@@ -130,7 +140,7 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
                     <span className="text-sm font-semibold text-white">
                       {pool.name}
                     </span>
-                    <span className="text-xs text-lavender/50 font-mono">
+                    <span className="text-xs text-lavender/40 font-mono">
                       {pool.lstTicker}
                     </span>
                   </div>
@@ -152,10 +162,12 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
                     {pool.program}
                   </span>
                 </td>
-              </tr>
-              {expandedId === pool.id && (
-                <ExpandedRow pool={pool} />
-              )}
+              </motion.tr>
+              <AnimatePresence>
+                {expandedId === pool.id && (
+                  <ExpandedRow pool={pool} />
+                )}
+              </AnimatePresence>
             </Fragment>
           ))}
         </tbody>

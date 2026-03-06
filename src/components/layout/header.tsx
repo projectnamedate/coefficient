@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 const navItems = [
   { href: "/", label: "Scorecard" },
@@ -13,11 +14,16 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="border-b border-white/[0.06] bg-dark/80 backdrop-blur-md sticky top-0 z-50">
+    <motion.header
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.4, 0.25, 1] }}
+      className="border-b border-white/[0.06] bg-dark/80 backdrop-blur-xl sticky top-0 z-50"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <span className="font-display text-xl text-lavender tracking-wide group-hover:text-lavender-light transition-colors">
+            <span className="font-display text-xl text-lavender tracking-wide group-hover:text-lavender-light transition-colors duration-300">
               Coefficient
             </span>
             <span className="text-[10px] text-beige/30 font-mono uppercase tracking-wider hidden sm:block">
@@ -32,19 +38,26 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 py-1.5 rounded-md text-sm transition-all duration-200 ${
+                  className={`relative px-3 py-1.5 rounded-md text-sm transition-all duration-200 ${
                     isActive
-                      ? "bg-lavender/10 text-lavender font-medium"
+                      ? "text-lavender font-medium"
                       : "text-beige/50 hover:text-white hover:bg-white/[0.04]"
                   }`}
                 >
-                  {item.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="nav-active"
+                      className="absolute inset-0 rounded-md bg-lavender/10"
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative">{item.label}</span>
                 </Link>
               );
             })}
           </nav>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }

@@ -9,6 +9,12 @@ function getScoreColor(score: number): string {
   return "bg-score-bad/20 text-score-bad border-score-bad/30";
 }
 
+function getGlowClass(score: number): string {
+  if (score >= 70) return "glow-score-good";
+  if (score >= 40) return "glow-score-mid";
+  return "glow-score-bad";
+}
+
 function getScoreLabel(score: number): string {
   if (score >= 70) return "Healthy";
   if (score >= 40) return "Mixed";
@@ -24,7 +30,7 @@ const sizes = {
 export function ScoreBadge({ score, size = "md" }: ScoreBadgeProps) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border font-mono ${getScoreColor(score)} ${sizes[size]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border font-mono transition-shadow duration-300 hover:${getGlowClass(score)} ${getScoreColor(score)} ${sizes[size]}`}
     >
       <span>{score}</span>
       <span className="text-[0.7em] opacity-70">{getScoreLabel(score)}</span>

@@ -1,6 +1,8 @@
 import { getValidatorLeaderboard, getLatestScoredEpoch } from "@/db/queries";
 import { ValidatorTable } from "@/components/validators/validator-table";
 import { StatCard } from "@/components/ui/stat-card";
+import { HeroSection } from "@/components/ui/hero-section";
+import { AnimatedSection } from "@/components/ui/animated-section";
 
 export const dynamic = "force-dynamic";
 
@@ -15,60 +17,34 @@ export default async function ValidatorsPage() {
 
   return (
     <div>
-      {/* Hero */}
-      <div className="relative overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 bg-gradient-to-br from-info/[0.06] via-transparent to-lavender/[0.04]" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <p className="text-xs font-mono text-lavender/60 uppercase tracking-[0.2em] mb-3">
-            Epoch {epoch ?? "—"}
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
-            Validator<br />
-            <span className="text-lavender">Leaderboard</span>
-          </h1>
-          <p className="text-beige/40 mt-4 max-w-lg leading-relaxed">
-            Ranked by their contribution to network health. See which pools
-            delegate to each validator and identify sandwich attackers.
-          </p>
-        </div>
-      </div>
+      <HeroSection
+        eyebrow={`Epoch ${epoch ?? "—"}`}
+        title="Validator"
+        accent="Leaderboard"
+        description="Ranked by their contribution to network health. See which pools delegate to each validator and identify sandwich attackers."
+        gradient="info"
+      />
 
       {/* Stats */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-1">
+      <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-1">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-6">
-          <StatCard
-            label="Validators Tracked"
-            value={validators.length.toString()}
-            subtext="In pool delegations"
-          />
-          <StatCard
-            label="Small Validators"
-            value={smallCount.toString()}
-            subtext={`${validators.length ? ((smallCount / validators.length) * 100).toFixed(0) : 0}% of tracked set`}
-          />
-          <StatCard
-            label="SFDP Active"
-            value={sfdpCount.toString()}
-            subtext="Foundation delegation"
-          />
-          <StatCard
-            label="Sandwich Flagged"
-            value={sandwichCount.toString()}
-            subtext={sandwichCount === 0 ? "Network clean" : `${sandwichCount} known attacker${sandwichCount > 1 ? "s" : ""}`}
-          />
+          <StatCard label="Validators Tracked" value={validators.length.toString()} subtext="In pool delegations" index={0} />
+          <StatCard label="Small Validators" value={smallCount.toString()} subtext={`${validators.length ? ((smallCount / validators.length) * 100).toFixed(0) : 0}% of tracked set`} index={1} />
+          <StatCard label="SFDP Active" value={sfdpCount.toString()} subtext="Foundation delegation" index={2} />
+          <StatCard label="Sandwich Flagged" value={sandwichCount.toString()} subtext={sandwichCount === 0 ? "Network clean" : `${sandwichCount} known attacker${sandwichCount > 1 ? "s" : ""}`} index={3} />
         </div>
-      </div>
+      </AnimatedSection>
 
       {/* Table */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden backdrop-blur-sm">
+      <AnimatedSection delay={0.2} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm">
           <ValidatorTable validators={validators} />
         </div>
 
-        <p className="text-xs text-beige/25 mt-4 text-center font-mono">
+        <p className="text-xs text-beige/20 mt-4 text-center font-mono">
           {countries.size} countries represented &middot; Data from epoch {epoch ?? "—"}
         </p>
-      </div>
+      </AnimatedSection>
     </div>
   );
 }
