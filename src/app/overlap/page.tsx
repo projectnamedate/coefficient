@@ -1,0 +1,119 @@
+import { getCrossPoolOverlap, getLatestScoredEpoch } from "@/db/queries";
+import { HeroSection } from "@/components/ui/hero-section";
+import { AnimatedSection } from "@/components/ui/animated-section";
+
+export const dynamic = "force-dynamic";
+
+function formatSol(amount: number): string {
+  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
+  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
+  return amount.toFixed(0);
+}
+
+export default async function OverlapPage() {
+  const [overlap, epoch] = await Promise.all([
+    getCrossPoolOverlap(),
+    getLatestScoredEpoch(),
+  ]);
+
+  const maxPools = Math.max(...overlap.map((v) => v.pools.length), 0);
+  const totalOverlapValidators = overlap.length;
+  const in3Plus = overlap.filter((v) => v.pools.length >= 3).length;
+  const in5Plus = overlap.filter((v) => v.pools.length >= 5).length;
+
+  return (
+    <div>
+      <HeroSection
+        eyebrow={`Epoch ${epoch ?? "—"}`}
+        title="Cross-Pool"
+        accent="Overlap"
+        description="Validators receiving stake from multiple pools. High overlap means systemic risk — if these validators fail, multiple pools are affected simultaneously."
+        gradient="lavender"
+      />
+
+      {/* Stats */}
+      <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-1">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-6">
+          <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
+            <p className="text-xs text-beige/40 uppercase tracking-wider">Multi-Pool Validators</p>
+            <p className="text-2xl font-bold text-white mt-1 font-mono">{totalOverlapValidators}</p>
+          </div>
+          <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
+            <p className="text-xs text-beige/40 uppercase tracking-wider">In 3+ Pools</p>
+            <p className="text-2xl font-bold text-score-mid mt-1 font-mono">{in3Plus}</p>
+          </div>
+          <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
+            <p className="text-xs text-beige/40 uppercase tracking-wider">In 5+ Pools</p>
+            <p className="text-2xl font-bold text-score-bad mt-1 font-mono">{in5Plus}</p>
+          </div>
+          <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
+            <p className="text-xs text-beige/40 uppercase tracking-wider">Max Overlap</p>
+            <p className="text-2xl font-bold text-lavender mt-1 font-mono">{maxPools} pools</p>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* Table */}
+      <AnimatedSection delay={0.2} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider w-8">#</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">Validator</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">Pools</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">Pool Memberships</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">Total Delegated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {overlap.slice(0, 100).map((v, i) => (
+                  <tr key={v.pubkey} className="border-b border-white/5 hover:bg-lavender/[0.04]">
+                    <td className="px-4 py-3 text-sm text-beige/25 font-mono">{i + 1}</td>
+                    <td className="px-4 py-3">
+                      <div>
+                        <span className="text-sm font-semibold text-white">{v.name}</span>
+                        <span className="text-[10px] text-beige/30 font-mono ml-2">
+                          {v.pubkey.slice(0, 4)}...{v.pubkey.slice(-4)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`text-sm font-mono font-bold ${
+                        v.pools.length >= 5 ? "text-score-bad" :
+                        v.pools.length >= 3 ? "text-score-mid" :
+                        "text-beige/60"
+                      }`}>
+                        {v.pools.length}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {v.pools.map((p) => (
+                          <span
+                            key={p.poolId}
+                            className="text-[10px] px-1.5 py-0.5 rounded bg-lavender/10 text-lavender/70 font-mono"
+                          >
+                            {p.poolName}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-beige/60 font-mono">
+                      {formatSol(v.totalSol)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p className="text-xs text-beige/20 mt-4 text-center font-mono">
+          {totalOverlapValidators} validators in 2+ pools · Epoch {epoch ?? "—"}
+        </p>
+      </AnimatedSection>
+    </div>
+  );
+}

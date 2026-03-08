@@ -289,6 +289,52 @@ export async function getPoolReportCard(poolId: string) {
   return { ...poolRow[0], epoch, topValidators, history };
 }
 
+/** Get validators that appear in multiple pools (overlap/systemic risk) */
+export async function getCrossPoolOverlap(epochNumber?: number) {
+  const epoch = epochNumber ?? (await getLatestScoredEpoch());
+  if (!epoch) return [];
+
+  const rows = await db
+    .select({
+      validatorPubkey: poolDelegations.validatorPubkey,
+      validatorName: validators.name,
+      poolId: poolDelegations.poolId,
+      poolName: stakePools.name,
+      delegatedSol: poolDelegations.delegatedSol,
+    })
+    .from(poolDelegations)
+    .innerJoin(validators, eq(poolDelegations.validatorPubkey, validators.pubkey))
+    .innerJoin(stakePools, eq(poolDelegations.poolId, stakePools.id))
+    .where(eq(poolDelegations.epochNumber, epoch));
+
+  // Group by validator
+  const byValidator = new Map<
+    string,
+    { name: string; pools: { poolId: string; poolName: string; delegatedSol: number }[]; totalSol: number }
+  >();
+
+  for (const r of rows) {
+    const existing = byValidator.get(r.validatorPubkey) ?? {
+      name: r.validatorName ?? r.validatorPubkey.slice(0, 8),
+      pools: [],
+      totalSol: 0,
+    };
+    existing.pools.push({
+      poolId: r.poolId,
+      poolName: r.poolName,
+      delegatedSol: r.delegatedSol,
+    });
+    existing.totalSol += r.delegatedSol;
+    byValidator.set(r.validatorPubkey, existing);
+  }
+
+  // Only return validators in 2+ pools, sorted by pool count then total SOL
+  return Array.from(byValidator.entries())
+    .filter(([, v]) => v.pools.length >= 2)
+    .map(([pubkey, v]) => ({ pubkey, ...v }))
+    .sort((a, b) => b.pools.length - a.pools.length || b.totalSol - a.totalSol);
+}
+
 /** Get delegation flows for the Sankey diagram */
 export async function getDelegationFlows(epochNumber?: number) {
   const epoch = epochNumber ?? (await getLatestScoredEpoch());

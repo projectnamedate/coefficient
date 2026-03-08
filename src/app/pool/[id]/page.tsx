@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPoolReportCard, getLatestScoredEpoch } from "@/db/queries";
 import { SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
@@ -8,6 +9,23 @@ import { AnimatedSection } from "@/components/ui/animated-section";
 import { HeroSection } from "@/components/ui/hero-section";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const pool = await getPoolReportCard(id);
+  if (!pool) return { title: "Pool Not Found | Coefficient" };
+  return {
+    title: `${pool.name} Score: ${pool.networkHealthScore} | Coefficient`,
+    description: `${pool.name} (${pool.lstTicker}) decentralization health score: ${pool.networkHealthScore}/100. ${pool.validatorCount} validators, ${formatSol(pool.activeSolStaked ?? 0)} SOL staked.`,
+    twitter: {
+      card: "summary_large_image",
+    },
+  };
+}
 
 function formatSol(amount: number): string {
   if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
