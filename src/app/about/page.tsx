@@ -109,6 +109,46 @@ export default function AboutPage() {
             </p>
           </section>
 
+          {/* Data Sources */}
+          <section>
+            <h2 className="text-lg font-semibold text-white mb-3">Data Sources</h2>
+            <p className="mb-4">
+              Coefficient pulls from multiple sources to build a complete picture. All data refreshes daily.
+            </p>
+            <div className="space-y-3">
+              <DataSource
+                name="Solana RPC"
+                url="https://solana.com"
+                description="On-chain stake pool accounts, delegation lists, and epoch data. The ground truth for all pool scoring."
+              />
+              <DataSource
+                name="StakeWiz API"
+                url="https://stakewiz.com"
+                description="Validator metadata — names, geography, datacenter, skip rates, APY, Wiz scores, and SFDP status."
+              />
+              <DataSource
+                name="Trillium API"
+                url="https://trillium.so"
+                description="Per-epoch validator profitability — block rewards, MEV earnings, priority fees, vote costs, and APY breakdowns. Powers the profitability section on each validator page."
+              />
+              <DataSource
+                name="Marinade API"
+                url="https://marinade.finance"
+                description="Marinade-specific delegation data and validator scores for the Marinade Native pool."
+              />
+              <DataSource
+                name="sandwiched.me"
+                url="https://sandwiched.me"
+                description="Curated list of validators flagged for sandwich attacks, used in the MEV/Sandwich scoring."
+              />
+              <DataSource
+                name="a-guard (GitHub)"
+                url="https://github.com/a-guard"
+                description="Additional sandwich validator data cross-referenced with community reports."
+              />
+            </div>
+          </section>
+
           {/* Scope */}
           <section>
             <h2 className="text-lg font-semibold text-white mb-3">Scope</h2>
@@ -134,6 +174,24 @@ export default function AboutPage() {
           </section>
         </div>
       </AnimatedSection>
+    </div>
+  );
+}
+
+function DataSource({ name, url, description }: { name: string; url: string; description: string }) {
+  return (
+    <div className="flex gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+      <div className="shrink-0">
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm font-medium text-lavender hover:text-lavender-light transition-colors underline underline-offset-2"
+        >
+          {name}
+        </a>
+      </div>
+      <p className="text-xs text-beige/50 leading-relaxed">{description}</p>
     </div>
   );
 }
