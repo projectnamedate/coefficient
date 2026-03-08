@@ -12,7 +12,7 @@ const navItems = [
   { href: "/compare", label: "Compare" },
   { href: "/flows", label: "Flows" },
   { href: "/insights", label: "Insights" },
-  { href: "/overlap", label: "Overlap" },
+  { href: "/overlap", label: "Reach" },
   { href: "/simulate", label: "What-If" },
   { href: "/validators", label: "Validators" },
   { href: "/about", label: "About" },
@@ -43,11 +43,7 @@ export function Header() {
               rel="noopener noreferrer"
               className="text-[11px] text-beige/50 font-mono uppercase tracking-wider hidden md:flex items-center gap-1 hover:text-lavender hover:drop-shadow-[0_0_6px_rgba(181,178,217,0.4)] transition-all duration-300"
             >
-              by
-              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" className="opacity-60">
-                <path d="M8 0l2.2 5.5L16 6.3l-4 3.8 1 5.9L8 13l-5 3 1-5.9-4-3.8 5.8-.8z"/>
-              </svg>
-              Mythx
+              by Mythx
             </a>
           </div>
 

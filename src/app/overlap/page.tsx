@@ -25,9 +25,9 @@ export default async function OverlapPage() {
     <div>
       <HeroSection
         eyebrow={`Epoch ${epoch ?? "—"}`}
-        title="Cross-Pool"
-        accent="Overlap"
-        description="Validators receiving stake from multiple pools. High overlap means systemic risk — if these validators fail, multiple pools are affected simultaneously."
+        title="Stake Pool"
+        accent="Reach"
+        description="Which validators are earning trust across the ecosystem? See who's receiving delegations from the most stake pools — a signal of broad confidence in their performance."
         gradient="lavender"
       />
 
@@ -35,7 +35,7 @@ export default async function OverlapPage() {
       <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-1">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-6">
           <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
-            <p className="text-xs text-beige/40 uppercase tracking-wider">Multi-Pool Validators</p>
+            <p className="text-xs text-beige/40 uppercase tracking-wider">Validators in 2+ Pools</p>
             <p className="text-2xl font-bold text-white mt-1 font-mono">{totalOverlapValidators}</p>
           </div>
           <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
@@ -47,7 +47,7 @@ export default async function OverlapPage() {
             <p className="text-2xl font-bold text-info mt-1 font-mono">{in5Plus}</p>
           </div>
           <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
-            <p className="text-xs text-beige/40 uppercase tracking-wider">Max Overlap</p>
+            <p className="text-xs text-beige/40 uppercase tracking-wider">Most Pools Reached</p>
             <p className="text-2xl font-bold text-lavender mt-1 font-mono">{maxPools} pools</p>
           </div>
         </div>
@@ -111,7 +111,7 @@ export default async function OverlapPage() {
         </div>
 
         <p className="text-xs text-beige/20 mt-4 text-center font-mono">
-          {totalOverlapValidators} validators in 2+ pools · Epoch {epoch ?? "—"}
+          {totalOverlapValidators} validators receiving stake from multiple pools · Epoch {epoch ?? "—"}
         </p>
       </AnimatedSection>
     </div>

@@ -129,6 +129,7 @@ export async function getValidatorLeaderboard(epochNumber?: number) {
 
   const poolMap = new Map<string, { poolId: string; poolName: string; delegatedSol: number }[]>();
   for (const d of delegationRows) {
+    if (d.delegatedSol <= 0) continue;
     const existing = poolMap.get(d.validatorPubkey) ?? [];
     existing.push({ poolId: d.poolId, poolName: d.poolName, delegatedSol: d.delegatedSol });
     poolMap.set(d.validatorPubkey, existing);
@@ -329,6 +330,7 @@ export async function getCrossPoolOverlap(epochNumber?: number) {
   >();
 
   for (const r of rows) {
+    if (r.delegatedSol <= 0) continue;
     const existing = byValidator.get(r.validatorPubkey) ?? {
       name: r.validatorName ?? r.validatorPubkey.slice(0, 8),
       pools: [],
@@ -527,7 +529,7 @@ export async function getValidatorDetail(pubkey: string) {
     .where(and(eq(validatorSnapshots.validatorPubkey, pubkey), eq(validatorSnapshots.epochNumber, epoch)))
     .limit(1);
 
-  // Pool memberships
+  // Pool memberships (exclude 0-stake delegations)
   const delegations = await db
     .select({
       poolId: poolDelegations.poolId,
@@ -537,7 +539,11 @@ export async function getValidatorDetail(pubkey: string) {
     })
     .from(poolDelegations)
     .innerJoin(stakePools, eq(poolDelegations.poolId, stakePools.id))
-    .where(and(eq(poolDelegations.validatorPubkey, pubkey), eq(poolDelegations.epochNumber, epoch)))
+    .where(and(
+      eq(poolDelegations.validatorPubkey, pubkey),
+      eq(poolDelegations.epochNumber, epoch),
+      sql`${poolDelegations.delegatedSol} > 0`
+    ))
     .orderBy(desc(poolDelegations.delegatedSol));
 
   // Commission history across epochs
@@ -615,7 +621,7 @@ export async function getDelegationFlows(epochNumber?: number) {
     .from(poolDelegations)
     .innerJoin(stakePools, eq(poolDelegations.poolId, stakePools.id))
     .innerJoin(validators, eq(poolDelegations.validatorPubkey, validators.pubkey))
-    .where(eq(poolDelegations.epochNumber, epoch));
+    .where(and(eq(poolDelegations.epochNumber, epoch), sql`${poolDelegations.delegatedSol} > 0`));
 
   const poolSet = new Map<string, string>();
   const validatorSet = new Map<string, string>();
