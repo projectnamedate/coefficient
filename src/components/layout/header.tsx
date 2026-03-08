@@ -27,7 +27,7 @@ export function Header() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.25, 0.4, 0.25, 1] }}
-      className="border-b border-white/[0.06] bg-dark/80 backdrop-blur-xl sticky top-0 z-50"
+      className="border-b border-white/[0.08] bg-dark/80 backdrop-blur-xl sticky top-0 z-50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
@@ -36,13 +36,17 @@ export function Header() {
               <LogoMark size={28} className="transition-transform duration-300 group-hover:scale-110" />
               <LogoWordmark className="hidden sm:block" />
             </Link>
+            <span className="text-lavender/30 hidden md:inline">·</span>
             <a
               href="https://mythx.art"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] text-beige/30 font-mono uppercase tracking-wider hidden md:block hover:text-lavender transition-colors"
+              className="text-[11px] text-beige/50 font-mono uppercase tracking-wider hidden md:flex items-center gap-1 hover:text-lavender hover:drop-shadow-[0_0_6px_rgba(181,178,217,0.4)] transition-all duration-300"
             >
-              by Mythx
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" className="opacity-60">
+                <path d="M8 0l2.2 5.5L16 6.3l-4 3.8 1 5.9L8 13l-5 3 1-5.9-4-3.8 5.8-.8z"/>
+              </svg>
+              Mythx
             </a>
           </div>
 
@@ -100,6 +104,9 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      {/* Lavender accent line */}
+      <div className="accent-line" />
 
       {/* Mobile menu */}
       <AnimatePresence>

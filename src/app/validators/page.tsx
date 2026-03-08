@@ -41,7 +41,7 @@ export default async function ValidatorsPage() {
 
       {/* Geographic Heatmap */}
       <AnimatedSection delay={0.15} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm p-4 sm:p-6">
+        <div className="gradient-border bg-white/[0.03] rounded-xl overflow-hidden backdrop-blur-sm p-4 sm:p-6 border border-white/[0.06]">
           <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
             Validator Geography
           </h2>

@@ -55,7 +55,7 @@ export function CompareView({ pools, initialSelected = [] }: { pools: StakePool[
   return (
     <div>
       {/* Pool selector */}
-      <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm mb-6">
+      <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm mb-4">
         <p className="text-xs text-beige/40 mb-3 font-mono">
           Select 2-3 pools to compare (click to toggle)
         </p>
@@ -64,14 +64,15 @@ export function CompareView({ pools, initialSelected = [] }: { pools: StakePool[
             .sort((a, b) => b.networkHealthScore - a.networkHealthScore)
             .map((pool) => {
               const isSelected = selected.includes(pool.id);
+              const scoreColor = pool.networkHealthScore >= 70 ? "border-l-score-good" : pool.networkHealthScore >= 40 ? "border-l-score-mid" : "border-l-score-bad";
               return (
                 <button
                   key={pool.id}
                   onClick={() => toggle(pool.id)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border ${
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border border-l-2 ${scoreColor} ${
                     isSelected
-                      ? "bg-lavender/20 border-lavender/40 text-lavender"
-                      : "bg-white/[0.03] border-white/[0.08] text-beige/50 hover:text-white hover:border-white/20"
+                      ? "bg-lavender/15 border-lavender/40 text-lavender shadow-[0_0_12px_rgba(181,178,217,0.1)]"
+                      : "bg-white/[0.03] border-white/[0.08] text-beige/50 hover:text-white hover:border-white/20 hover:bg-white/[0.05]"
                   }`}
                 >
                   {pool.name}

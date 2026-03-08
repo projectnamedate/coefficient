@@ -10,7 +10,7 @@ import { AnimatedBar } from "@/components/ui/motion";
 function formatSol(amount: number): string {
   if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
   if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toString();
+  return Math.round(amount).toString();
 }
 
 function getBarColor(s: number): string {
@@ -112,10 +112,16 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
               Pool
             </th>
             <SortHeader k="networkHealthScore">Score</SortHeader>
-            <SortHeader k="activeSolStaked">Stake</SortHeader>
-            <SortHeader k="validatorCount">Validators</SortHeader>
-            <SortHeader k="medianApy">APY</SortHeader>
-            <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">
+            <th onClick={() => handleSort("activeSolStaked")} className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider cursor-pointer hover:text-lavender transition-colors duration-200 select-none hidden sm:table-cell">
+              <span className="inline-flex items-center gap-1">Stake{sortKey === "activeSolStaked" && <span className="text-lavender">{sortDesc ? "\u2193" : "\u2191"}</span>}</span>
+            </th>
+            <th onClick={() => handleSort("validatorCount")} className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider cursor-pointer hover:text-lavender transition-colors duration-200 select-none hidden sm:table-cell">
+              <span className="inline-flex items-center gap-1">Validators{sortKey === "validatorCount" && <span className="text-lavender">{sortDesc ? "\u2193" : "\u2191"}</span>}</span>
+            </th>
+            <th onClick={() => handleSort("medianApy")} className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider cursor-pointer hover:text-lavender transition-colors duration-200 select-none hidden md:table-cell">
+              <span className="inline-flex items-center gap-1">APY{sortKey === "medianApy" && <span className="text-lavender">{sortDesc ? "\u2193" : "\u2191"}</span>}</span>
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider hidden lg:table-cell">
               Program
             </th>
           </tr>
@@ -131,13 +137,13 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.03 }}
                 className={`border-b border-white/5 cursor-pointer transition-all duration-200 hover:bg-lavender/[0.04] ${
-                  expandedId === pool.id ? "bg-lavender/[0.06]" : ""
+                  expandedId === pool.id ? "bg-lavender/[0.06]" : index % 2 === 1 ? "bg-white/[0.01]" : ""
                 }`}
               >
-                <td className="px-4 py-4 text-sm text-beige/25 font-mono tabular-nums">
+                <td className="px-4 py-3.5 text-sm text-beige/25 font-mono tabular-nums">
                   {index + 1}
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-3.5">
                   <div className="flex items-baseline gap-2">
                     <Link
                       href={`/pool/${pool.id}`}
@@ -146,25 +152,25 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
                     >
                       {pool.name}
                     </Link>
-                    <span className="text-xs text-lavender/40 font-mono">
+                    <span className="text-xs text-lavender/40 font-mono hidden sm:inline">
                       {pool.lstTicker}
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4">
-                  <ScoreBadge score={pool.networkHealthScore} />
+                <td className="px-4 py-3.5">
+                  <ScoreBadge score={pool.networkHealthScore} size="sm" />
                 </td>
-                <td className="px-4 py-4 text-sm text-beige/60 font-mono tabular-nums">
+                <td className="px-4 py-3.5 text-sm text-beige/60 font-mono tabular-nums hidden sm:table-cell">
                   {formatSol(pool.activeSolStaked)}
                 </td>
-                <td className="px-4 py-4 text-sm text-beige/60 font-mono tabular-nums">
+                <td className="px-4 py-3.5 text-sm text-beige/60 font-mono tabular-nums hidden sm:table-cell">
                   {pool.validatorCount}
                 </td>
-                <td className="px-4 py-4 text-sm text-beige/60 font-mono tabular-nums">
+                <td className="px-4 py-3.5 text-sm text-beige/60 font-mono tabular-nums hidden md:table-cell">
                   {pool.medianApy}%
                 </td>
-                <td className="px-4 py-4">
-                  <span className="text-xs px-2 py-0.5 rounded bg-white/5 text-beige/40 font-mono">
+                <td className="px-4 py-3.5 hidden lg:table-cell">
+                  <span className="text-xs px-2 py-0.5 rounded border border-white/[0.06] bg-white/5 text-beige/40 font-mono">
                     {pool.program}
                   </span>
                 </td>

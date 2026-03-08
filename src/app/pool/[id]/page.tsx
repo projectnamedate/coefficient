@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPoolReportCard, getLatestScoredEpoch, getPoolDatacenterConcentration, getCommissionChanges, poolOverrides } from "@/db/queries";
 import { SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
@@ -102,7 +103,12 @@ export default async function PoolReportCard({
                 Score Fingerprint
               </h2>
               <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold text-lavender font-mono">
+                <span className={`text-3xl font-bold font-mono ${
+                  pool.networkHealthScore >= 90 ? "text-score-good" :
+                  pool.networkHealthScore >= 75 ? "text-score-mid" :
+                  pool.networkHealthScore >= 60 ? "text-beige/60" :
+                  "text-score-bad"
+                }`}>
                   {getGrade(pool.networkHealthScore)}
                 </span>
                 <ScoreBadge score={pool.networkHealthScore} size="lg" />
@@ -120,7 +126,7 @@ export default async function PoolReportCard({
               {activeScores.map(([key, weight]) => {
                 const score = scores[key];
                 return (
-                  <div key={key}>
+                  <div key={key} className="rounded-lg px-2 py-1.5 -mx-2 hover:bg-white/[0.03] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs text-beige/60">{SCORE_LABELS[key]}</span>
                       <div className="flex items-center gap-2">
@@ -149,7 +155,7 @@ export default async function PoolReportCard({
       </AnimatedSection>
 
       {/* Score History */}
-      <AnimatedSection delay={0.1} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+      <AnimatedSection delay={0.1} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="gradient-border bg-white/[0.02] rounded-xl p-6 backdrop-blur-sm">
           <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
             Score History
@@ -164,7 +170,7 @@ export default async function PoolReportCard({
       </AnimatedSection>
 
       {/* MEV & Transparency */}
-      <AnimatedSection delay={0.15} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+      <AnimatedSection delay={0.15} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* MEV Policy */}
           <div className="gradient-border bg-white/[0.02] rounded-xl p-5 backdrop-blur-sm">
@@ -242,18 +248,18 @@ export default async function PoolReportCard({
 
       {/* Datacenter Concentration */}
       {datacenters.length > 0 && (
-        <AnimatedSection delay={0.2} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        <AnimatedSection delay={0.2} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="gradient-border bg-white/[0.02] rounded-xl p-5 backdrop-blur-sm">
             <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-3">
               Datacenter Concentration · {datacenters.length} providers
             </h2>
             <div className="space-y-2">
               {datacenters.slice(0, 8).map((dc) => (
-                <div key={dc.datacenter} className="flex items-center gap-3">
-                  <span className="text-xs text-beige/50 w-44 truncate font-mono">{dc.datacenter}</span>
+                <div key={dc.datacenter} className="flex items-center gap-2 sm:gap-3">
+                  <span className="text-xs text-beige/50 w-28 sm:w-44 truncate font-mono shrink-0">{dc.datacenter}</span>
                   <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full ${
+                      className={`h-full rounded-full transition-all duration-700 ease-out ${
                         dc.percentage > 0.5 ? "bg-score-bad" :
                         dc.percentage > 0.3 ? "bg-score-mid" :
                         "bg-score-good"
@@ -280,7 +286,7 @@ export default async function PoolReportCard({
 
       {/* Commission Rug Detection */}
       {commissionChanges.length > 0 && (
-        <AnimatedSection delay={0.25} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        <AnimatedSection delay={0.25} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="gradient-border bg-white/[0.02] rounded-xl p-5 backdrop-blur-sm border-l-2 border-l-score-bad">
             <h2 className="text-sm font-medium text-score-bad uppercase tracking-wider mb-3">
               Commission Increases Detected
@@ -316,7 +322,8 @@ export default async function PoolReportCard({
               Top Validators · {countries.size} countries
             </h2>
           </div>
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[500px]">
             <thead>
               <tr className="border-b border-white/10">
                 <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">#</th>
@@ -327,16 +334,16 @@ export default async function PoolReportCard({
             </thead>
             <tbody>
               {pool.topValidators.map((v: any, i: number) => (
-                <tr key={v.validatorPubkey} className="border-b border-white/5 hover:bg-lavender/[0.04]">
+                <tr key={v.validatorPubkey} className={`border-b border-white/5 hover:bg-lavender/[0.04] transition-colors duration-200 ${i % 2 === 1 ? "bg-white/[0.01]" : ""}`}>
                   <td className="px-4 py-3 text-sm text-beige/25 font-mono">{i + 1}</td>
                   <td className="px-4 py-3">
                     <div>
-                      <span className="text-sm font-semibold text-white">
+                      <Link href={`/validator/${v.validatorPubkey}`} className="text-sm font-semibold text-white hover:text-lavender transition-colors">
                         {v.validatorName ?? v.validatorPubkey.slice(0, 8)}
-                      </span>
-                      <span className="text-[10px] text-beige/30 font-mono ml-2">
+                      </Link>
+                      <Link href={`/validator/${v.validatorPubkey}`} className="text-[10px] text-beige/30 font-mono ml-2 hover:text-lavender/50 transition-colors">
                         {v.validatorPubkey.slice(0, 4)}...{v.validatorPubkey.slice(-4)}
-                      </span>
+                      </Link>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-sm text-beige/60 font-mono">
@@ -349,6 +356,7 @@ export default async function PoolReportCard({
               ))}
             </tbody>
           </table>
+          </div>
         </div>
 
         {/* Share CTA */}

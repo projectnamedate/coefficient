@@ -134,7 +134,7 @@ export default async function InsightsPage() {
       />
 
       {/* Score Changes */}
-      <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <AnimatedSection className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
           Score Changes
           {deltas.previousEpoch && deltas.currentEpoch && (
@@ -173,13 +173,13 @@ export default async function InsightsPage() {
       </AnimatedSection>
 
       {/* MEV Redistribution & Transparency */}
-      <AnimatedSection delay={0.1} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+      <AnimatedSection delay={0.1} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
         <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
           MEV Redistribution & Transparency
         </h2>
         <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="border-b border-white/10">
                   <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">Pool</th>
@@ -191,8 +191,8 @@ export default async function InsightsPage() {
                 </tr>
               </thead>
               <tbody>
-                {mevData.map((m) => (
-                  <tr key={m.id} className="border-b border-white/5 hover:bg-lavender/[0.04]">
+                {mevData.map((m, i) => (
+                  <tr key={m.id} className={`border-b border-white/5 hover:bg-lavender/[0.04] transition-colors duration-200 ${i % 2 === 1 ? "bg-white/[0.01]" : ""}`}>
                     <td className="px-4 py-3">
                       <Link href={`/pool/${m.id}`} className="text-sm font-semibold text-white hover:text-lavender transition-colors">
                         {m.name}
@@ -213,11 +213,11 @@ export default async function InsightsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      {m.mevTipsToStakers ? (
-                        <span className="text-xs text-score-good font-mono">Yes</span>
-                      ) : (
-                        <span className="text-xs text-score-bad font-mono">No</span>
-                      )}
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
+                        m.mevTipsToStakers ? "bg-score-good/20 text-score-good" : "bg-score-bad/20 text-score-bad"
+                      }`}>
+                        {m.mevTipsToStakers ? "Yes" : "No"}
+                      </span>
                     </td>
                     <td className="px-4 py-3 text-xs text-beige/50 font-mono">
                       {m.mevCommissionCap != null ? `${m.mevCommissionCap}%` : "—"}
@@ -234,7 +234,7 @@ export default async function InsightsPage() {
       </AnimatedSection>
 
       {/* Datacenter Concentration Risks */}
-      <AnimatedSection delay={0.2} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+      <AnimatedSection delay={0.2} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
         <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
           Datacenter Concentration Risks
         </h2>
@@ -245,7 +245,7 @@ export default async function InsightsPage() {
         ) : (
           <div className="space-y-3">
             {dcRisks.map((d) => (
-              <div key={d.poolId} className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
+              <div key={d.poolId} className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-200">
                 <div className="flex items-center justify-between mb-3">
                   <Link href={`/pool/${d.poolId}`} className="text-sm font-semibold text-white hover:text-lavender transition-colors">
                     {d.poolName}
@@ -283,7 +283,7 @@ export default async function InsightsPage() {
       </AnimatedSection>
 
       {/* Commission Rug Detection */}
-      <AnimatedSection delay={0.3} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <AnimatedSection delay={0.3} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
           Commission Rug Detection
         </h2>

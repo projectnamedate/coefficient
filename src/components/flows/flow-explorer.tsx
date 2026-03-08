@@ -74,7 +74,6 @@ function PoolCard({
         className="w-full flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-white/[0.03] transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-lavender shrink-0" />
           <span className="text-sm font-medium text-white">{pool.name}</span>
           <span className="text-xs text-beige/30 font-mono">{flows.length} validators</span>
         </div>
@@ -147,7 +146,6 @@ function ValidatorCard({
         className="w-full flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-white/[0.03] transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-info shrink-0" />
           <span className="text-sm font-medium text-white">{validator.name}</span>
           <span className="text-xs text-beige/30 font-mono">{flows.length} pool{flows.length !== 1 ? "s" : ""}</span>
         </div>
@@ -295,13 +293,17 @@ export function FlowExplorer({ data }: { data: FlowData }) {
         </div>
 
         {/* Search */}
-        <div className="flex-1 w-full sm:w-auto">
+        <div className="flex-1 w-full sm:w-auto relative">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-beige/30 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" strokeWidth="2" />
+            <path d="M21 21l-4.35-4.35" strokeWidth="2" strokeLinecap="round" />
+          </svg>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={viewMode === "pools" ? "Search pools..." : "Search validators..."}
-            className="w-full sm:w-72 bg-white/[0.04] border border-white/[0.06] rounded-lg px-3 py-1.5 text-sm text-white placeholder:text-beige/25 focus:outline-none focus:border-lavender/30 transition-colors"
+            className="w-full sm:w-72 bg-white/[0.04] border border-white/[0.06] rounded-lg pl-8 pr-3 py-1.5 text-sm text-white placeholder:text-beige/25 focus:outline-none focus:border-lavender/30 transition-colors"
           />
         </div>
 
