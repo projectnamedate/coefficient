@@ -640,3 +640,28 @@ export async function getDelegationFlows(epochNumber?: number) {
     })),
   };
 }
+
+/** Get data needed for the What-If simulator: all validator stakes + pool delegations */
+export async function getSimulatorData(epochNumber?: number) {
+  const epoch = epochNumber ?? (await getLatestScoredEpoch());
+  if (!epoch) return { validatorStakes: [], delegations: [] };
+
+  const validatorStakes = await db
+    .select({
+      pubkey: validatorSnapshots.validatorPubkey,
+      activeStake: validatorSnapshots.activeStake,
+    })
+    .from(validatorSnapshots)
+    .where(eq(validatorSnapshots.epochNumber, epoch));
+
+  const delegations = await db
+    .select({
+      poolId: poolDelegations.poolId,
+      validatorPubkey: poolDelegations.validatorPubkey,
+      delegatedSol: poolDelegations.delegatedSol,
+    })
+    .from(poolDelegations)
+    .where(and(eq(poolDelegations.epochNumber, epoch), sql`${poolDelegations.delegatedSol} > 0`));
+
+  return { validatorStakes, delegations };
+}

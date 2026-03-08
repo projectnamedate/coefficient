@@ -1,4 +1,4 @@
-import { getPoolsWithScores, getLatestScoredEpoch, getEpochInfo } from "@/db/queries";
+import { getPoolsWithScores, getLatestScoredEpoch, getEpochInfo, getSimulatorData } from "@/db/queries";
 import { WhatIfSimulator } from "@/components/scorecard/what-if-simulator";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
@@ -11,9 +11,12 @@ export default async function SimulatePage() {
     getLatestScoredEpoch(),
   ]);
 
-  const epochInfo = epoch ? await getEpochInfo(epoch) : null;
+  const [epochInfo, simData] = await Promise.all([
+    epoch ? getEpochInfo(epoch) : null,
+    getSimulatorData(epoch ?? undefined),
+  ]);
+
   const nakamoto = epochInfo?.nakamotoCoefficient ?? 20;
-  const totalStake = epochInfo?.totalStake ?? 0;
 
   return (
     <div>
@@ -35,7 +38,8 @@ export default async function SimulatePage() {
             networkHealthScore: p.networkHealthScore,
           }))}
           currentNakamoto={nakamoto}
-          totalNetworkStake={totalStake}
+          validatorStakes={simData.validatorStakes}
+          delegations={simData.delegations}
         />
       </AnimatedSection>
     </div>

@@ -11,10 +11,22 @@ interface PoolData {
   networkHealthScore: number;
 }
 
+interface Delegation {
+  poolId: string;
+  validatorPubkey: string;
+  delegatedSol: number;
+}
+
+interface ValidatorStake {
+  pubkey: string;
+  activeStake: number;
+}
+
 interface Props {
   pools: PoolData[];
   currentNakamoto: number;
-  totalNetworkStake: number;
+  validatorStakes: ValidatorStake[];
+  delegations: Delegation[];
 }
 
 function formatSol(amount: number): string {
@@ -54,50 +66,52 @@ function AnimatedNumber({ value }: { value: number }) {
   return <span ref={ref}>{Math.round(value)}</span>;
 }
 
-export function WhatIfSimulator({ pools, currentNakamoto, totalNetworkStake }: Props) {
-  // Each pool gets a multiplier (1.0 = current, 2.0 = doubled, 0.5 = halved)
+export function WhatIfSimulator({ pools, currentNakamoto, validatorStakes, delegations }: Props) {
   const [multipliers, setMultipliers] = useState<Record<string, number>>(
     Object.fromEntries(pools.map((p) => [p.id, 1.0]))
   );
 
+  // Pre-compute per-validator delegation breakdown (only once)
+  const { baseStakes, delegationsByValidator } = useMemo(() => {
+    // Group delegations by validator
+    const delByVal = new Map<string, { poolId: string; delegatedSol: number }[]>();
+    for (const d of delegations) {
+      const existing = delByVal.get(d.validatorPubkey) ?? [];
+      existing.push({ poolId: d.poolId, delegatedSol: d.delegatedSol });
+      delByVal.set(d.validatorPubkey, existing);
+    }
+
+    // Compute base stake (non-pool stake) for each validator
+    const bases = new Map<string, number>();
+    for (const v of validatorStakes) {
+      const poolTotal = (delByVal.get(v.pubkey) ?? []).reduce((s, d) => s + d.delegatedSol, 0);
+      bases.set(v.pubkey, Math.max(0, v.activeStake - poolTotal));
+    }
+
+    return { baseStakes: bases, delegationsByValidator: delByVal };
+  }, [validatorStakes, delegations]);
+
   const simulated = useMemo(() => {
-    // Approximate: if a pool's stake doubles, it's distributed proportionally
-    // across its existing validators, increasing their stake
-    const poolStakes = pools.map((p) => ({
-      ...p,
-      newStake: p.activeSolStaked * (multipliers[p.id] ?? 1),
-    }));
-
-    const totalPoolStake = poolStakes.reduce((s, p) => s + p.newStake, 0);
-    const nonPoolStake = totalNetworkStake - pools.reduce((s, p) => s + p.activeSolStaked, 0);
-
-    // Simulate stake distribution: each pool's validators get equal shares
-    // This is simplified — real impact depends on validator overlap
-    const validatorStakes: number[] = [];
-
-    for (const p of poolStakes) {
-      if (p.validatorCount === 0) continue;
-      const perValidator = p.newStake / p.validatorCount;
-      for (let i = 0; i < p.validatorCount; i++) {
-        validatorStakes.push(perValidator);
-      }
-    }
-
-    // Add non-pool stake distributed across ~400 other validators
-    const otherValidators = 400;
-    const perOther = nonPoolStake / otherValidators;
-    for (let i = 0; i < otherValidators; i++) {
-      validatorStakes.push(perOther);
-    }
-
-    const rawNakamoto = computeNakamoto(validatorStakes);
-    // When no changes, show the real Nakamoto; otherwise show simulated
     const anyChange = Object.values(multipliers).some((m) => m !== 1.0);
-    const newNakamoto = anyChange ? rawNakamoto : currentNakamoto;
-    const nakamotoDelta = newNakamoto - currentNakamoto;
+    if (!anyChange) {
+      return { newNakamoto: currentNakamoto, nakamotoDelta: 0 };
+    }
 
-    return { totalPoolStake, newNakamoto, nakamotoDelta };
-  }, [multipliers, pools, currentNakamoto, totalNetworkStake]);
+    // For each validator: simulated = base + sum(delegation * multiplier)
+    const stakes: number[] = [];
+    for (const v of validatorStakes) {
+      const base = baseStakes.get(v.pubkey) ?? 0;
+      const dels = delegationsByValidator.get(v.pubkey) ?? [];
+      let poolStake = 0;
+      for (const d of dels) {
+        poolStake += d.delegatedSol * (multipliers[d.poolId] ?? 1);
+      }
+      stakes.push(base + poolStake);
+    }
+
+    const newNakamoto = computeNakamoto(stakes);
+    return { newNakamoto, nakamotoDelta: newNakamoto - currentNakamoto };
+  }, [multipliers, currentNakamoto, validatorStakes, baseStakes, delegationsByValidator]);
 
   const hasChanges = Object.values(multipliers).some((m) => m !== 1.0);
 
@@ -206,7 +220,7 @@ export function WhatIfSimulator({ pools, currentNakamoto, totalNetworkStake }: P
       </div>
 
       <p className="text-xs text-beige/20 mt-4 text-center font-mono">
-        Simplified simulation — assumes proportional stake distribution within each pool
+        Uses real per-validator delegation data · {validatorStakes.length} validators · {delegations.length} active delegations
       </p>
     </div>
   );
