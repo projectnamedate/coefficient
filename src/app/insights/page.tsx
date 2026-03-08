@@ -6,6 +6,7 @@ import {
   getCommissionChanges,
   poolOverrides,
 } from "@/db/queries";
+import { computeTransparencyGrade } from "@/lib/transparency";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import Link from "next/link";
@@ -94,9 +95,18 @@ export default async function InsightsPage() {
   // Overrides for MEV & transparency
   const overrides = poolOverrides as Record<string, any>;
 
-  // MEV tracking
+  // MEV tracking — transparency grade is now computed, not manual
   const mevData = pools.map((p) => {
     const ov = overrides[p.id] ?? {};
+    const { grade } = computeTransparencyGrade(
+      {
+        selfDealingScore: ov.selfDealingScore ?? 50,
+        mevTipsToStakers: ov.mevTipsToStakers ?? false,
+        jitoClient: ov.jitoClient ?? "unknown",
+        mevCommissionCap: ov.mevCommissionCap ?? null,
+      },
+      p.validatorCount ?? 0
+    );
     return {
       id: p.id,
       name: p.name,
@@ -104,10 +114,10 @@ export default async function InsightsPage() {
       mevTipsToStakers: ov.mevTipsToStakers ?? false,
       mevCommissionCap: ov.mevCommissionCap ?? null,
       mevPolicy: ov.mevPolicy ?? "No data",
-      transparencyGrade: ov.transparencyGrade ?? "—",
+      transparencyGrade: grade,
     };
   }).sort((a, b) => {
-    const order: Record<string, number> = { A: 0, B: 1, C: 2, D: 3, F: 4, "—": 5 };
+    const order: Record<string, number> = { A: 0, B: 1, C: 2, D: 3, "—": 5 };
     return (order[a.transparencyGrade] ?? 5) - (order[b.transparencyGrade] ?? 5);
   });
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPoolReportCard, getLatestScoredEpoch, getPoolDatacenterConcentration, getCommissionChanges, poolOverrides } from "@/db/queries";
 import { SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
+import { computeTransparencyGrade } from "@/lib/transparency";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
 import { ScoreHistoryChart } from "@/components/scorecard/score-history-chart";
 import { ScoreBadge } from "@/components/ui/score-badge";
@@ -199,25 +200,43 @@ export default async function PoolReportCard({
             )}
           </div>
 
-          {/* Transparency Grade */}
-          <div className="gradient-border bg-white/[0.02] rounded-xl p-5 backdrop-blur-sm">
-            <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-3">
-              Delegation Transparency
-            </h2>
-            <div className="flex items-center gap-4">
-              <span className={`text-4xl font-bold font-mono ${
-                overrides.transparencyGrade === "A" ? "text-score-good" :
-                overrides.transparencyGrade === "B" ? "text-score-mid" :
-                overrides.transparencyGrade === "C" ? "text-beige/60" :
-                "text-score-bad"
-              }`}>
-                {overrides.transparencyGrade ?? "—"}
-              </span>
-              <p className="text-xs text-beige/40 leading-relaxed flex-1">
-                {overrides.transparencyNotes ?? "No transparency data available"}
-              </p>
-            </div>
-          </div>
+          {/* Transparency Grade (computed) */}
+          {(() => {
+            const { grade, score } = computeTransparencyGrade(
+              {
+                selfDealingScore: overrides.selfDealingScore ?? 50,
+                mevTipsToStakers: overrides.mevTipsToStakers ?? false,
+                jitoClient: overrides.jitoClient ?? "unknown",
+                mevCommissionCap: overrides.mevCommissionCap ?? null,
+              },
+              pool.validatorCount ?? 0
+            );
+            return (
+              <div className="gradient-border bg-white/[0.02] rounded-xl p-5 backdrop-blur-sm">
+                <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-3">
+                  Delegation Transparency
+                </h2>
+                <div className="flex items-center gap-4">
+                  <span className={`text-4xl font-bold font-mono ${
+                    grade === "A" ? "text-score-good" :
+                    grade === "B" ? "text-score-mid" :
+                    grade === "C" ? "text-beige/60" :
+                    "text-score-bad"
+                  }`}>
+                    {grade}
+                  </span>
+                  <div className="flex-1">
+                    <p className="text-xs text-beige/40 leading-relaxed">
+                      {overrides.transparencyNotes ?? "No transparency data available"}
+                    </p>
+                    <p className="text-[10px] text-beige/25 mt-1 font-mono">
+                      Score: {score}/100 — based on self-dealing, MEV policy, and governance breadth
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </AnimatedSection>
 

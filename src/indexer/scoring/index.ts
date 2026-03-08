@@ -11,6 +11,7 @@ import { scoreNakamotoImpact, computeNakamoto } from "./nakamoto-impact";
 import { scoreValidatorSetSize } from "./validator-set-size";
 import { scoreGeographicDiversity } from "./geographic-diversity";
 import { scoreCommissionDiscipline } from "./commission-discipline";
+import { scoreTransparency } from "./transparency";
 import { log } from "../config";
 
 interface DelegationEntry {
@@ -109,7 +110,7 @@ export function computeAllPoolScores(
     const validatorSetSizeScore = scoreValidatorSetSize(validatorCount);
     const geographicDiversity = scoreGeographicDiversity(delegations, countries, totalNetworkCountries);
     const commissionDiscipline = scoreCommissionDiscipline(delegations, commissions);
-    const transparency = 0; // Removed — too subjective
+    const transparency = scoreTransparency(poolId, validatorCount);
 
     // Weighted composite
     const networkHealthScore = Math.round(

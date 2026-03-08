@@ -71,7 +71,10 @@ export function WhatIfSimulator({ pools, currentNakamoto, totalNetworkStake }: P
       validatorStakes.push(perOther);
     }
 
-    const newNakamoto = computeNakamoto(validatorStakes);
+    const rawNakamoto = computeNakamoto(validatorStakes);
+    // When no changes, show the real Nakamoto; otherwise show simulated
+    const anyChange = Object.values(multipliers).some((m) => m !== 1.0);
+    const newNakamoto = anyChange ? rawNakamoto : currentNakamoto;
     const nakamotoDelta = newNakamoto - currentNakamoto;
 
     return { totalPoolStake, newNakamoto, nakamotoDelta };
