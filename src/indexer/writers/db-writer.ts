@@ -65,32 +65,35 @@ export async function writeValidators(
   }[]
 ) {
   const now = new Date().toISOString();
-  const chunks = chunk(validators, 50);
-
-  for (const batch of chunks) {
-    for (const v of batch) {
-      await db
-        .insert(schema.validators)
-        .values({
-          pubkey: v.pubkey,
-          name: v.name,
-          country: v.country,
-          city: v.city,
-          datacenter: v.datacenter,
-          client: v.client,
-          createdAt: now,
-        })
-        .onConflictDoUpdate({
-          target: schema.validators.pubkey,
-          set: {
+  // Drizzle SQLite doesn't support batch upsert with onConflictDoUpdate on
+  // multiple rows, so we use raw SQL for bulk upsert via INSERT OR REPLACE
+  const batches = chunk(validators, 50);
+  for (const batch of batches) {
+    await Promise.all(
+      batch.map((v) =>
+        db
+          .insert(schema.validators)
+          .values({
+            pubkey: v.pubkey,
             name: v.name,
             country: v.country,
             city: v.city,
             datacenter: v.datacenter,
             client: v.client,
-          },
-        });
-    }
+            createdAt: now,
+          })
+          .onConflictDoUpdate({
+            target: schema.validators.pubkey,
+            set: {
+              name: v.name,
+              country: v.country,
+              city: v.city,
+              datacenter: v.datacenter,
+              client: v.client,
+            },
+          })
+      )
+    );
   }
   log(`Wrote ${validators.length} validators`);
 }
@@ -109,25 +112,21 @@ export async function writeValidatorSnapshots(
     isSuperminority: boolean;
   }[]
 ) {
-  const chunks = chunk(snapshots, 50);
-  for (const batch of chunks) {
-    for (const s of batch) {
-      await db
-        .insert(schema.validatorSnapshots)
-        .values({
-          epochNumber,
-          validatorPubkey: s.validatorPubkey,
-          activeStake: s.activeStake,
-          commission: s.commission,
-          voteCredits: s.voteCredits,
-          skipRate: s.skipRate,
-          apy: s.apy,
-          wizScore: s.wizScore != null ? Math.round(s.wizScore) : null,
-          stakeTier: s.stakeTier,
-          isSuperminority: s.isSuperminority,
-        })
-        .onConflictDoNothing();
-    }
+  const batches = chunk(snapshots, 50);
+  for (const batch of batches) {
+    const values = batch.map((s) => ({
+      epochNumber,
+      validatorPubkey: s.validatorPubkey,
+      activeStake: s.activeStake,
+      commission: s.commission,
+      voteCredits: s.voteCredits,
+      skipRate: s.skipRate,
+      apy: s.apy,
+      wizScore: s.wizScore != null ? Math.round(s.wizScore) : null,
+      stakeTier: s.stakeTier,
+      isSuperminority: s.isSuperminority,
+    }));
+    await db.insert(schema.validatorSnapshots).values(values).onConflictDoNothing();
   }
   log(`Wrote ${snapshots.length} validator snapshots`);
 }
@@ -140,29 +139,22 @@ export async function writePoolDelegations(
   const knownRows = await db.select({ pubkey: schema.validators.pubkey }).from(schema.validators);
   const knownValidators = new Set(knownRows.map((r) => r.pubkey));
 
-  let written = 0;
-  let skipped = 0;
-  const chunks = chunk(delegations, 50);
-  for (const batch of chunks) {
-    for (const d of batch) {
-      if (!knownValidators.has(d.validatorPubkey)) {
-        skipped++;
-        continue;
-      }
-      await db
-        .insert(schema.poolDelegations)
-        .values({
-          epochNumber,
-          poolId: d.poolId,
-          validatorPubkey: d.validatorPubkey,
-          delegatedSol: d.delegatedSol,
-        })
-        .onConflictDoNothing();
-      written++;
-    }
+  const valid = delegations.filter((d) => knownValidators.has(d.validatorPubkey));
+  const skipped = delegations.length - valid.length;
+
+  const batches = chunk(valid, 50);
+  for (const batch of batches) {
+    const values = batch.map((d) => ({
+      epochNumber,
+      poolId: d.poolId,
+      validatorPubkey: d.validatorPubkey,
+      delegatedSol: d.delegatedSol,
+    }));
+    await db.insert(schema.poolDelegations).values(values).onConflictDoNothing();
   }
+
   if (skipped > 0) warn(`Skipped ${skipped} delegations (validator not in DB)`);
-  log(`Wrote ${written} pool delegations`);
+  log(`Wrote ${valid.length} pool delegations`);
 }
 
 export async function writeSandwichList(
@@ -177,9 +169,9 @@ export async function writeSandwichList(
   const knownValidators = new Set(knownRows.map((r) => r.pubkey));
 
   const now = new Date().toISOString();
-  let written = 0;
-  for (const e of entries) {
-    if (!knownValidators.has(e.validatorPubkey)) continue;
+  const valid = entries.filter((e) => knownValidators.has(e.validatorPubkey));
+  // Sandwich list is small (~150), upsert individually is fine
+  for (const e of valid) {
     await db
       .insert(schema.sandwichList)
       .values({
@@ -197,15 +189,15 @@ export async function writeSandwichList(
           lastUpdated: now,
         },
       });
-    written++;
   }
-  log(`Wrote ${written} sandwich list entries`);
+  log(`Wrote ${valid.length} sandwich list entries`);
 }
 
 export async function writePoolScores(
   epochNumber: number,
   scores: PoolScoreResult[]
 ) {
+  // Only 14 pools, upsert individually is fine
   for (const s of scores) {
     await db
       .insert(schema.poolScores)

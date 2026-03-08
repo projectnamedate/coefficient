@@ -9,16 +9,24 @@ async function sendAlert(message: string) {
   if (!webhookUrl) return;
 
   try {
-    await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        // Discord-compatible format (also works with many webhook services)
-        content: message,
-        // Slack-compatible format
-        text: message,
-      }),
-    });
+    // Telegram: set ALERT_WEBHOOK_URL=https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHAT_ID>
+    if (webhookUrl.includes("api.telegram.org")) {
+      const url = new URL(webhookUrl);
+      const chatId = url.searchParams.get("chat_id");
+      const botPath = url.pathname; // /bot<TOKEN>/sendMessage
+      await fetch(`https://api.telegram.org${botPath}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message }),
+      });
+    } else {
+      // Discord / Slack compatible
+      await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: message, text: message }),
+      });
+    }
   } catch (e) {
     console.error("Failed to send alert:", e);
   }
