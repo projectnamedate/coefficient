@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogoMark, LogoWordmark } from "@/components/ui/logo";
+import { GlobalSearch } from "@/components/layout/global-search";
 
 const navItems = [
   { href: "/", label: "Scorecard" },
@@ -70,6 +71,9 @@ export function Header() {
             })}
           </nav>
 
+          <div className="flex items-center gap-2">
+            <GlobalSearch />
+
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -91,6 +95,7 @@ export function Header() {
               />
             </div>
           </button>
+          </div>
         </div>
       </div>
 

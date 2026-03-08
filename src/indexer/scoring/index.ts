@@ -140,5 +140,18 @@ export function computeAllPoolScores(
     });
   }
 
+  // Normalize composite scores to 55-95 range (curved grading)
+  if (results.length >= 2) {
+    const rawScores = results.map((r) => r.networkHealthScore);
+    const rawMin = Math.min(...rawScores);
+    const rawMax = Math.max(...rawScores);
+    const rawRange = rawMax - rawMin || 1;
+
+    for (const r of results) {
+      const t = (r.networkHealthScore - rawMin) / rawRange; // 0..1
+      r.networkHealthScore = Math.round(55 + t * 40); // 55..95
+    }
+  }
+
   return results;
 }

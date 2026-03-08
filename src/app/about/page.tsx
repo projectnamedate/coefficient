@@ -44,14 +44,14 @@ export default function AboutPage() {
 
             <div className="space-y-4">
               <ScoreExplainer
-                name="Self-Dealing"
+                name="Small Validator Bias"
                 weight={20}
-                description="Does the pool require validators to purchase tokens, stake through specific LSTs, or participate in token flywheels to receive delegation? Pools that delegate purely on merit score highest."
+                description="What percentage of the pool's stake goes to validators below the network median? Pools that actively support small validators help decentralization more than those that pile onto large ones."
               />
               <ScoreExplainer
-                name="Small Validator Bias"
-                weight={15}
-                description="What percentage of the pool's stake goes to validators below the network median? Pools that actively support small validators help decentralization more than those that pile onto large ones."
+                name="Nakamoto Impact"
+                weight={20}
+                description="If this pool's delegations were removed, what would happen to the Nakamoto Coefficient? Pools whose delegations improve decentralization score higher."
               />
               <ScoreExplainer
                 name="MEV/Sandwich Policy"
@@ -59,14 +59,14 @@ export default function AboutPage() {
                 description="How much of the pool's delegated stake goes to known sandwich attackers? Sandwich validators extract value from users through front-running. Pools should avoid delegating to them."
               />
               <ScoreExplainer
-                name="Nakamoto Impact"
-                weight={15}
-                description="If this pool's delegations were removed, what would happen to the Nakamoto Coefficient? Pools whose delegations improve decentralization score higher."
-              />
-              <ScoreExplainer
                 name="Validator Set Size"
                 weight={15}
                 description="How many unique validators does the pool delegate to? More validators means more decentralization, with diminishing returns above ~100."
+              />
+              <ScoreExplainer
+                name="Self-Dealing"
+                weight={10}
+                description="Does the pool require validators to purchase tokens, stake through specific LSTs, or participate in token flywheels to receive delegation? Pools that delegate purely on merit score highest."
               />
               <ScoreExplainer
                 name="Geographic Diversity"
@@ -96,6 +96,11 @@ export default function AboutPage() {
               financial prerequisites unrelated to performance.
             </p>
             <p className="mt-3">
+              Final scores are normalized on a curve — the highest-scoring pool maps to ~95 and the
+              lowest to ~55, ensuring meaningful differentiation across the field. Letter grades range
+              from A (90+) to D (below 60).
+            </p>
+            <p className="mt-3">
               The sandwich validator list is curated from{" "}
               <a href="https://sandwiched.me" target="_blank" rel="noopener noreferrer" className="text-lavender hover:text-lavender-light transition-colors underline underline-offset-2">
                 sandwiched.me
@@ -108,7 +113,7 @@ export default function AboutPage() {
           <section>
             <h2 className="text-lg font-semibold text-white mb-3">Scope</h2>
             <p>
-              Coefficient tracks ~12 multi-validator stake pools with 10+ validators. We exclude the
+              Coefficient tracks 14 multi-validator stake pools with 10+ validators. We exclude the
               170+ single-validator Sanctum wrappers (which are just thin LSTs around individual
               validators and don&apos;t make delegation decisions).
             </p>

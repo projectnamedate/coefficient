@@ -25,7 +25,7 @@ export function scoreSmallValidatorBias(
     const validatorTotalStake = allValidatorStakes.get(d.validatorPubkey) ?? 0;
     totalDelegated += d.delegatedSol;
 
-    if (validatorTotalStake < medianStake) {
+    if (validatorTotalStake < medianStake * 0.75) {
       stakeToSmall += d.delegatedSol;
     }
     if (validatorTotalStake > superminorityThreshold) {

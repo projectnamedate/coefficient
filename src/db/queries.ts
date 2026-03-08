@@ -493,6 +493,97 @@ export async function getScoreDeltas() {
 /** Get pool overrides data (MEV policy, transparency grade) */
 export { default as poolOverrides } from "@/indexer/data/pool-overrides.json";
 
+/** Get a single validator's detail by pubkey */
+export async function getValidatorDetail(pubkey: string) {
+  const epoch = await getLatestScoredEpoch();
+  if (!epoch) return null;
+
+  const valRow = await db
+    .select()
+    .from(validators)
+    .where(eq(validators.pubkey, pubkey))
+    .limit(1);
+
+  if (!valRow[0]) return null;
+
+  const snapshot = await db
+    .select()
+    .from(validatorSnapshots)
+    .where(and(eq(validatorSnapshots.validatorPubkey, pubkey), eq(validatorSnapshots.epochNumber, epoch)))
+    .limit(1);
+
+  // Pool memberships
+  const delegations = await db
+    .select({
+      poolId: poolDelegations.poolId,
+      poolName: stakePools.name,
+      lstTicker: stakePools.lstTicker,
+      delegatedSol: poolDelegations.delegatedSol,
+    })
+    .from(poolDelegations)
+    .innerJoin(stakePools, eq(poolDelegations.poolId, stakePools.id))
+    .where(and(eq(poolDelegations.validatorPubkey, pubkey), eq(poolDelegations.epochNumber, epoch)))
+    .orderBy(desc(poolDelegations.delegatedSol));
+
+  // Commission history across epochs
+  const commissionHistory = await db
+    .select({
+      epochNumber: validatorSnapshots.epochNumber,
+      commission: validatorSnapshots.commission,
+      activeStake: validatorSnapshots.activeStake,
+    })
+    .from(validatorSnapshots)
+    .where(eq(validatorSnapshots.validatorPubkey, pubkey))
+    .orderBy(validatorSnapshots.epochNumber);
+
+  // Sandwich status
+  const sandwichRow = await db
+    .select()
+    .from(sandwichList)
+    .where(eq(sandwichList.validatorPubkey, pubkey))
+    .limit(1);
+
+  return {
+    ...valRow[0],
+    epoch,
+    snapshot: snapshot[0] ?? null,
+    pools: delegations,
+    commissionHistory,
+    isSandwich: !!sandwichRow[0],
+    sandwichPercent: sandwichRow[0]?.sandwichPercent ?? null,
+  };
+}
+
+/** Search pools and validators by name */
+export async function searchPoolsAndValidators(query: string) {
+  const pattern = `%${query}%`;
+
+  const poolResults = await db
+    .select({
+      id: stakePools.id,
+      name: stakePools.name,
+      lstTicker: stakePools.lstTicker,
+    })
+    .from(stakePools)
+    .where(sql`${stakePools.name} LIKE ${pattern} OR ${stakePools.lstTicker} LIKE ${pattern} OR ${stakePools.id} LIKE ${pattern}`)
+    .limit(10);
+
+  const validatorResults = await db
+    .select({
+      pubkey: validators.pubkey,
+      name: validators.name,
+      country: validators.country,
+    })
+    .from(validators)
+    .where(sql`${validators.name} LIKE ${pattern} OR ${validators.pubkey} LIKE ${pattern}`)
+    .limit(10);
+
+  return {
+    pools: poolResults.map((p) => ({ type: "pool" as const, id: p.id, name: p.name, subtitle: p.lstTicker })),
+    validators: validatorResults.map((v) => ({ type: "validator" as const, id: v.pubkey, name: v.name ?? v.pubkey.slice(0, 8), subtitle: v.country ?? "" })),
+  };
+}
+
 /** Get delegation flows for the Sankey diagram */
 export async function getDelegationFlows(epochNumber?: number) {
   const epoch = epochNumber ?? (await getLatestScoredEpoch());

@@ -10,13 +10,13 @@ export const contentType = "image/png";
 
 function getGrade(score: number): string {
   if (score >= 90) return "A";
-  if (score >= 80) return "A-";
-  if (score >= 70) return "B+";
-  if (score >= 60) return "B";
-  if (score >= 50) return "C+";
-  if (score >= 40) return "C";
-  if (score >= 30) return "D";
-  return "F";
+  if (score >= 85) return "A-";
+  if (score >= 80) return "B+";
+  if (score >= 75) return "B";
+  if (score >= 70) return "B-";
+  if (score >= 65) return "C+";
+  if (score >= 60) return "C";
+  return "D";
 }
 
 function getBarColor(s: number): string {
