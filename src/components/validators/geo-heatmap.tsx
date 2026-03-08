@@ -120,7 +120,7 @@ export function GeoHeatmap({ data }: Props) {
           </filter>
         </defs>
 
-        {features.map((feature: any) => {
+        {features.map((feature: any, idx: number) => {
           const countryData = dataByNumericId.get(String(feature.id));
           const isActive = countryData && countryData.validatorCount > 0;
           const isRevealed = revealedSet.has(String(feature.id));
@@ -128,7 +128,7 @@ export function GeoHeatmap({ data }: Props) {
 
           return (
             <path
-              key={feature.id}
+              key={feature.id ?? `f-${idx}`}
               d={d}
               fill={isActive && isRevealed
                 ? (colorScale(countryData.validatorCount) ?? "#2a2550")
@@ -187,7 +187,7 @@ export function GeoHeatmap({ data }: Props) {
                 fill="#b5b2d9"
                 opacity={0.7}
                 style={{
-                  animation: `fadeInDot 0.5s ease-out forwards`,
+                  animation: `geo-fade-in 0.5s ease-out forwards`,
                 }}
               />
               {/* Pulse ring for top 3 */}
@@ -201,7 +201,8 @@ export function GeoHeatmap({ data }: Props) {
                   strokeWidth={1}
                   opacity={0}
                   style={{
-                    animation: `pulseRing 3s ease-out ${1 + rank * 0.5}s infinite`,
+                    transformOrigin: `${centroid[0]}px ${centroid[1]}px`,
+                    animation: `geo-pulse 3s ease-out ${1 + rank * 0.5}s infinite`,
                   }}
                 />
               )}
@@ -209,18 +210,6 @@ export function GeoHeatmap({ data }: Props) {
           );
         })}
       </svg>
-
-      {/* CSS animations for SVG elements */}
-      <style jsx>{`
-        @keyframes fadeInDot {
-          from { opacity: 0; r: 0; }
-          to { opacity: 0.7; }
-        }
-        @keyframes pulseRing {
-          0% { opacity: 0.5; r: inherit; transform-origin: center; }
-          100% { opacity: 0; r: 20; }
-        }
-      `}</style>
 
       <AnimatePresence>
         {tooltip && (

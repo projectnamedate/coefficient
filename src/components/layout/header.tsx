@@ -31,18 +31,20 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <LogoMark size={28} className="transition-transform duration-300 group-hover:scale-110" />
-            <LogoWordmark className="hidden sm:block" />
+          <div className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <LogoMark size={28} className="transition-transform duration-300 group-hover:scale-110" />
+              <LogoWordmark className="hidden sm:block" />
+            </Link>
             <a
               href="https://mythx.art"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] text-beige/30 font-mono uppercase tracking-wider hidden md:block ml-1 hover:text-lavender transition-colors"
+              className="text-[10px] text-beige/30 font-mono uppercase tracking-wider hidden md:block hover:text-lavender transition-colors"
             >
               by Mythx
             </a>
-          </Link>
+          </div>
 
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-0.5">

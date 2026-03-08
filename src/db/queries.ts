@@ -164,12 +164,15 @@ export async function getCountryDistribution(epochNumber?: number) {
 
   return rows
     .filter((r) => r.country)
-    .map((r) => ({
-      code: r.country!,
-      name: countryName(r.country!),
-      validatorCount: Number(r.validatorCount),
-      totalStake: Number(r.totalStake),
-    }));
+    .map((r) => {
+      const iso2 = toIso2(r.country!);
+      return {
+        code: iso2,
+        name: COUNTRY_NAMES[iso2] ?? r.country!,
+        validatorCount: Number(r.validatorCount),
+        totalStake: Number(r.totalStake),
+      };
+    });
 }
 
 const COUNTRY_NAMES: Record<string, string> = {
@@ -193,6 +196,18 @@ const COUNTRY_NAMES: Record<string, string> = {
   CR: "Costa Rica", UY: "Uruguay", MT: "Malta", CY: "Cyprus",
   LU: "Luxembourg", IS: "Iceland",
 };
+
+// Reverse lookup: full name → ISO2 code
+const NAME_TO_ISO2 = Object.fromEntries(
+  Object.entries(COUNTRY_NAMES).map(([iso2, name]) => [name, iso2])
+);
+
+function toIso2(raw: string): string {
+  // If it's already a 2-letter code, return as-is
+  if (raw.length === 2 && COUNTRY_NAMES[raw]) return raw;
+  // Otherwise look up by full name
+  return NAME_TO_ISO2[raw] ?? raw;
+}
 
 function countryName(code: string): string {
   return COUNTRY_NAMES[code] ?? code;
