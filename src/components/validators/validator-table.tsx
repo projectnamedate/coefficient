@@ -46,12 +46,13 @@ function TierBadge({ tier }: { tier: string | null }) {
 
 type SortKey = "wizScore" | "activeStake" | "commission" | "skipRate" | "apy" | "pools";
 
-export function ValidatorTable({ validators }: { validators: ValidatorRow[] }) {
+export function ValidatorTable({ validators, countryFilter }: { validators: ValidatorRow[]; countryFilter?: string | null }) {
   const [sortKey, setSortKey] = useState<SortKey>("wizScore");
   const [sortDesc, setSortDesc] = useState(true);
   const [filter, setFilter] = useState("");
 
   const filtered = validators.filter((v) => {
+    if (countryFilter && v.country !== countryFilter) return false;
     if (!filter) return true;
     const q = filter.toLowerCase();
     return (

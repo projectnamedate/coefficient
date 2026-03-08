@@ -43,7 +43,7 @@ export default async function ScorecardPage() {
         </div>
 
         <p className="text-xs text-beige/20 mt-4 text-center font-mono">
-          Scores update every epoch &middot; {pools.length} pools scored
+          Scores update daily &middot; {pools.length} pools scored
         </p>
       </AnimatedSection>
     </div>

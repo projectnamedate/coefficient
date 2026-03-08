@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { motion, useSpring, useTransform, useMotionValue } from "framer-motion";
 
 interface PoolData {
   id: string;
@@ -33,6 +33,25 @@ function computeNakamoto(stakes: number[]): number {
     if (cumulative > total / 3) return i + 1;
   }
   return sorted.length;
+}
+
+function AnimatedNumber({ value }: { value: number }) {
+  const motionValue = useMotionValue(value);
+  const spring = useSpring(motionValue, { stiffness: 80, damping: 20 });
+  const display = useTransform(spring, (v) => Math.round(v).toString());
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    motionValue.set(value);
+  }, [value, motionValue]);
+
+  useEffect(() => {
+    return display.on("change", (v) => {
+      if (ref.current) ref.current.textContent = v;
+    });
+  }, [display]);
+
+  return <span ref={ref}>{Math.round(value)}</span>;
 }
 
 export function WhatIfSimulator({ pools, currentNakamoto, totalNetworkStake }: Props) {
@@ -91,7 +110,7 @@ export function WhatIfSimulator({ pools, currentNakamoto, totalNetworkStake }: P
             <p className="text-xs text-beige/40 uppercase tracking-wider">Simulated Nakamoto Coefficient</p>
             <div className="flex items-baseline gap-3 mt-1">
               <span className="text-4xl font-bold text-white font-mono">
-                {simulated.newNakamoto}
+                <AnimatedNumber value={simulated.newNakamoto} />
               </span>
               {hasChanges && (
                 <motion.span

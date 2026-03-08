@@ -22,7 +22,7 @@ export function Footer() {
             </span>
           </div>
           <div className="flex items-center gap-4 text-xs">
-            <span>Data updates every epoch (~2 days)</span>
+            <span>Data updates daily</span>
             <span className="text-beige/15">·</span>
             <span className="text-beige/25">&copy; {new Date().getFullYear()}</span>
             <a

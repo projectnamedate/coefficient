@@ -37,7 +37,7 @@ export default function AboutPage() {
           <section>
             <h2 className="text-lg font-semibold text-white mb-3">What We Score</h2>
             <p className="mb-4">
-              Every epoch (~2 days), Coefficient fetches on-chain delegation data for each stake pool
+              Daily, Coefficient fetches on-chain delegation data for each stake pool
               and computes 7 sub-scores. These are weighted into a single{" "}
               <span className="text-lavender">Network Health Score</span> from 0-100.
             </p>

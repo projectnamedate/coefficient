@@ -40,11 +40,11 @@ export default async function OverlapPage() {
           </div>
           <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
             <p className="text-xs text-beige/40 uppercase tracking-wider">In 3+ Pools</p>
-            <p className="text-2xl font-bold text-score-mid mt-1 font-mono">{in3Plus}</p>
+            <p className="text-2xl font-bold text-lavender mt-1 font-mono">{in3Plus}</p>
           </div>
           <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
             <p className="text-xs text-beige/40 uppercase tracking-wider">In 5+ Pools</p>
-            <p className="text-2xl font-bold text-score-bad mt-1 font-mono">{in5Plus}</p>
+            <p className="text-2xl font-bold text-info mt-1 font-mono">{in5Plus}</p>
           </div>
           <div className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm">
             <p className="text-xs text-beige/40 uppercase tracking-wider">Max Overlap</p>
@@ -56,9 +56,9 @@ export default async function OverlapPage() {
       {/* Table */}
       <AnimatedSection delay={0.2} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
             <table className="w-full">
-              <thead>
+              <thead className="sticky top-0 bg-dark-deep z-10">
                 <tr className="border-b border-white/10">
                   <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider w-8">#</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-beige/50 uppercase tracking-wider">Validator</th>
@@ -68,7 +68,7 @@ export default async function OverlapPage() {
                 </tr>
               </thead>
               <tbody>
-                {overlap.slice(0, 100).map((v, i) => (
+                {overlap.map((v, i) => (
                   <tr key={v.pubkey} className="border-b border-white/5 hover:bg-lavender/[0.04]">
                     <td className="px-4 py-3 text-sm text-beige/25 font-mono">{i + 1}</td>
                     <td className="px-4 py-3">
@@ -81,8 +81,8 @@ export default async function OverlapPage() {
                     </td>
                     <td className="px-4 py-3">
                       <span className={`text-sm font-mono font-bold ${
-                        v.pools.length >= 5 ? "text-score-bad" :
-                        v.pools.length >= 3 ? "text-score-mid" :
+                        v.pools.length >= 5 ? "text-info" :
+                        v.pools.length >= 3 ? "text-lavender" :
                         "text-beige/60"
                       }`}>
                         {v.pools.length}

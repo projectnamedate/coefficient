@@ -1,6 +1,5 @@
 import { getValidatorLeaderboard, getLatestScoredEpoch, getCountryDistribution } from "@/db/queries";
-import { ValidatorTable } from "@/components/validators/validator-table";
-import { GeoHeatmap } from "@/components/validators/geo-heatmap";
+import { ValidatorsWithMap } from "@/components/validators/validators-with-map";
 import { StatCard } from "@/components/ui/stat-card";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
@@ -39,21 +38,9 @@ export default async function ValidatorsPage() {
         </div>
       </AnimatedSection>
 
-      {/* Geographic Heatmap */}
-      <AnimatedSection delay={0.15} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="gradient-border bg-white/[0.03] rounded-xl overflow-hidden backdrop-blur-sm p-4 sm:p-6 border border-white/[0.06]">
-          <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
-            Validator Geography
-          </h2>
-          <GeoHeatmap data={countryData} />
-        </div>
-      </AnimatedSection>
-
-      {/* Table */}
-      <AnimatedSection delay={0.2} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-6">
-        <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm">
-          <ValidatorTable validators={validators} />
-        </div>
+      {/* Geographic Heatmap + Table (connected via country filter) */}
+      <AnimatedSection delay={0.15} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <ValidatorsWithMap validators={validators} countryData={countryData} />
 
         <p className="text-xs text-beige/20 mt-4 text-center font-mono">
           {countries.size} countries represented &middot; Data from epoch {epoch ?? "—"}

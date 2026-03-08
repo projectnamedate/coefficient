@@ -30,6 +30,8 @@ export interface CountryData {
 
 interface Props {
   data: CountryData[];
+  selectedCountry?: string | null;
+  onCountryClick?: (code: string | null) => void;
 }
 
 function formatSol(amount: number): string {
@@ -38,7 +40,7 @@ function formatSol(amount: number): string {
   return amount.toFixed(0);
 }
 
-export function GeoHeatmap({ data }: Props) {
+export function GeoHeatmap({ data, selectedCountry, onCountryClick }: Props) {
   const [features, setFeatures] = useState<any[]>([]);
   const [tooltip, setTooltip] = useState<{
     x: number; y: number; country: CountryData;
@@ -142,8 +144,13 @@ export function GeoHeatmap({ data }: Props) {
               style={{
                 transition: "fill 0.8s ease-out, stroke 0.6s ease-out",
                 cursor: isActive ? "pointer" : "default",
+                opacity: selectedCountry && countryData?.code !== selectedCountry && isActive ? 0.4 : 1,
               }}
               filter={isActive && isRevealed ? "url(#glow)" : undefined}
+              onClick={() => {
+                if (!countryData || !onCountryClick) return;
+                onCountryClick(countryData.code === selectedCountry ? null : countryData.code);
+              }}
               onMouseEnter={(e) => {
                 if (!countryData || !svgRef.current) return;
                 const rect = svgRef.current.getBoundingClientRect();
@@ -165,50 +172,6 @@ export function GeoHeatmap({ data }: Props) {
           );
         })}
 
-        {/* Pulsing dots at centroids of top 10 countries */}
-        {sortedActiveIds.slice(0, 10).map((id) => {
-          if (!revealedSet.has(id)) return null;
-          const feature = features.find((f: any) => String(f.id) === id);
-          if (!feature) return null;
-          const centroid = pathGen.centroid(feature);
-          if (!centroid || isNaN(centroid[0])) return null;
-
-          const countryData = dataByNumericId.get(id)!;
-          const radius = 2 + (countryData.validatorCount / maxValidators) * 5;
-          const rank = sortedActiveIds.indexOf(id);
-
-          return (
-            <g key={`dot-${id}`}>
-              {/* Static dot */}
-              <circle
-                cx={centroid[0]}
-                cy={centroid[1]}
-                r={radius}
-                fill="#b5b2d9"
-                opacity={0.7}
-                style={{
-                  animation: `geo-fade-in 0.5s ease-out forwards`,
-                }}
-              />
-              {/* Pulse ring for top 3 */}
-              {rank < 3 && (
-                <circle
-                  cx={centroid[0]}
-                  cy={centroid[1]}
-                  r={radius}
-                  fill="none"
-                  stroke="#b5b2d9"
-                  strokeWidth={1}
-                  opacity={0}
-                  style={{
-                    transformOrigin: `${centroid[0]}px ${centroid[1]}px`,
-                    animation: `geo-pulse 3s ease-out ${1 + rank * 0.5}s infinite`,
-                  }}
-                />
-              )}
-            </g>
-          );
-        })}
       </svg>
 
       <AnimatePresence>
@@ -245,6 +208,20 @@ export function GeoHeatmap({ data }: Props) {
         <span className="text-[10px] text-beige/30 font-mono">{maxValidators}</span>
         <span className="text-[10px] text-beige/20 ml-1">validators</span>
       </div>
+
+      {selectedCountry && (
+        <div className="flex items-center justify-center gap-2 mt-2">
+          <span className="text-xs text-lavender font-mono">
+            Filtering: {data.find((d) => d.code === selectedCountry)?.name ?? selectedCountry}
+          </span>
+          <button
+            onClick={() => onCountryClick?.(null)}
+            className="text-[10px] px-2 py-0.5 rounded bg-white/[0.06] text-beige/50 hover:text-white transition-colors"
+          >
+            Clear
+          </button>
+        </div>
+      )}
     </div>
   );
 }
