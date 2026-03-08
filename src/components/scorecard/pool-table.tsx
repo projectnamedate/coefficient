@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, PoolScores } from "@/lib/types";
 import { ScoreBadge } from "@/components/ui/score-badge";
@@ -138,9 +139,13 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
                 </td>
                 <td className="px-4 py-4">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-semibold text-white">
+                    <Link
+                      href={`/pool/${pool.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-sm font-semibold text-white hover:text-lavender transition-colors"
+                    >
                       {pool.name}
-                    </span>
+                    </Link>
                     <span className="text-xs text-lavender/40 font-mono">
                       {pool.lstTicker}
                     </span>

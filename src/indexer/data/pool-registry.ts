@@ -89,7 +89,7 @@ export const POOL_REGISTRY: PoolRegistryEntry[] = [
   {
     id: "indiesol",
     name: "IndieSOL",
-    stakePoolAddress: "UNKNOWN", // Not publicly documented -- needs manual on-chain lookup
+    stakePoolAddress: "74dxJToX8wgJAueLQNVhSbbQkNd9qeVp6m9mts6M7cUb", // Layer33 collective, LST mint: L33mHftsNpaj39z1omnGbGbuA5eKqSsbmr91rjTod48
     program: "spl-stake-pool",
   },
 ];

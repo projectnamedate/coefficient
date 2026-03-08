@@ -7,6 +7,7 @@ import { LogoMark, LogoWordmark } from "@/components/ui/logo";
 
 const navItems = [
   { href: "/", label: "Scorecard" },
+  { href: "/compare", label: "Compare" },
   { href: "/flows", label: "Stake Flows" },
   { href: "/validators", label: "Validators" },
   { href: "/about", label: "About" },

@@ -129,7 +129,7 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
     for (const d of delegations) allDelegations.push({ poolId, validatorPubkey: d.validatorPubkey, delegatedSol: d.delegatedSol });
   }
   await writePoolDelegations(epochNumber, allDelegations);
-  await writeSandwichList(sandwichData.map((e: any) => ({ validatorPubkey: e.validator_pubkey, detectedDate: e.detected_date, source: e.source, sandwichPercent: e.sandwich_percent })));
+  await writeSandwichList(sandwichData.map((e: any) => ({ validatorPubkey: e.validator_pubkey, detectedDate: e.detected_date, source: e.source, sandwichPercent: e.sandwich_percent ?? null })));
   await writePoolScores(epochNumber, poolScores);
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);

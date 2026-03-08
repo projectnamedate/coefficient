@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc, sql, and } from "drizzle-orm";
 import {
   stakePools,
   poolScores,
@@ -140,6 +140,153 @@ export async function getValidatorLeaderboard(epochNumber?: number) {
     sandwichPercent: sandwichMap.get(r.pubkey)?.sandwichPercent ?? null,
     pools: poolMap.get(r.pubkey) ?? [],
   }));
+}
+
+/** Get validator counts and stake by country */
+export async function getCountryDistribution(epochNumber?: number) {
+  const epoch = epochNumber ?? (await getLatestScoredEpoch());
+  if (!epoch) return [];
+
+  const rows = await db
+    .select({
+      country: validators.country,
+      validatorCount: sql<number>`count(*)`,
+      totalStake: sql<number>`sum(${validatorSnapshots.activeStake})`,
+    })
+    .from(validators)
+    .innerJoin(
+      validatorSnapshots,
+      eq(validators.pubkey, validatorSnapshots.validatorPubkey)
+    )
+    .where(eq(validatorSnapshots.epochNumber, epoch))
+    .groupBy(validators.country)
+    .orderBy(desc(sql`count(*)`));
+
+  return rows
+    .filter((r) => r.country)
+    .map((r) => ({
+      code: r.country!,
+      name: countryName(r.country!),
+      validatorCount: Number(r.validatorCount),
+      totalStake: Number(r.totalStake),
+    }));
+}
+
+const COUNTRY_NAMES: Record<string, string> = {
+  US: "United States", DE: "Germany", UA: "Ukraine", GB: "United Kingdom",
+  SG: "Singapore", CA: "Canada", CH: "Switzerland", FI: "Finland",
+  RS: "Serbia", JP: "Japan", AU: "Australia", CN: "China",
+  KR: "South Korea", FR: "France", NL: "Netherlands", PL: "Poland",
+  RU: "Russia", BR: "Brazil", IN: "India", IE: "Ireland",
+  SE: "Sweden", NO: "Norway", DK: "Denmark", ES: "Spain",
+  IT: "Italy", PT: "Portugal", CZ: "Czechia", RO: "Romania",
+  BG: "Bulgaria", HR: "Croatia", HU: "Hungary", AT: "Austria",
+  BE: "Belgium", LT: "Lithuania", LV: "Latvia", EE: "Estonia",
+  GR: "Greece", SK: "Slovakia", SI: "Slovenia", TR: "Turkey",
+  IL: "Israel", AE: "UAE", HK: "Hong Kong", TW: "Taiwan",
+  PH: "Philippines", ID: "Indonesia", TH: "Thailand", VN: "Vietnam",
+  MY: "Malaysia", NZ: "New Zealand", ZA: "South Africa", NG: "Nigeria",
+  KE: "Kenya", AR: "Argentina", CL: "Chile", CO: "Colombia",
+  MX: "Mexico", PE: "Peru", VE: "Venezuela", EG: "Egypt",
+  PK: "Pakistan", BD: "Bangladesh", LK: "Sri Lanka", GE: "Georgia",
+  AM: "Armenia", KZ: "Kazakhstan", SC: "Seychelles", PA: "Panama",
+  CR: "Costa Rica", UY: "Uruguay", MT: "Malta", CY: "Cyprus",
+  LU: "Luxembourg", IS: "Iceland",
+};
+
+function countryName(code: string): string {
+  return COUNTRY_NAMES[code] ?? code;
+}
+
+/** Get historical scores for a pool (all epochs) */
+export async function getPoolScoreHistory(poolId: string) {
+  const rows = await db
+    .select({
+      epochNumber: poolScores.epochNumber,
+      networkHealthScore: poolScores.networkHealthScore,
+      smallValidatorBias: poolScores.smallValidatorBias,
+      selfDealing: poolScores.selfDealing,
+      mevSandwichPolicy: poolScores.mevSandwichPolicy,
+      nakamotoImpact: poolScores.nakamotoImpact,
+      validatorSetSize: poolScores.validatorSetSize,
+      geographicDiversity: poolScores.geographicDiversity,
+      commissionDiscipline: poolScores.commissionDiscipline,
+      activeSolStaked: poolScores.activeSolStaked,
+      validatorCount: poolScores.validatorCount,
+    })
+    .from(poolScores)
+    .where(eq(poolScores.poolId, poolId))
+    .orderBy(poolScores.epochNumber);
+
+  return rows;
+}
+
+/** Get all scored epochs for historical comparison */
+export async function getAllPoolScoresByEpoch() {
+  const rows = await db
+    .select({
+      epochNumber: poolScores.epochNumber,
+      poolId: poolScores.poolId,
+      poolName: stakePools.name,
+      networkHealthScore: poolScores.networkHealthScore,
+      activeSolStaked: poolScores.activeSolStaked,
+      validatorCount: poolScores.validatorCount,
+    })
+    .from(poolScores)
+    .innerJoin(stakePools, eq(poolScores.poolId, stakePools.id))
+    .orderBy(poolScores.epochNumber);
+
+  return rows;
+}
+
+/** Get a single pool's full data for report card */
+export async function getPoolReportCard(poolId: string) {
+  const epoch = await getLatestScoredEpoch();
+  if (!epoch) return null;
+
+  const poolRow = await db
+    .select({
+      id: stakePools.id,
+      name: stakePools.name,
+      lstTicker: stakePools.lstTicker,
+      program: stakePools.program,
+      networkHealthScore: poolScores.networkHealthScore,
+      activeSolStaked: poolScores.activeSolStaked,
+      validatorCount: poolScores.validatorCount,
+      medianApy: poolScores.medianApy,
+      smallValidatorBias: poolScores.smallValidatorBias,
+      selfDealing: poolScores.selfDealing,
+      mevSandwichPolicy: poolScores.mevSandwichPolicy,
+      nakamotoImpact: poolScores.nakamotoImpact,
+      validatorSetSize: poolScores.validatorSetSize,
+      geographicDiversity: poolScores.geographicDiversity,
+      commissionDiscipline: poolScores.commissionDiscipline,
+      transparency: poolScores.transparency,
+    })
+    .from(stakePools)
+    .innerJoin(poolScores, eq(stakePools.id, poolScores.poolId))
+    .where(and(eq(poolScores.poolId, poolId), eq(poolScores.epochNumber, epoch)))
+    .limit(1);
+
+  if (!poolRow[0]) return null;
+
+  // Get top validators for this pool
+  const topValidators = await db
+    .select({
+      validatorName: validators.name,
+      validatorPubkey: poolDelegations.validatorPubkey,
+      delegatedSol: poolDelegations.delegatedSol,
+      country: validators.country,
+    })
+    .from(poolDelegations)
+    .innerJoin(validators, eq(poolDelegations.validatorPubkey, validators.pubkey))
+    .where(and(eq(poolDelegations.poolId, poolId), eq(poolDelegations.epochNumber, epoch)))
+    .orderBy(desc(poolDelegations.delegatedSol))
+    .limit(10);
+
+  const history = await getPoolScoreHistory(poolId);
+
+  return { ...poolRow[0], epoch, topValidators, history };
 }
 
 /** Get delegation flows for the Sankey diagram */

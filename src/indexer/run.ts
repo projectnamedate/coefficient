@@ -43,7 +43,7 @@ const __dirname = dirname(__filename);
 // Helpers
 // ---------------------------------------------------------------------------
 
-function loadSandwichList(): { validator_pubkey: string; sandwich_percent: number; source: string; detected_date: string }[] {
+function loadSandwichList(): { validator_pubkey: string; sandwich_count?: number; sandwich_percent?: number; source: string; detected_date: string }[] {
   try {
     const path = join(__dirname, "data", "sandwich-validators.json");
     return JSON.parse(readFileSync(path, "utf-8"));
@@ -291,7 +291,7 @@ async function main() {
         validatorPubkey: e.validator_pubkey,
         detectedDate: e.detected_date,
         source: e.source,
-        sandwichPercent: e.sandwich_percent,
+        sandwichPercent: e.sandwich_percent ?? null,
       }))
     );
 

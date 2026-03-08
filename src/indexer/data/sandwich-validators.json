@@ -1,18 +1,1667 @@
 [
   {
-    "validator_pubkey": "sandnMNSH8ZhPsLhkBPTkXBYCPnWBQFMBVFnjHTdXfT",
-    "name": "DeezNode",
-    "sandwich_percent": 42.5,
-    "source": "sandwiched.me",
-    "detected_date": "2025-05-01",
-    "notes": "Top sandwich attacker, extracted ~$13.4M/month"
+    "validator_pubkey": "P4f3F3VfMhKvpGQXg2MuvLfWmZui41gvcH9XKtYDiFX",
+    "identity_pubkey": "8bDP7mZsx6Z1pZbRoMtzj5AXaqoyBLqEfgAi157AnKJX",
+    "name": "SOLSTAKER.PRO",
+    "sandwich_count": 4325,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "jito_delegation"
+    ]
   },
   {
-    "validator_pubkey": "mngo1VyrBFh29KaYZwRFb3VPpPvfL4KMPE4VHJtbTVz",
-    "name": "Mango Validator",
-    "sandwich_percent": 18.3,
-    "source": "sandwiched.me",
-    "detected_date": "2025-06-15",
-    "notes": "Known sandwich operator"
+    "validator_pubkey": "5WPxGiB6zBXNJp8JN3WhSKDuTY3ZBX6dBDcbtVMQAJLX",
+    "identity_pubkey": "8ZvC5d39VKnz4UUJV928s76Mv7FdSbX5WwHCuCFAanj3",
+    "name": "EliteStaking.vip",
+    "sandwich_count": 3237,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "Dh4K8fNV6pRFZtbzQnP5a5HmyBPb2kmxvWiYmc5fJMvj",
+    "identity_pubkey": "4ZToBgveZ5m8NySrDyPA2fiGVRVBioaoMXD31KGidm65",
+    "name": "Bro",
+    "sandwich_count": 3099,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "3hHSwKHgnrbVDBWfkx6TJY1WABUoRs7Ve57sRTg9rAY9",
+    "identity_pubkey": "9WuDnZMufE2nsuWsTnHjJsjavuKtswTpCy3i4A5kKT8c",
+    "name": "Boss",
+    "sandwich_count": 2819,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "E1CzrFHxFG2LBQKMjizgSdsgfEejrEJfrvzUGNVxz6SE",
+    "identity_pubkey": "5hyHG7SnmJAHZmM9shuq6BXxLSG2EeosMH3ZohtaewFM",
+    "name": "Smile",
+    "sandwich_count": 2675,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "3zxkHtntSzfW2rukRFqhN9SDPzqicvF6WwN6yDwdSvxQ",
+    "identity_pubkey": "C17WLnQTPjqXgmnpu2F1WfbeXdSbzufvnMHuS6XHjsAZ",
+    "name": "AD 0% fee + ALL MEV profit share",
+    "sandwich_count": 2114,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "7A9NSA1SZrszosi37WHSYARjAc3JuXxVqg3q94xjtpM3",
+    "identity_pubkey": "CgwKP4kM6B9giquCADDXQxik7BJR5L7m2EC2ntPnQoJy",
+    "name": "Cup",
+    "sandwich_count": 2097,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "DgXagy9ggXCXjxZiH2D8M5HZDaUvERAE6Lh3jSNCMLZ6",
+    "identity_pubkey": "FzqTJKVsnjobo2jWYX1qPLaWB7R8FyKHUgcbueoNyYGv",
+    "name": "shab",
+    "sandwich_count": 2033,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "Hr3z7PxvnZ7Wa5HnKoRkBcHU65imwqtKHQPQ7tE8Y5a2",
+    "identity_pubkey": "BT9ZFvsDfX6WpLFqmWEYuLuE5i3SxzdSJ1Vzm9arbRub",
+    "name": "Urb4n_Thr34t",
+    "sandwich_count": 2007,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "HqMYqwdCRqUDfpg7sVJZxTVXRfxTAQv6r9CZajtJZzv8",
+    "identity_pubkey": "9osBexxQzfxvMCLknqB9pYDoLPoM1wqHy2FhCBw68qPQ",
+    "name": "WDMASTER",
+    "sandwich_count": 1971,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "DM8eVQwKYpFUq4MAC1XEeZMjV4T34LfvGkK9vca55GaY",
+    "identity_pubkey": "71M936kzQRe7eWrABba6yKqPsmTMVhijQqDNQP9qM9pP",
+    "name": "SpaceCat.ws",
+    "sandwich_count": 1938,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "3AUwBLVUfGG9j2VNreUxbrLf7NP7jjBymVmoebcz8L9D",
+    "identity_pubkey": "9QqwhT5x9AUdpGxudT5Mrr3yEcTin1daxbs5LzU6SUVF",
+    "name": "Shelby",
+    "sandwich_count": 1937,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "EXYEG9LAhC2AP9FYGGUhjJDTKfCU57S1Mi3Zp28cV6CU",
+    "identity_pubkey": "CcHWz3tpDVr1gVXLaSj4xxh915Ksd9ze5i1FFFKFJGRq",
+    "name": "jjwoods",
+    "sandwich_count": 1914,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "6oKqaVoS6o8hHSzP8uFp7E7C6c9i7hfznvSb5noBQAFT",
+    "identity_pubkey": "EXCMwETx5Txcvxt6YYqxFmhSpQKH5BVjdat3NE5eJJ6a",
+    "name": "Sveta-solana_MB",
+    "sandwich_count": 1804,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "HoaDnzBq8UMyS3mPC9k83shv5YvQARh7Muz4KWJMfqPo",
+    "identity_pubkey": "EQ1RbBVQx2gs5PQQgMrVx96wZ5ts65GJbEYTGBMnvddS",
+    "name": "paulg",
+    "sandwich_count": 1792,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "BX7MLgYCYkZtnTTjccyJDMdD4ycr6D4cFMgaXfkbT8Vc",
+    "identity_pubkey": "A2BewLMpGBVpxUo5TiqZ2xg5aMfGayk1hHi1eW3GvGyy",
+    "name": "Shepherd validator",
+    "sandwich_count": 1788,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "VMP1iN9D34jQo1GFvJs87SWQxvs2eL1VEkT3aEU7nEG",
+    "identity_pubkey": "AUa3iN7h4c3oSrtP5pmbRcXJv8QSo4HGHPqXT4WnHDnp",
+    "name": "Bearded Validator",
+    "sandwich_count": 1777,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "2b3UDcHQ8J4wLcCGjjh3f155Csoz24hrM4saG2r1Cydx",
+    "identity_pubkey": "7Gjec4iDbTxLvVYNsRbZrrHdtyLByzdDJ1C5BmcMMBks",
+    "name": "NOVY",
+    "sandwich_count": 1734,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "BG2FGmUyQo9RuGk48ypy9sa8LDJRx6j61tt64eGuAztG",
+    "identity_pubkey": "Bb4BP3EvsPyBuqSAABx7KmYAp3mRqAZUYN1vChWsbjDc",
+    "name": "Cryptoded",
+    "sandwich_count": 1722,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "467Bg8FwFFq5jqebWPnMQtdDRjpmHUqvCWBW1zYVMzHg",
+    "identity_pubkey": "J5wNgFnrLQiRLHEzySuYphYpz7cQsTmwkVWxEKPJcLWe",
+    "name": "Solana Plutus",
+    "sandwich_count": 1717,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "A3sMR7KhVkjheCiaNbDSTAMzgiyRE3Ewm2n26C7iav7y",
+    "identity_pubkey": "CteW9gxQPykacgP6fsG7TgZHwzuGh3SC1LUCd9GcDNPW",
+    "name": "Ferrari_M",
+    "sandwich_count": 1697,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "4nCK62aZ126pC1krepWXXxgBJGNPkJcPjS3jtuy8c7mk",
+    "identity_pubkey": "2VAofLE2bYNM3ZPGfn6dJh2zqtnmNdD1bGqFet8mVYFN",
+    "name": "BePositiV",
+    "sandwich_count": 1655,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7YzmMGQhrE7VaTiDFnb7R633gquLEKmSpwkXG6u64fhj",
+    "identity_pubkey": "4ZRq7rNhvo1UJEVhz8Sez5nugQVpJRPd5Bqeq9t9RvtV",
+    "name": "Smurfik",
+    "sandwich_count": 1655,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8guXF5HQVU4g71ZCnn6aEJxQyb59NaEc4XCGjF5arsiH",
+    "identity_pubkey": "4o2TxN5RNxjiLvEbK56ZyaZ1bg3ZTgaTLpPRqi8vEkRS",
+    "name": "BLOCKPRIME",
+    "sandwich_count": 1641,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "GJ3z7fJnAekf2LmGMe2gYdrxjqUrDQiqzcb7hgQLFc7X",
+    "identity_pubkey": "3voduym7mcH5KwbMigbANpHu14ToWR7SyiDeGW3Sp7Xh",
+    "name": "DSUM",
+    "sandwich_count": 1633,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "BQ8kUgoPwZ1HZKWPFKozv6dcXcmGrvbG8TCXZZXnjSJL",
+    "identity_pubkey": "Cr3NTaeoAVcT2qJsXxyx3V3XraVWD7Mje3TGzvK9xwsq",
+    "name": "1ce",
+    "sandwich_count": 1626,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "AL6ax4FgMDFNXSgahcifrsri5XYqE7Gsk7z91uBputHh",
+    "identity_pubkey": "7Z8h6kgJyVLdNaikt3xGoVkyNWkH54MuNT3USD2K396u",
+    "name": "",
+    "sandwich_count": 1615,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "9uCHWHPT9xwrhUX9AnK7zm38pC1qc4Q3pS2zi5HRRCZZ",
+    "identity_pubkey": "FPDzex8iJBMg9APpimUuhNcfaQJnUFWxSSJmdbiyCtZw",
+    "name": "",
+    "sandwich_count": 1574,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "D1BYFpbZuwUtgNT7CeuQFQjyhEQbm9Z6XP8R7cfeWed1",
+    "identity_pubkey": "7vydmmqVDcJy4HRR3dLSbWchn9ZPmFMB6cRNYZvnKRzd",
+    "name": "Julianna",
+    "sandwich_count": 1517,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "DFciHT8BrdMwUqQj5s1uzuN4u7EZ8qzkCgEEYTsF36uD",
+    "identity_pubkey": "cerEEJJsaZJwupXWHJt5o5iobAgmLw8nVePA3qvaB4m",
+    "name": "CryptoBox",
+    "sandwich_count": 1497,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "AWmcz3z2p3NRhB1A47MxjGx1VXGHAyM9Kvf9qD5ogzkP",
+    "identity_pubkey": "3n7mZaehg8vskkSQY7VuF7yxpG1tYiqeVVHAwgagWjAo",
+    "name": "Rei Ayanami",
+    "sandwich_count": 1461,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "4NhuurEJimA7Y3heUb9ejnGbUXKsCws3RsbHLCL6FxXx",
+    "identity_pubkey": "CFeXt8sBqgagHSkbsPfw9MpbffmxwBVKp6Jdjc8yACeQ",
+    "name": "",
+    "sandwich_count": 1456,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "5nscM8QPTf6ggikeRrAuWTa5mEBumXJuWZZBk3uN1auQ",
+    "identity_pubkey": "ERCKpwRXracenvc4jF9or7STjME9bmiE6iMArCPvxpaF",
+    "name": "Cherry",
+    "sandwich_count": 1450,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8AShJVwfs9MjHAA5MxRb3QUdt1KZQhwiHip8XdeiogbX",
+    "identity_pubkey": "EyXKfMhSvSQ2Kaqm3MnKxqPp26EDF39Fwhp5iJuXedkt",
+    "name": "",
+    "sandwich_count": 1443,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7kge23FTbCXc6dZxMPQfAWLnVFTgGzio5wpXUo9si2mV",
+    "identity_pubkey": "8o59jbS8MEqSd1J72ryL7dghg9djh2BAUtpkZvTTYh4H",
+    "name": "Wanderer Staking",
+    "sandwich_count": 1433,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "J5L2z5rVWQHFeM8PzSSTnDedLrYgnK6WKxU4X8hh4qry",
+    "identity_pubkey": "5LqdfTzdPtnqTyKaduT2eRvtLgfGucVCJ3Gu1MmgtEq",
+    "name": "",
+    "sandwich_count": 1429,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "NM7f9N6qGAW6bfGYPxp1ZU5ycD1SWqPvFSx6VyeHNvK",
+    "identity_pubkey": "6w2vQK2ZZkj3unHMCQjoXLqUwCAxB648NR1yBerUbFNP",
+    "name": "RSP",
+    "sandwich_count": 1423,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "26WLNWKrYSyPkQF2NU9LgLSRXGiXWjhPnvspG8ibFh63",
+    "identity_pubkey": "BPX9WVx1MjVpSWY9fo3hGXfE74yKXcreS2XYKjpiyJfZ",
+    "name": "OlO",
+    "sandwich_count": 1394,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7xBb5NxfSGGP4KuWvTY4iKNfXC7hMWmxm86eZfs6vAJN",
+    "identity_pubkey": "84PoFcoB6sqNb7C9f5pPCiVhwHhQDER2hMRu7BXDAg3n",
+    "name": "",
+    "sandwich_count": 1390,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "83c5NZebvsUQsL3e9xb37nHiYchLCudDYtQ5Z3gLnLxv",
+    "identity_pubkey": "JCmdhNCyzypryaQUGLGxbCM366dScTD4tVy5ooSWyaBZ",
+    "name": "Perfect Stake",
+    "sandwich_count": 1375,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "5bTe8MuMyP1A1ahXHpAkFrhQybNEQuKgU5QhpnQRKxuQ",
+    "identity_pubkey": "iaMEtJ38Joo3QktouBknmCEu3YHNMqGGoAHzuRhV4oV",
+    "name": "MBGBuzzer",
+    "sandwich_count": 1362,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "72i2i4D7ehg7k3rKUNZLFiHqvhVFv1UvdCQbiNTFudJa",
+    "identity_pubkey": "HtBxhjG3JrBzfTz42QidvhJiA6uqDXCNqnDYhXT2jYvF",
+    "name": "Skalp",
+    "sandwich_count": 1356,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "22hhSBsywC3qxr6zvT38zmmhkBQCr6oTqWNABLTgdnm6",
+    "identity_pubkey": "81kscpE2MDaQY5SwgYaLZqTBNA7GDz63KogmPQwVKUka",
+    "name": "",
+    "sandwich_count": 1301,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "3j1Xp8ZrfEYTUEYyTsDNv6kVCtDdwoKeHt86BJZTftav",
+    "identity_pubkey": "8nyBQB8uzHFS3ArQ5mVVRcnAoSnJJ4PN7UwRJ8UyrAFe",
+    "name": "",
+    "sandwich_count": 1301,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "9hRVfSz8GudfGFQd3X7HTjaGRiiwj7dpjS3jtuy8c7mk",
+    "identity_pubkey": "DVhyTvxBQynKMPKJGNEvmZ6uiNnYW94qGENdGbt9QhVa",
+    "name": "Craving_for_knowledge",
+    "sandwich_count": 1278,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "HtRAGpko23W2t8wPUU8HuUQC1TrRUuK64K8RCqRD5ubX",
+    "identity_pubkey": "ESihGHvvNWPBTu3RZohRgEEuBmoyVhgHYTf3Cot9523L",
+    "name": "3bepb",
+    "sandwich_count": 1275,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "F6ui6Rz6cCKBtyrSBqnNY5RzTzENdjFFpTJZYw47GD31",
+    "identity_pubkey": "9qxAWvMWzPLcPmPsj2SXnZ5HUWvgFjFVnQCAYLoLtSV5",
+    "name": "",
+    "sandwich_count": 1265,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "3TZAkZtKuQe1B3wffyke6WNy9Z7cLVY9xhR3qT1hVEqv",
+    "identity_pubkey": "BCed1vFJbNXWgycFoTgawYC4XW9HiUM1jJnApsCzBYZd",
+    "name": "DinoSol",
+    "sandwich_count": 1255,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "4EPxG5rp1sUuHtrTcgQYfPo6KjvTWp6YafYsdUSP7mks",
+    "identity_pubkey": "9UsSQ9m5QemVf9NFmKncDDXGFGzUXMiFay9Fv7rUmjtV",
+    "name": "pasha_k",
+    "sandwich_count": 1238,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "FxDYPzbpwsiuJoWiHyEfw2itgQvZAdX2PHufoLiqvbvm",
+    "identity_pubkey": "98HVF8czqLRsjhskZoufbqymTNsPYuni5nuVSRC6EFpq",
+    "name": "Tau",
+    "sandwich_count": 1232,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7fCmwpjXHBsJsSCecxsuSHeGCuragbh2UXfzfKet223o",
+    "identity_pubkey": "2na3vueUBtYDBy1iHFRsiC1oTj5mfKrHXhjdiNaGQ1AS",
+    "name": "metralunabsolstake",
+    "sandwich_count": 1179,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "71mmEPyitXLyMeZBTd2YU6NahVSYwgJaK2DRMHvb4HUC",
+    "identity_pubkey": "9obi1wz8nd2YPZ4cX8P8sH2pkRWe9btMHHKa3tjEhamQ",
+    "name": "funny",
+    "sandwich_count": 1174,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "1gqv7KGm888nQXsJoNFwGaDkNERUBztuekjzK3J3T7a",
+    "identity_pubkey": "D1KH1UwfTLaBW3NubpvNv4ze9S7SKW6jd5TLdrwZgLP1",
+    "name": "TazmanDevil",
+    "sandwich_count": 1161,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "HVuzQEZtxQycpfJsLNAeykrqT2vLzKtUyKaAnNsnKy1A",
+    "identity_pubkey": "Bkucd9XTD2geqNsgcbMcqsSnLhqfHUuDvAUSGCXsJBdK",
+    "name": "",
+    "sandwich_count": 1158,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "D5tsrjN9suzT6cbeqZjoPB7KNMKj9vfcAuK3V65hwk74",
+    "identity_pubkey": "2hwe7jL8GRZ87QpdfdizUfLWsy9PjYUnpZvRMSeubsRp",
+    "name": "TomNamNan",
+    "sandwich_count": 1150,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "2Aiyq2zob5ikUvmeRFz1xxoAqqDQYdvNhTTXYLCN1jGL",
+    "identity_pubkey": "FAKUpR8McSoHT1sTksfJu3L1SpRtHK91ocDYtop4A7HW",
+    "name": "GoldmemberStake",
+    "sandwich_count": 1087,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "BHZCk3XnebkC7QKk6az18LBPrqgrL6HRp8bUKX9Mg46v",
+    "identity_pubkey": "3qmEGZpEUFYxXiLU5CZjSaUy2X28oV51qVLenKEutYDe",
+    "name": "Antzfund.com",
+    "sandwich_count": 1067,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "H1ScoL1TosVSRvJgARRnMs9extCdXZRWdKRqY4H7k3ik",
+    "identity_pubkey": "9cDdzkrimGrsNVKKRtN2Q1ydBwDxjDtPGyyLRgnUYyAQ",
+    "name": "",
+    "sandwich_count": 1031,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "8ZvTbWfA7txjkNubA9jnv8CWQtwbaZSzpf7vaDDcxMr5",
+    "identity_pubkey": "5tFvFBWUPt94HQuZyMSuHnpcHrjMPLrTg8WBbv9G5VqU",
+    "name": "AntzCapital",
+    "sandwich_count": 1016,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "sRMFc8dQFS5QU8j4LoRavfg3pPQu8EXX8L8EwchedNS",
+    "identity_pubkey": "ESX5Q9powgfUL8cssZmLMwaJCjfRDn8kYJ5ZVZqPU95P",
+    "name": "Ttk69 MMS",
+    "sandwich_count": 1006,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "QodirbUG8AZQBWpHhPJPfjj1xg4AaQUZCVVtwT8YfPi",
+    "identity_pubkey": "UZBmptMjMSQEPKm4WyUkJeAuvZSqTuNK3cQCKFqJcXT",
+    "name": "UZB Validator",
+    "sandwich_count": 994,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8gJCfKzr55gM6DtAaFqoWjBGAmsJ71mpHem6qJAASBU4",
+    "identity_pubkey": "6m5vsg6XfsVUroo1zzZmB4YgFmV6ykLiwEXb6choovpc",
+    "name": "ElagabalX",
+    "sandwich_count": 968,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "s4VEVydfBor1CyCDXJNNQXzFFPnt9UFwuhM59NXjotH",
+    "identity_pubkey": "s4MY1vDYqSzudWjkZh6kpym5KrTDmC7fwBwXxD9sekA",
+    "name": "AnMay",
+    "sandwich_count": 956,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "H7v2FWKJJ2mPd1uof34QktfmxmdZxDH8Pk1YchoeyMXX",
+    "identity_pubkey": "FGtqr2SqJBpUioE5Wow7neqKSqZUMWbcpRKbDpixMr1N",
+    "name": "Eugene_A",
+    "sandwich_count": 954,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "CMPo7H14cu4irHQgBo5uDLgsrXX6TfVaMmqeo4T2A3BG",
+    "identity_pubkey": "HuVuiJmd5155rPM7yKmDkVPBYPCiJTMw1MD8Hx6PBwok",
+    "name": "Nuclear Block",
+    "sandwich_count": 936,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "EQPh7izMjykXgiKr5Qwk8JRGdooHph8YJouLZmqFAMxt",
+    "identity_pubkey": "3bsdnx9djSYfrXTnAjPrfkNydMLXeMf43iKiDvoUTnF8",
+    "name": "",
+    "sandwich_count": 902,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "3ZHY9PQtp7MyznRcHRAkFYrTWinQzidYAQxNjBeyzyr9",
+    "identity_pubkey": "FxhKTay63tcYR8WuXwRvWJCmAV239fXizqRXNMMMqhjB",
+    "name": "elgreen",
+    "sandwich_count": 896,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "HG574XwiowrjLx8h91KhHUhPeMfmUPBLfC9XrXynj9x",
+    "identity_pubkey": "9SjGU3tzdEXfLaVsLpnTwP3inBNhAPMq4XKupUf9Ms5E",
+    "name": "LIKE Pool",
+    "sandwich_count": 886,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "2DM7z4MxS13BmxHc2aENmDYAiMPvYFnMmDyDDYHfuK7D",
+    "identity_pubkey": "AmKhZ2k8kq9HwZZr3FMi1UJsyPQLAeg7WCHMfjLow6bp",
+    "name": "MoneyLong",
+    "sandwich_count": 860,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "9f6sqJ9JvWm2eMC4D2bTRqjkkrzYQ8bzoUJvffmkkKL9",
+    "identity_pubkey": "3fcseHzv8n7s2cnqs211zDnX6hsTztzeFuesFcTgv2WR",
+    "name": "Jaga",
+    "sandwich_count": 857,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "HC1NSDR9cbBeQ8V1XJ62VNceUAbjGdnCcH7f5wVFVZw3",
+    "identity_pubkey": "A8vNkfP4Rv6msJyuXgwvUSUUu5vPfLxMJB5ddNkHaCGJ",
+    "name": "Maslenok",
+    "sandwich_count": 829,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8Uxj5i7CHajuNBUSNHdGzTz8yvmHHk2HfHwLt5ac1wxV",
+    "identity_pubkey": "BNEYUi39wjxeK6p7NuCS6AGiWhcmft1sVNNzfp9yreEd",
+    "name": "",
+    "sandwich_count": 820,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "9fQPHLhdbxiVCM8y5vNShMheCsQtk4Qp44qSSE45BSBm",
+    "identity_pubkey": "CLPTaHncA8Pb1MmZxnD4uftzSChUEKNfzxpWEVisdfFj",
+    "name": "CatStake",
+    "sandwich_count": 817,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "54LAJpkmdovUQPRqE4pyDXHRfHpVJqT5MjwEmAEVBboY",
+    "identity_pubkey": "2XTfaBNteEo1nrDhqmkiBGQ863cxgDdEuZ1iGvCunXiv",
+    "name": "StakeJet",
+    "sandwich_count": 804,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "57SfBPYR4n47Mb6EKW3yAu5tYicUi8bYbui1T4qZ7RYh",
+    "identity_pubkey": "FT19eGcaaMeQQM6u32nhfAoZwf2G6NjcSwUi75JsRyTj",
+    "name": "GetHash",
+    "sandwich_count": 797,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "5Uq8xt2rMRByjXRWJzHMZA3EKtsGnGaaYFWK8CJFM9tx",
+    "identity_pubkey": "991g1j6j3jdz6QFP3F7fegjcFUR8S2RqPFxyQGfjR6Ge",
+    "name": "Maline",
+    "sandwich_count": 786,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "9rQxLv247GeCxmmfESBMSygX6fBxzniKec4kv35Gx4J6",
+    "identity_pubkey": "G5gB5wn7bw6BqWUEY4Yq6PHAt8asxa1B41NW93c73Poi",
+    "name": "",
+    "sandwich_count": 779,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "GNEQZLFjM1QXvMStREZhK9Z8mYH2ShECMDDGhNWcGfxn",
+    "identity_pubkey": "rRjnxfJ1jYofvPKaVHpSvhgtHZ3GuUqWczzgfFd1wDW",
+    "name": "STAKEZILLA",
+    "sandwich_count": 768,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "2Nd2Kc7hxj19GY3Xshrxuv99kU2EpAYT2KfdbvoDXcuQ",
+    "identity_pubkey": "AKqgh6Bj9P2Gyj9xty8cX92Cu9HDFjT5PeYx8wymSs79",
+    "name": "StakeDC",
+    "sandwich_count": 761,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "4KAmS9X8tGJPPzDdwT9Fa9F1y3GZEoacGhMqJ6zstUXN",
+    "identity_pubkey": "AYNvSS5XV23ezdUBUzMjrZoGpmDibADE7P3edS4wNKAv",
+    "name": "Plastilina",
+    "sandwich_count": 730,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "F2kfm7Mt95pd4UMPs17yVAoGDDDuTGxkhkbPZmBrUNtz",
+    "identity_pubkey": "HBopprq896wLHZUZVazeFAsB9HshhMzD54T5btanhFSS",
+    "name": "Approved",
+    "sandwich_count": 704,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "5nkSzU4oVSDdxZvorYwxz6BQab2VfmHbdA9AnpYVkAL7",
+    "identity_pubkey": "66RAWQ8kUE95WpuJ7vkAS55TWfDo7ZonyTsLeGfs7dt3",
+    "name": "hodl.global",
+    "sandwich_count": 689,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "J8xfTV9UVS1cdaZj4toDd5Q1kgJ41buq19YDB3xH77AU",
+    "identity_pubkey": "6hpMTcU76pCkSZHG1qdfw8ZrM9rFwFCpmKZWqBc5VXr3",
+    "name": "TR 3970X, 256Gb ECC, 2Tbx3 Samsung 980Pro, 10GE",
+    "sandwich_count": 660,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "5RBfeGBGQRRTvmoDrzuzgz72qR6YFUknT91Xfra2LRL9",
+    "identity_pubkey": "AxUSumtHLyuAXhNgWGnkoCLrV4UZagfrkAFcRDBJLYv3",
+    "name": "kira",
+    "sandwich_count": 652,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "C31ocJKVAi8wxCvyAMjXte2fY9zECV2fKrn786F4WZ4N",
+    "identity_pubkey": "ACPAr8MudRmo8nQqnSPc59im8kiBty2RAHT1sWpXfpUM",
+    "name": "Node4Life",
+    "sandwich_count": 641,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "5bZfZn16KfmQpmjQeVGrbo5t17aUesLtNMmNNM78FzC",
+    "identity_pubkey": "8YfW1hTVEdNWwYYEGz4xG55mNAoZPBMR7a3XQbCx7utB",
+    "name": "mythical-stake",
+    "sandwich_count": 618,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "GDgKAmToNdQyB4bWiieh4z9MAfPknnnq3LUUq3Rc36TV",
+    "identity_pubkey": "GBuP6xK2zcUHbQuUWM4gbBjom46AomsG8JzSp1bzJyn8",
+    "name": "SolTrustStake",
+    "sandwich_count": 603,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7GLsg47ChRfrLNTouzzkZGJUFe7BvuSLd4UGPAowBxhr",
+    "identity_pubkey": "EJc4QLsiiX7ap78EqcKBhxZEMUTHZVterxnw9zqaH5rD",
+    "name": "cok263",
+    "sandwich_count": 590,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "xMjsjrBAYaccVsHR5FhAYjTY2SCTRR1XcsAbt6P3TB7",
+    "identity_pubkey": "Ar41pHwRLQfpSJLvQRrVnEfeRKxFPEuEZHioRkhQybh4",
+    "name": "Bynary",
+    "sandwich_count": 588,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8xihirHNzLTCGtEyRTH77q7WzAWE8yxtD1ciQJ5j3HQX",
+    "identity_pubkey": "BDQ9aAm4xJkkCALkcpFhZc4azz1okLnWij27V8vwP8Yq",
+    "name": "",
+    "sandwich_count": 586,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "DfWrf3vVkqkMQA8vYoJ8mVBHd6tTHjkVBPJ84CyTAybo",
+    "identity_pubkey": "qyeu8PCvnPxPYB4dnCYsdMvArkm3msVSMtHuF2QA1q3",
+    "name": "spaceNode",
+    "sandwich_count": 577,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "DhfTMGRyG6Ce8sm4jrLpFTDERGDR5EL5PBqTvYoT6h5E",
+    "identity_pubkey": "4ZntDHEBsPycaJPm4JxPwBc6ZhQHHCQorvuWaS116Wn4",
+    "name": "",
+    "sandwich_count": 568,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "FEtRZqL16RiizCa7CmZH9tsN7oNfWdKtBf6GM1ETzWR",
+    "identity_pubkey": "9uAtx66puPQZLaP6fMKNKKyRtGzonhaUEdbVopgeWcfS",
+    "name": "AiratBaia",
+    "sandwich_count": 531,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8HKHFcDGkmeedbTcnK8ntXdqRhYJYWEGbk8325tgv47i",
+    "identity_pubkey": "HS8DF8wP3A8qSHPnzbE6pSvXub4FeZQ6xMNSJuqArAHS",
+    "name": "Ti",
+    "sandwich_count": 507,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "6fq69K3h91Jd8s8StttX5CkusubhTfLBQy7uaot6XSzk",
+    "identity_pubkey": "82LRaauvKeJV5YxKaXhCL7DsyGWTNFGneCkQ2Ej671M8",
+    "name": "SOLPOOL.IO",
+    "sandwich_count": 489,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "BwCHr5RNd3ZYqQoZS383FwFn8cbNHiHkqkbmqgKbXBkw",
+    "identity_pubkey": "GWeCYsThGTLzsozCiwDUHoDHPwMoij91Vd5Cn7NDoWjP",
+    "name": "",
+    "sandwich_count": 470,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "BTQbHhcrqMoH1zyFBeXWVLgF4KV151uS6Kb5zpMBpwT9",
+    "identity_pubkey": "Af4Upmy1DBQRstKnobtAw4xdVLzitSsbQaCMKiuwmFSG",
+    "name": "DiArty",
+    "sandwich_count": 463,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "5n1QipQq1eZUTCggETJu3824G44JHJP3o1x9xnY8popV",
+    "identity_pubkey": "FhK2RqfNMDA6KXpxS88NJXZMtTioQEe43QcKym8KbcMQ",
+    "name": "MustacheOctopus",
+    "sandwich_count": 445,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "26KEYanAp9hccSFaKPaYKzt6r5Sg7gZN99zD2khDKZch",
+    "identity_pubkey": "5QVLsVbtpc3whm3AjwCUTPVmd6QxskuDtqd2Vy8zZ5Af",
+    "name": "StakePoint",
+    "sandwich_count": 436,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7XTz9RDt9gbckonUUYvzQ8q3Pfdo36oiQsreXsHhNFzj",
+    "identity_pubkey": "4ZUdaCPz4t1gJK6bFN2YdG6BDfxZ3ApvGMiQUmKPPtny",
+    "name": "Spear | best rewards!",
+    "sandwich_count": 432,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "4ZCnzKSLNUrJnLqPGYvD2DWgZuoFrs419tEk1J1VZyNw",
+    "identity_pubkey": "DQ62jd3bBydCKgHNCNBudS3muJEbArKoJd14W38S2NHE",
+    "name": "Otets",
+    "sandwich_count": 430,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "DDhFhvdVrS7nQ81KLKHaoHskQ6EiVFxowqXokXJJrMi6",
+    "identity_pubkey": "Au4h7vfDGzb6PYz576NpSkyPD4PrUEJbHb6HyRD2WZia",
+    "name": "",
+    "sandwich_count": 403,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "GxqWAnLwrwZbRq4uqzgBukToCpquDZSMKpJ7ram4vzb9",
+    "identity_pubkey": "2GBLVthcSdvbG4aafTBjmXm4tDYXW5q33gHDuPCWoVHy",
+    "name": "SOLANAZONE",
+    "sandwich_count": 389,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7xRrCC88etyrLveU2PAGdSYyB6iL4krUnfyHbvbHjkEk",
+    "identity_pubkey": "Eg2tGoGBkpkk5sSMEzfLQd5V9fvbwpLsBDPGvSVhUwx5",
+    "name": "",
+    "sandwich_count": 389,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "JeDosjMNLfyjzj8Zpu27U6s2vbidbKZj4N3in2KRECB",
+    "identity_pubkey": "4g35jkHbk91mhMZLe7VVhi2E7eJHYzFq8uWjGJ4qQ16z",
+    "name": "",
+    "sandwich_count": 370,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "AmDHRdGGHijAoPGr5p5spysfwms3otXjJ2M7TYuqmwGA",
+    "identity_pubkey": "HjBfxLRVwcxebL2f3Tu9x6qMN4jjaaVbLbfizVZaKixV",
+    "name": "scoobystake",
+    "sandwich_count": 357,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8etTu2xMeEFYoECZtZS3p3SBQStZYU3dVzxhV1a4yd8u",
+    "identity_pubkey": "6r9y5ekgj31rKSxLoJcqbT9iQS9JLwiYyqXR1iEWkN9q",
+    "name": "Sands Network",
+    "sandwich_count": 350,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "2eZwQcDuomrzfuj3kc1p3EqoSKwaBUWqqADeagv7PcbB",
+    "identity_pubkey": "5xWWpAsHUKcFMCwsoD8NGV1GaMmWjH8af73ktaeVVehA",
+    "name": "",
+    "sandwich_count": 338,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "HTSo7WLg8EGHCHJREUYrhTpsz3SDVjda5gP8xqDTejEe",
+    "identity_pubkey": "Gqic1jyRBFEX5SPAKJpULf4om42bg1oBu2WUq9zFXrjZ",
+    "name": "Pelmeshka",
+    "sandwich_count": 328,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7X7oVv6K6wawMNzVriczSAEk18GzqyrYrvqyJbwLAY3s",
+    "identity_pubkey": "D8kuk3qEiVBGwYkuMGKfBDwuRi6jjRkzjAZg45fdaRLx",
+    "name": "LuminaNodes",
+    "sandwich_count": 327,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "FWyBxaJa1GAkM8sUeC46Mxbj9TZHzyn7Eor5ojBPboLK",
+    "identity_pubkey": "J6NWrn7w6u3rPqHzo6j89aGQL2jVhBy9c7aqhDS36vfs",
+    "name": "OrkValidator",
+    "sandwich_count": 317,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "irBmuzr6ZJbkBZwreeDeQBCpVLJWsxeWS4pfjsfkDSL",
+    "identity_pubkey": "3VeGAcbXNzrUUoXrpee1WzQBnXo9yqTtURxEKfwy6v1V",
+    "name": "",
+    "sandwich_count": 305,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "GPjDwfsmy8A8ZpPHB4uTwZQhPnbA3mRQeRsY58uXqeDy",
+    "identity_pubkey": "34Eegy89hWD8HskhX8GzkkrEgdWDAAsTd5ZPKPHs6pBN",
+    "name": "trustedadvizor",
+    "sandwich_count": 300,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "FLocyJ8N1BynUs9MPMVbGYEbH2GMxsdacsbXb4N3S5cq",
+    "identity_pubkey": "AcrA5Qn3DsptVjyVF4PK8hQxXNALinjAP2rGQ5YR6zYT",
+    "name": "Lightning strike",
+    "sandwich_count": 293,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "Dca6LSCR24veJsdLbDDS8n73vvNfSdQaa4mXhVjTXUWD",
+    "identity_pubkey": "BD63LnAhKdHgGw2jJAm8gnfDTBMhaUpC86eAAc6NHNyk",
+    "name": "",
+    "sandwich_count": 268,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "5FbFgsGsAHxDJU9EvtB7Vyy8geHXegkWrcTVscQDaspN",
+    "identity_pubkey": "HZNH3NDtzhBvfw3GrEBDcpx4ZVKNKC7mP5N6JEiB6QEc",
+    "name": "",
+    "sandwich_count": 265,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "GpPNw6TxbR2z75ECU6Bdbtpi24vSWP8JQA6CFKo2tiPX",
+    "identity_pubkey": "EZUq9TkX3LBFEQRpwGu6pdKEsJYT17zbX6eoZYCFfAtw",
+    "name": "",
+    "sandwich_count": 262,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7DvyDUHg2bLVxZ3ZfdrUoAHwoF4cv9AH4aKToBqT6c7C",
+    "identity_pubkey": "DTh4Vm6erLe7Tn3nEaZZwaNgNBULBg9EsfXxgibYX4ge",
+    "name": "RasSol",
+    "sandwich_count": 249,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "6xwWwNVXJLGhgPfBpew7UDcSjQr73McXSRK2EhdhcL1u",
+    "identity_pubkey": "Bnqie7FYWudbSuBjyRHzoKQrz7eGFxmY9wFAMQKKQjEe",
+    "name": "Paradigm",
+    "sandwich_count": 241,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "8TdjJkjmZM4m2gPCCSfVYwd8gZc5sb9WtcYm4Dm2wUvk",
+    "identity_pubkey": "6yecu2K5BN1kYCYf6wLEYECg1Dmqf2CyJuD4uZ6iDAQH",
+    "name": "",
+    "sandwich_count": 224,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "Ecqv59gqDSjVc4XsnAjR5TwK3Csk5dBxKtWJUG5c8ZJF",
+    "identity_pubkey": "62hPaaJ7H9XN1hdmTnZZtB73sm2Ue9PQB2C1gqVvZfai",
+    "name": "AlexNode",
+    "sandwich_count": 212,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "q1phrX11VjA2XEPqsTFMYRfrTZiwUeG7HCVz3d6V5Ua",
+    "identity_pubkey": "BhwrctpZCQqwZHFHhgsnZkZG3btSwAg5aBtDPVDzQriG",
+    "name": "Shmagr",
+    "sandwich_count": 203,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "JEJ9KC1aQgcYigTG386mkS85J3EGVPkKib1Xi1otypWJ",
+    "identity_pubkey": "ACqmpSnHKkwPaPx7p3MEHh5WFQeRSHyxBUTygtKsn7bw",
+    "name": "",
+    "sandwich_count": 203,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "CP6eYHRX9UXgucwEt6J21zfi5cu2cqG7h1UJZpBSoySW",
+    "identity_pubkey": "Erc9UosWvYMdBQdPWahtDqvsDWYGTjct49LvgtWDcTXU",
+    "name": "",
+    "sandwich_count": 196,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7fx4aYDuLyGQenUWy5xdXPfqFhiH5rcMsMjnx3asii4f",
+    "identity_pubkey": "9wwMLu16KzCo86oL5LijNPqeBEvGba23QfVVqBjRp5b5",
+    "name": "",
+    "sandwich_count": 195,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "DF65vydoevPj8q4LouGebBFnzETHfkioHfHgLHBFk71G",
+    "identity_pubkey": "7NuPY59qqtASzeyeRLHZ7D7TLLStn87s3tDJ3A69yAX8",
+    "name": "",
+    "sandwich_count": 194,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "9rY6YGuR5tQZvy4YjZGi7oujhjRSR3zqmCXX5LGoHmas",
+    "identity_pubkey": "27CnXybL6bvwgw869z2JmA6WtGypryEVJRYX2Wg3WM4F",
+    "name": "marisarze",
+    "sandwich_count": 177,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "GrtCNjHDd9dFwJ2HVCR26rKBfvDXHav6wkDZT8F5d4E2",
+    "identity_pubkey": "69ZPqJi4jMt3CirCwtXuYt7D9wrCyVo898GJdDVS3G8k",
+    "name": "NVFarm",
+    "sandwich_count": 146,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "A8q1whmfdNKCNN2Y4Yjc4cnc4esCBcwXrcaWnYwrH4r6",
+    "identity_pubkey": "3CSTv2qSP2wHfVojHhR4xbgCGfRerzFTTSpGyDp3UjKi",
+    "name": "Tensorian",
+    "sandwich_count": 141,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "29VMLFnCzjTeJBpKpoq1UQhc81y6LHYVABE6DdJNWUXf",
+    "identity_pubkey": "4nPK76BVEj5Mzy6fctkuZrKieNUpxu6mfWVjNy7fBt9X",
+    "name": "Finance Man",
+    "sandwich_count": 140,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "9KUZ4k28zDMUuh34tBBmdnq9sA4uDSdCPPjCPnUa9jKS",
+    "identity_pubkey": "AbT5bdTdn5WjjjHYzAyhnbLNQcjcM9Uzgy1fhQ1zsh8",
+    "name": "NiLSol",
+    "sandwich_count": 131,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "APLFy3sMEaUVXfoUVKLVSqPyWsgKens5iS3JCWjWUtVX",
+    "identity_pubkey": "HzNwDXpszprUUVvxPtiQMV44C9Has24HEBpPRoG4gg1T",
+    "name": "Extrime Money",
+    "sandwich_count": 110,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8gjfs4krwDrME3n7jzKshMBhejFPHE6pTrhm2LcKGSPd",
+    "identity_pubkey": "9xoQZuDuMLT8TLHWcEUx3QAC4Rr2wNkgriN4KFo6FTgS",
+    "name": "Africa",
+    "sandwich_count": 109,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "8cKzJdvB1imSKAg1SeY6yMmNDgVkxhtqMcuZgiyWQTmx",
+    "identity_pubkey": "4K8TQcYHjzKyHvReuoPT4pboENga8dYm3SwdgX3UkKVN",
+    "name": "rs_99999",
+    "sandwich_count": 100,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7MMhQedcxv1ZLMthZsDtPYy14reJMYF1FbBVMba2FGK2",
+    "identity_pubkey": "5YuCLSG12wCj3H4WaEur19RnLHtkCFXQWMAjxPuYBxXN",
+    "name": "KodSun",
+    "sandwich_count": 92,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "2sR1ApkwZebjrfMxAyWxEokCQVDzw6FyEYwSk11wav87",
+    "identity_pubkey": "5fxyp8GDtGWcesu6R42pjFdBhXrwNJ3xyZXnKWTfNLAe",
+    "name": "VNStake",
+    "sandwich_count": 90,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "B8NFTRJDovY5DHA3HXHXC76rhafYM11gVasbsACzEAs1",
+    "identity_pubkey": "AccoZSbu37g4qNey83gy7iToLjDq4zrxdgMn1LKGqhox",
+    "name": "HyperBeast",
+    "sandwich_count": 86,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "GV2i2sTn835Ktvkvq3ANLxbujPjfMCnzKjiH3JWUYDix",
+    "identity_pubkey": "H47hFQDB8gvDBTwhNAKMALsDQtP87ZBYMC7VwSrc1XDo",
+    "name": "SolanaReg",
+    "sandwich_count": 86,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "6KNVY2ijdADSy9F6qoSVr9FYKrDoZcBkQdZXkZDLcei7",
+    "identity_pubkey": "DPBTjDbpGhN6xSF6qmWm1eZBryXcZAQW9C2ZxtNJotsX",
+    "name": "Blue Shark",
+    "sandwich_count": 62,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "6aM8GTtjdEQseVJmptnXQ7ndCKMGK4qunisuU5GDu9Fs",
+    "identity_pubkey": "CCaCbU2m4QKxe2hdEW9cGm1rM5q5fD6yeqV4xFK8ES4L",
+    "name": "DonRomero",
+    "sandwich_count": 58,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "9RkA9F2YB6UtTFaFS8oP3sSMXKyKcoQUbvDEft9ttpfb",
+    "identity_pubkey": "BL3LRoi6cegSLBa3t8MD564iLoJbG9ZVe9ciqCUpk1CT",
+    "name": "MiningLove",
+    "sandwich_count": 56,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "2uuSBFp7gLzBBA9w1u3ZfHd3ZrXypctbuRheH2EBgcpn",
+    "identity_pubkey": "4Wa8jP3TpfPPPxFQxAmoV9kWwnZ6X5R3jgpqmSdAsNq2",
+    "name": "Monessy",
+    "sandwich_count": 34,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "EV4FXbtXSMKuBKG4hUeWNhaTQTEknYMXKxNry864mVdp",
+    "identity_pubkey": "hDwKSYB3cG1oL68zTPpNZsiAmVe2W6ptCFdeb7z8wFc",
+    "name": "WhiteList",
+    "sandwich_count": 31,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "sAESK3Gda4FqBXvbj1XfwLL3ZMzhuW8NikgXJvPYV88",
+    "identity_pubkey": "9HwHb4zjcAHENsTf3kmBcUGgPzqMP2iWrL9ddebNT2Nx",
+    "name": "Avokado",
+    "sandwich_count": 30,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "97DsFuV8H6RiFXSXds1k4RscrLPbbDnxG2CW7wDwqrZn",
+    "identity_pubkey": "C1mJ4tyS6GvabWk9GGqnWijnhSPzrSDtu8X3jhPZbpp",
+    "name": "Satoshkin",
+    "sandwich_count": 27,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "7kmTFq434qDsbuCbJgDsAtih8AurPfUk8u6kc5bJb5Zb",
+    "identity_pubkey": "CvnvV1A7bkK6Dp4gcAyFdEuAKLvqWtmLp5V23MUnk62a",
+    "name": "BitQi",
+    "sandwich_count": 26,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "CraRZ3Pk5mJC2sfGXGH2rFRYjr8LPVz2gLowNbujcND3",
+    "identity_pubkey": "C7cGvcNECbMXWEL2moJ9xLHsWheEbwKi9ZUrNdAkBE2n",
+    "name": "Transaction",
+    "sandwich_count": 18,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "72Ag5dggfQFknHXABYnG172r2vtepa5ugiZDJCmKnx4X",
+    "identity_pubkey": "Garx8JMpBAhJhLyci6KySLbqCFCHLuxUNqDXs96Xgw2b",
+    "name": "CashLove",
+    "sandwich_count": 10,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
+  },
+  {
+    "validator_pubkey": "AjdEzodq5LpRA63AtQaiHyTLDfjTkr6csrtYWiSDPjaK",
+    "identity_pubkey": "CyUEJ2KvRCDZqPM5PZ7RVznyjsto8zKc5or6CJZJDPda",
+    "name": "",
+    "sandwich_count": 6,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp",
+      "jito_delegation"
+    ]
+  },
+  {
+    "validator_pubkey": "Ez5oqa7UBJosiUZ3YbXsjGfnZAdcGE7awrkRmcCWY3yB",
+    "identity_pubkey": "DjrYZ1dwyhSN5u2A346piLvCVQwbpJ7iui7YCDDCftPi",
+    "name": "Green Validator",
+    "sandwich_count": 3,
+    "source": "a-guard/malicious-validators + sandwiched.me",
+    "detected_date": "2025-06-01",
+    "lists": [
+      "sfdp"
+    ]
   }
 ]

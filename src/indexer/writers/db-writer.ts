@@ -170,7 +170,7 @@ export async function writeSandwichList(
     validatorPubkey: string;
     detectedDate: string;
     source: string;
-    sandwichPercent: number;
+    sandwichPercent: number | null;
   }[]
 ) {
   const knownRows = await db.select({ pubkey: schema.validators.pubkey }).from(schema.validators);

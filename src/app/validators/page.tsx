@@ -1,5 +1,6 @@
-import { getValidatorLeaderboard, getLatestScoredEpoch } from "@/db/queries";
+import { getValidatorLeaderboard, getLatestScoredEpoch, getCountryDistribution } from "@/db/queries";
 import { ValidatorTable } from "@/components/validators/validator-table";
+import { GeoHeatmap } from "@/components/validators/geo-heatmap";
 import { StatCard } from "@/components/ui/stat-card";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
@@ -7,8 +8,11 @@ import { AnimatedSection } from "@/components/ui/animated-section";
 export const dynamic = "force-dynamic";
 
 export default async function ValidatorsPage() {
-  const validators = await getValidatorLeaderboard();
-  const epoch = await getLatestScoredEpoch();
+  const [validators, epoch, countryData] = await Promise.all([
+    getValidatorLeaderboard(),
+    getLatestScoredEpoch(),
+    getCountryDistribution(),
+  ]);
 
   const sandwichCount = validators.filter((v) => v.isSandwich).length;
   const smallCount = validators.filter((v) => v.stakeTier === "small").length;
@@ -35,8 +39,18 @@ export default async function ValidatorsPage() {
         </div>
       </AnimatedSection>
 
+      {/* Geographic Heatmap */}
+      <AnimatedSection delay={0.15} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm p-4 sm:p-6">
+          <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
+            Validator Geography
+          </h2>
+          <GeoHeatmap data={countryData} />
+        </div>
+      </AnimatedSection>
+
       {/* Table */}
-      <AnimatedSection delay={0.2} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <AnimatedSection delay={0.2} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-6">
         <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm">
           <ValidatorTable validators={validators} />
         </div>
