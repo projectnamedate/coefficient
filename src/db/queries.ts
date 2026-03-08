@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { eq, desc, sql, and } from "drizzle-orm";
+import { eq, desc, sql, and, inArray } from "drizzle-orm";
 import {
   stakePools,
   poolScores,
@@ -334,6 +334,164 @@ export async function getCrossPoolOverlap(epochNumber?: number) {
     .map(([pubkey, v]) => ({ pubkey, ...v }))
     .sort((a, b) => b.pools.length - a.pools.length || b.totalSol - a.totalSol);
 }
+
+/** Get datacenter concentration for a pool's validators */
+export async function getPoolDatacenterConcentration(poolId: string, epochNumber?: number) {
+  const epoch = epochNumber ?? (await getLatestScoredEpoch());
+  if (!epoch) return [];
+
+  const rows = await db
+    .select({
+      datacenter: validators.datacenter,
+      validatorCount: sql<number>`count(*)`,
+      totalDelegated: sql<number>`sum(${poolDelegations.delegatedSol})`,
+    })
+    .from(poolDelegations)
+    .innerJoin(validators, eq(poolDelegations.validatorPubkey, validators.pubkey))
+    .where(and(eq(poolDelegations.poolId, poolId), eq(poolDelegations.epochNumber, epoch)))
+    .groupBy(validators.datacenter)
+    .orderBy(desc(sql`sum(${poolDelegations.delegatedSol})`));
+
+  const totalSol = rows.reduce((s, r) => s + Number(r.totalDelegated), 0);
+  return rows.map((r) => ({
+    datacenter: r.datacenter ?? "Unknown",
+    validatorCount: Number(r.validatorCount),
+    totalDelegated: Number(r.totalDelegated),
+    percentage: totalSol > 0 ? Number(r.totalDelegated) / totalSol : 0,
+  }));
+}
+
+/** Get commission changes (rugs) between epochs for a pool's validators */
+export async function getCommissionChanges(poolId: string, epochNumber?: number) {
+  const epoch = epochNumber ?? (await getLatestScoredEpoch());
+  if (!epoch) return [];
+
+  // Get this epoch's delegations for the pool
+  const currentDelegations = await db
+    .select({
+      validatorPubkey: poolDelegations.validatorPubkey,
+      delegatedSol: poolDelegations.delegatedSol,
+    })
+    .from(poolDelegations)
+    .where(and(eq(poolDelegations.poolId, poolId), eq(poolDelegations.epochNumber, epoch)));
+
+  if (currentDelegations.length === 0) return [];
+
+  const pubkeys = currentDelegations.map((d) => d.validatorPubkey);
+
+  // Get current and previous epoch snapshots
+  const currentSnaps = await db
+    .select({
+      validatorPubkey: validatorSnapshots.validatorPubkey,
+      commission: validatorSnapshots.commission,
+    })
+    .from(validatorSnapshots)
+    .where(and(
+      eq(validatorSnapshots.epochNumber, epoch),
+      inArray(validatorSnapshots.validatorPubkey, pubkeys)
+    ));
+
+  const prevSnaps = await db
+    .select({
+      validatorPubkey: validatorSnapshots.validatorPubkey,
+      commission: validatorSnapshots.commission,
+    })
+    .from(validatorSnapshots)
+    .where(and(
+      eq(validatorSnapshots.epochNumber, epoch - 1),
+      inArray(validatorSnapshots.validatorPubkey, pubkeys)
+    ));
+
+  const prevMap = new Map(prevSnaps.map((s) => [s.validatorPubkey, s.commission]));
+  const nameRows = await db
+    .select({ pubkey: validators.pubkey, name: validators.name })
+    .from(validators)
+    .where(inArray(validators.pubkey, pubkeys));
+  const nameMap = new Map(nameRows.map((r) => [r.pubkey, r.name]));
+  const delMap = new Map(currentDelegations.map((d) => [d.validatorPubkey, d.delegatedSol]));
+
+  const changes: {
+    validatorPubkey: string;
+    validatorName: string | null;
+    oldCommission: number;
+    newCommission: number;
+    delta: number;
+    delegatedSol: number;
+  }[] = [];
+
+  for (const snap of currentSnaps) {
+    const prev = prevMap.get(snap.validatorPubkey);
+    if (prev == null) continue;
+    const delta = snap.commission - prev;
+    if (delta > 0) {
+      changes.push({
+        validatorPubkey: snap.validatorPubkey,
+        validatorName: nameMap.get(snap.validatorPubkey) ?? null,
+        oldCommission: prev,
+        newCommission: snap.commission,
+        delta,
+        delegatedSol: delMap.get(snap.validatorPubkey) ?? 0,
+      });
+    }
+  }
+
+  return changes.sort((a, b) => b.delta - a.delta);
+}
+
+/** Get score deltas between the two most recent epochs for all pools */
+export async function getScoreDeltas() {
+  // Get two most recent epochs with scores
+  const epochRows = await db
+    .select({ epochNumber: poolScores.epochNumber })
+    .from(poolScores)
+    .groupBy(poolScores.epochNumber)
+    .orderBy(desc(poolScores.epochNumber))
+    .limit(2);
+
+  if (epochRows.length < 2) return { current: [], previous: [], currentEpoch: null, previousEpoch: null };
+
+  const currentEpoch = epochRows[0].epochNumber;
+  const previousEpoch = epochRows[1].epochNumber;
+
+  const currentScores = await db
+    .select({
+      poolId: poolScores.poolId,
+      poolName: stakePools.name,
+      networkHealthScore: poolScores.networkHealthScore,
+      smallValidatorBias: poolScores.smallValidatorBias,
+      selfDealing: poolScores.selfDealing,
+      mevSandwichPolicy: poolScores.mevSandwichPolicy,
+      nakamotoImpact: poolScores.nakamotoImpact,
+      validatorSetSize: poolScores.validatorSetSize,
+      geographicDiversity: poolScores.geographicDiversity,
+      commissionDiscipline: poolScores.commissionDiscipline,
+      activeSolStaked: poolScores.activeSolStaked,
+      validatorCount: poolScores.validatorCount,
+    })
+    .from(poolScores)
+    .innerJoin(stakePools, eq(poolScores.poolId, stakePools.id))
+    .where(eq(poolScores.epochNumber, currentEpoch));
+
+  const previousScores = await db
+    .select({
+      poolId: poolScores.poolId,
+      networkHealthScore: poolScores.networkHealthScore,
+      smallValidatorBias: poolScores.smallValidatorBias,
+      selfDealing: poolScores.selfDealing,
+      mevSandwichPolicy: poolScores.mevSandwichPolicy,
+      nakamotoImpact: poolScores.nakamotoImpact,
+      validatorSetSize: poolScores.validatorSetSize,
+      geographicDiversity: poolScores.geographicDiversity,
+      commissionDiscipline: poolScores.commissionDiscipline,
+    })
+    .from(poolScores)
+    .where(eq(poolScores.epochNumber, previousEpoch));
+
+  return { current: currentScores, previous: previousScores, currentEpoch, previousEpoch };
+}
+
+/** Get pool overrides data (MEV policy, transparency grade) */
+export { default as poolOverrides } from "@/indexer/data/pool-overrides.json";
 
 /** Get delegation flows for the Sankey diagram */
 export async function getDelegationFlows(epochNumber?: number) {

@@ -3,84 +3,154 @@
     "selfDealingScore": 90,
     "selfDealingNotes": "No token purchase required. MEV commission required but performance-based.",
     "transparencyScore": 85,
-    "transparencyNotes": "Published criteria, public API, Jito Foundation governance"
+    "transparencyNotes": "Published criteria, public API, Jito Foundation governance",
+    "transparencyGrade": "A",
+    "mevPolicy": "Jito client required for all validators. Tips redistributed to stakers minus commission. Validators set their own MEV commission (typically 5-8%).",
+    "jitoClient": true,
+    "mevTipsToStakers": true,
+    "mevCommissionCap": 8
   },
   "doublezero": {
     "selfDealingScore": 70,
     "selfDealingNotes": "Network membership fee structure, but no token flywheel",
     "transparencyScore": 60,
-    "transparencyNotes": "Published criteria, some transparency around selection"
+    "transparencyNotes": "Published criteria, some transparency around selection",
+    "transparencyGrade": "C",
+    "mevPolicy": "No public MEV redistribution policy. Validators may run Jito client independently.",
+    "jitoClient": "partial",
+    "mevTipsToStakers": false,
+    "mevCommissionCap": null
   },
   "blazestake": {
     "selfDealingScore": 95,
     "selfDealingNotes": "No token requirement. Community-governed delegation.",
     "transparencyScore": 80,
-    "transparencyNotes": "Open governance, published criteria, community voting"
+    "transparencyNotes": "Open governance, published criteria, community voting",
+    "transparencyGrade": "A",
+    "mevPolicy": "Requires Jito client. MEV tips flow to stakers. Community governance via BlazeStake DAO.",
+    "jitoClient": true,
+    "mevTipsToStakers": true,
+    "mevCommissionCap": 10
   },
   "jpool": {
     "selfDealingScore": 90,
     "selfDealingNotes": "No token purchase required for delegation",
     "transparencyScore": 75,
-    "transparencyNotes": "Published criteria, scoring methodology available"
+    "transparencyNotes": "Published criteria, scoring methodology available",
+    "transparencyGrade": "B",
+    "mevPolicy": "Encourages Jito client. MEV tips redistributed. Commission monitoring in place.",
+    "jitoClient": true,
+    "mevTipsToStakers": true,
+    "mevCommissionCap": 10
   },
   "phase": {
     "selfDealingScore": 100,
     "selfDealingNotes": "No token or self-delegation requirement. Simply prioritizes small validators.",
     "transparencyScore": 85,
-    "transparencyNotes": "Published criteria, open application, clear mission"
+    "transparencyNotes": "Published criteria, open application, clear mission",
+    "transparencyGrade": "A",
+    "mevPolicy": "Jito client recommended. Focuses on small validators — MEV tips pass through where available.",
+    "jitoClient": "partial",
+    "mevTipsToStakers": true,
+    "mevCommissionCap": null
   },
   "vault": {
     "selfDealingScore": 0,
     "selfDealingNotes": "Validators MUST buy $V tokens and stake through vSOL to qualify. Top 100 vSOL delegators share 40% of undirected stake. Classic token flywheel.",
     "transparencyScore": 25,
-    "transparencyNotes": "Discord-only application, opaque board approval, Votex.so governance"
+    "transparencyNotes": "Discord-only application, opaque board approval, Votex.so governance",
+    "transparencyGrade": "F",
+    "mevPolicy": "No public MEV policy. Token flywheel prioritizes $V holders over staker MEV returns.",
+    "jitoClient": "partial",
+    "mevTipsToStakers": false,
+    "mevCommissionCap": null
   },
   "dynosol": {
     "selfDealingScore": 85,
     "selfDealingNotes": "No direct token requirement",
     "transparencyScore": 50,
-    "transparencyNotes": "Limited public documentation on delegation criteria"
+    "transparencyNotes": "Limited public documentation on delegation criteria",
+    "transparencyGrade": "D",
+    "mevPolicy": "No public MEV redistribution policy documented.",
+    "jitoClient": "unknown",
+    "mevTipsToStakers": false,
+    "mevCommissionCap": null
   },
   "jagpool": {
     "selfDealingScore": 95,
     "selfDealingNotes": "No token flywheel",
     "transparencyScore": 70,
-    "transparencyNotes": "Published delegation strategy focused on geographic diversity"
+    "transparencyNotes": "Published delegation strategy focused on geographic diversity",
+    "transparencyGrade": "B",
+    "mevPolicy": "Jito client required. MEV tips flow to stakers. Geographic diversity focus.",
+    "jitoClient": true,
+    "mevTipsToStakers": true,
+    "mevCommissionCap": null
   },
   "stke": {
     "selfDealingScore": 80,
     "selfDealingNotes": "No direct token requirement",
     "transparencyScore": 55,
-    "transparencyNotes": "Some published criteria"
+    "transparencyNotes": "Some published criteria",
+    "transparencyGrade": "C",
+    "mevPolicy": "Limited MEV policy documentation. Some validators run Jito.",
+    "jitoClient": "partial",
+    "mevTipsToStakers": false,
+    "mevCommissionCap": null
   },
   "marinade": {
     "selfDealingScore": 75,
     "selfDealingNotes": "PSR auction model — validators bid for stake, which creates indirect self-dealing pressure",
     "transparencyScore": 65,
-    "transparencyNotes": "Open source delegation strategy, but PSR auction opaque to outsiders"
+    "transparencyNotes": "Open source delegation strategy, but PSR auction opaque to outsiders",
+    "transparencyGrade": "B",
+    "mevPolicy": "Jito client strongly preferred. PSR auction model means validators internalize MEV earnings into their bids. Tips flow to stakers through mSOL APY.",
+    "jitoClient": true,
+    "mevTipsToStakers": true,
+    "mevCommissionCap": 10
   },
   "shinobi": {
     "selfDealingScore": 85,
     "selfDealingNotes": "No token requirement",
     "transparencyScore": 70,
-    "transparencyNotes": "Community-run, published criteria"
+    "transparencyNotes": "Community-run, published criteria",
+    "transparencyGrade": "B",
+    "mevPolicy": "Jito client required. Community pool with MEV tips to stakers.",
+    "jitoClient": true,
+    "mevTipsToStakers": true,
+    "mevCommissionCap": null
   },
   "edgevana": {
     "selfDealingScore": 50,
     "selfDealingNotes": "Edgevana infrastructure customers may receive preferential delegation",
     "transparencyScore": 60,
-    "transparencyNotes": "Some published criteria, but selection tied to infrastructure business"
+    "transparencyNotes": "Some published criteria, but selection tied to infrastructure business",
+    "transparencyGrade": "C",
+    "mevPolicy": "Jito client available on Edgevana infrastructure. MEV policy tied to infrastructure offering.",
+    "jitoClient": "partial",
+    "mevTipsToStakers": false,
+    "mevCommissionCap": null
   },
   "definity": {
     "selfDealingScore": 90,
     "selfDealingNotes": "No token flywheel",
     "transparencyScore": 65,
-    "transparencyNotes": "Published criteria, geographic diversity focus"
+    "transparencyNotes": "Published criteria, geographic diversity focus",
+    "transparencyGrade": "B",
+    "mevPolicy": "Jito client encouraged. Geographic diversity focused delegation.",
+    "jitoClient": "partial",
+    "mevTipsToStakers": true,
+    "mevCommissionCap": null
   },
   "indiesol": {
     "selfDealingScore": 95,
     "selfDealingNotes": "No token requirement, indie validator focused",
     "transparencyScore": 60,
-    "transparencyNotes": "Small community pool, limited formal documentation"
+    "transparencyNotes": "Small community pool, limited formal documentation",
+    "transparencyGrade": "C",
+    "mevPolicy": "Small indie pool. Some validators run Jito independently. No formal MEV policy.",
+    "jitoClient": "partial",
+    "mevTipsToStakers": false,
+    "mevCommissionCap": null
   }
 }
