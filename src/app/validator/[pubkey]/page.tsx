@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getValidatorDetail } from "@/db/queries";
+import { getValidatorProfitability } from "@/lib/trillium";
+import { ValidatorProfitability } from "@/components/validators/validator-profitability";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
@@ -34,7 +36,10 @@ export default async function ValidatorDetailPage({
   params: Promise<{ pubkey: string }>;
 }) {
   const { pubkey } = await params;
-  const val = await getValidatorDetail(pubkey);
+  const [val, trilliumData] = await Promise.all([
+    getValidatorDetail(pubkey),
+    getValidatorProfitability(pubkey),
+  ]);
 
   if (!val) notFound();
 
@@ -132,6 +137,15 @@ export default async function ValidatorDetailPage({
                 ))}
               </tbody>
             </table>
+          </div>
+        </AnimatedSection>
+      )}
+
+      {/* Epoch Profitability */}
+      {trilliumData.length > 0 && (
+        <AnimatedSection delay={0.12} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+          <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm">
+            <ValidatorProfitability epochs={trilliumData} />
           </div>
         </AnimatedSection>
       )}
