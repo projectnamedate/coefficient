@@ -62,6 +62,7 @@ export async function writeValidators(
     city: string | null;
     datacenter: string | null;
     client: string;
+    sfdpStatus?: string | null;
   }[]
 ) {
   const now = new Date().toISOString();
@@ -80,6 +81,7 @@ export async function writeValidators(
             city: v.city,
             datacenter: v.datacenter,
             client: v.client,
+            sfdpStatus: v.sfdpStatus ?? null,
             createdAt: now,
           })
           .onConflictDoUpdate({
@@ -90,6 +92,7 @@ export async function writeValidators(
               city: v.city,
               datacenter: v.datacenter,
               client: v.client,
+              sfdpStatus: v.sfdpStatus ?? null,
             },
           })
       )

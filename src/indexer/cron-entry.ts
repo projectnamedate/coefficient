@@ -9,6 +9,7 @@ import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/sol
 import { fetchStakeWizValidators } from "./fetchers/stakewiz";
 import { fetchMarinadeValidators } from "./fetchers/marinade";
 import { fetchAllPoolDelegations } from "./fetchers/stake-pools";
+import { fetchSfdpParticipants } from "./fetchers/sfdp";
 import { computeAllPoolScores } from "./scoring/index";
 import { computeNakamoto } from "./scoring/nakamoto-impact";
 import {
@@ -45,10 +46,11 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
     return { status: "skipped", epoch: epochNumber };
   }
 
-  const [rpcValidators, stakewizValidators, marinadeValidators] = await Promise.all([
+  const [rpcValidators, stakewizValidators, marinadeValidators, sfdpMap] = await Promise.all([
     fetchVoteAccounts(),
     fetchStakeWizValidators(),
     fetchMarinadeValidators(),
+    fetchSfdpParticipants(),
   ]);
 
   if (rpcValidators.length === 0) {
@@ -56,6 +58,12 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
   }
 
   const wizLookup = new Map(stakewizValidators.map((v) => [v.vote_identity, v]));
+
+  // Build identity→vote lookup for SFDP mapping (SFDP uses identity keys, DB uses vote keys)
+  const identityToVote = new Map<string, string>();
+  for (const v of stakewizValidators) {
+    if (v.identity) identityToVote.set(v.identity, v.vote_identity);
+  }
   const allStakes = rpcValidators.map((v) => v.activatedStake).filter((s) => s > 0);
   const sortedStakes = [...allStakes].sort((a, b) => b - a);
   const totalNetworkStake = sortedStakes.reduce((sum, s) => sum + s, 0);
@@ -72,6 +80,13 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
 
   const nakamotoCoefficient = computeNakamoto(allStakes);
 
+  // Build vote pubkey → SFDP status lookup
+  const voteSfdpStatus = new Map<string, string>();
+  for (const [identityKey, status] of sfdpMap) {
+    const voteKey = identityToVote.get(identityKey);
+    if (voteKey) voteSfdpStatus.set(voteKey, status);
+  }
+
   const mergedValidators = rpcValidators.map((rpc) => {
     const wiz = wizLookup.get(rpc.votePubkey);
     return {
@@ -83,6 +98,7 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
       apy: wiz?.total_apy ?? wiz?.apy_estimate ?? null, wizScore: wiz?.wiz_score ?? null,
       stakeTier: classifyStakeTier(rpc.activatedStake, medianStake, superminorityThreshold),
       isSuperminority: rpc.activatedStake >= superminorityThreshold,
+      sfdpStatus: voteSfdpStatus.get(rpc.votePubkey) ?? null,
     };
   });
 
@@ -121,7 +137,7 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
   await writeEpoch({ epochNumber, startSlot: epochData.absoluteSlot - epochData.slotIndex, totalStake: totalNetworkStake, nakamotoCoefficient });
   await writeStakePools(POOL_REGISTRY.map((p) => ({ id: p.id, name: p.name, program: p.program })));
   const activeValidators = mergedValidators.filter((v) => v.activatedStake > 0);
-  await writeValidators(activeValidators.map((v) => ({ pubkey: v.pubkey, name: v.name, country: v.country, city: v.city, datacenter: v.datacenter, client: v.client })));
+  await writeValidators(activeValidators.map((v) => ({ pubkey: v.pubkey, name: v.name, country: v.country, city: v.city, datacenter: v.datacenter, client: v.client, sfdpStatus: v.sfdpStatus })));
   await writeValidatorSnapshots(epochNumber, activeValidators.map((v) => ({ validatorPubkey: v.pubkey, activeStake: v.activatedStake, commission: v.commission, voteCredits: v.voteCredits, skipRate: v.skipRate, apy: v.apy, wizScore: v.wizScore, stakeTier: v.stakeTier, isSuperminority: v.isSuperminority })));
 
   const allDelegations: { poolId: string; validatorPubkey: string; delegatedSol: number }[] = [];

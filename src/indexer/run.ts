@@ -22,6 +22,7 @@ import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/sol
 import { fetchStakeWizValidators } from "./fetchers/stakewiz";
 import { fetchMarinadeValidators } from "./fetchers/marinade";
 import { fetchAllPoolDelegations } from "./fetchers/stake-pools";
+import { fetchSfdpParticipants } from "./fetchers/sfdp";
 import { computeAllPoolScores } from "./scoring/index";
 import { computeNakamoto } from "./scoring/nakamoto-impact";
 import {
@@ -97,10 +98,11 @@ async function main() {
 
   // 4. Parallel fetches: RPC validators + StakeWiz + Marinade
   log("Fetching data from all sources...");
-  const [rpcValidators, stakewizValidators, marinadeValidators] = await Promise.all([
+  const [rpcValidators, stakewizValidators, marinadeValidators, sfdpMap] = await Promise.all([
     fetchVoteAccounts(),
     fetchStakeWizValidators(),
     fetchMarinadeValidators(),
+    fetchSfdpParticipants(),
   ]);
 
   if (rpcValidators.length === 0) {
@@ -112,6 +114,12 @@ async function main() {
     stakewizValidators.map((v) => [v.vote_identity, v])
   );
   log(`StakeWiz enrichment available for ${wizLookup.size} validators`);
+
+  // Build identity→vote lookup for SFDP mapping (SFDP uses identity keys, DB uses vote keys)
+  const identityToVote = new Map<string, string>();
+  for (const v of stakewizValidators) {
+    if (v.identity) identityToVote.set(v.identity, v.vote_identity);
+  }
 
   // 6. Merge: RPC = source of truth, StakeWiz = enrichment
   const allStakes = rpcValidators.map((v) => v.activatedStake).filter((s) => s > 0);
@@ -138,6 +146,14 @@ async function main() {
   const nakamotoCoefficient = computeNakamoto(allStakes);
   log(`Network: ${rpcValidators.length} validators, ${(totalNetworkStake / 1_000_000).toFixed(2)}M SOL staked, Nakamoto ${nakamotoCoefficient}`);
 
+  // Build vote pubkey → SFDP status lookup
+  const voteSfdpStatus = new Map<string, string>();
+  for (const [identityKey, status] of sfdpMap) {
+    const voteKey = identityToVote.get(identityKey);
+    if (voteKey) voteSfdpStatus.set(voteKey, status);
+  }
+  log(`SFDP: mapped ${voteSfdpStatus.size} validators via identity→vote lookup`);
+
   // Build merged validator list
   const mergedValidators = rpcValidators.map((rpc) => {
     const wiz = wizLookup.get(rpc.votePubkey);
@@ -156,6 +172,7 @@ async function main() {
       wizScore: wiz?.wiz_score ?? null,
       stakeTier: classifyStakeTier(rpc.activatedStake, medianStake, superminorityThreshold),
       isSuperminority: rpc.activatedStake >= superminorityThreshold,
+      sfdpStatus: voteSfdpStatus.get(rpc.votePubkey) ?? null,
     };
   });
 
@@ -257,6 +274,7 @@ async function main() {
         city: v.city,
         datacenter: v.datacenter,
         client: v.client,
+        sfdpStatus: v.sfdpStatus,
       }))
     );
 
