@@ -33,9 +33,14 @@ export function Header() {
           <Link href="/" className="flex items-center gap-2.5 group">
             <LogoMark size={28} className="transition-transform duration-300 group-hover:scale-110" />
             <LogoWordmark className="hidden sm:block" />
-            <span className="text-[10px] text-beige/30 font-mono uppercase tracking-wider hidden md:block ml-1">
-              by mythx
-            </span>
+            <a
+              href="https://mythx.art"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[10px] text-beige/30 font-mono uppercase tracking-wider hidden md:block ml-1 hover:text-lavender transition-colors"
+            >
+              by Mythx
+            </a>
           </Link>
 
           {/* Desktop nav */}

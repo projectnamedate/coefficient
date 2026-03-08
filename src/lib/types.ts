@@ -46,10 +46,10 @@ export interface PoolDelegation {
 }
 
 export const SCORE_WEIGHTS = {
-  smallValidatorBias: 0.15,
-  selfDealing: 0.20,
+  smallValidatorBias: 0.20,
+  selfDealing: 0.10,
   mevSandwichPolicy: 0.15,
-  nakamotoImpact: 0.15,
+  nakamotoImpact: 0.20,
   validatorSetSize: 0.15,
   geographicDiversity: 0.10,
   commissionDiscipline: 0.10,

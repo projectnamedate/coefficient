@@ -16,7 +16,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="text-beige/40 hover:text-lavender transition-colors duration-300"
               >
-                mythx.art
+                Mythx
               </a>
             </span>
           </div>
