@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,14 +44,34 @@ export function GeoHeatmap({ data }: Props) {
   const [tooltip, setTooltip] = useState<{
     x: number; y: number; country: CountryData;
   } | null>(null);
+  const [animated, setAnimated] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Build lookup: numeric ID -> country data
-  const dataByNumericId = new Map<string, CountryData>();
-  for (const d of data) {
-    const numId = ISO2_TO_NUMERIC[d.code];
-    if (numId) dataByNumericId.set(numId, d);
-  }
+  const dataByNumericId = useMemo(() => {
+    const map = new Map<string, CountryData>();
+    for (const d of data) {
+      const numId = ISO2_TO_NUMERIC[d.code];
+      if (numId) map.set(numId, d);
+    }
+    return map;
+  }, [data]);
+
+  // Sorted country IDs by validator count descending (for staggered animation)
+  const sortedActiveIds = useMemo(() => {
+    return Array.from(dataByNumericId.entries())
+      .sort((a, b) => b[1].validatorCount - a[1].validatorCount)
+      .map(([id]) => id);
+  }, [dataByNumericId]);
+
+  // Animation delay per country: top countries light up first
+  const animDelay = useMemo(() => {
+    const map = new Map<string, number>();
+    sortedActiveIds.forEach((id, i) => {
+      map.set(id, 0.3 + i * 0.04); // stagger 40ms each, 300ms initial delay
+    });
+    return map;
+  }, [sortedActiveIds]);
 
   useEffect(() => {
     fetch(GEO_URL)
@@ -59,6 +79,8 @@ export function GeoHeatmap({ data }: Props) {
       .then((topo) => {
         const geo = topojson.feature(topo, topo.objects.countries);
         setFeatures((geo as any).features);
+        // Trigger animation after features load
+        requestAnimationFrame(() => setAnimated(true));
       });
   }, []);
 
@@ -86,20 +108,66 @@ export function GeoHeatmap({ data }: Props) {
         viewBox={`0 0 ${width} ${height}`}
         className="w-full h-auto"
       >
+        <defs>
+          {/* Glow filter for active countries */}
+          <filter id="country-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          {/* Stronger glow for top countries */}
+          <filter id="country-glow-strong" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Base map: all countries dim */}
+        {features.map((feature: any) => (
+          <path
+            key={`base-${feature.id}`}
+            d={path(feature) ?? ""}
+            fill="rgba(255,255,255,0.02)"
+            stroke="rgba(255,255,255,0.04)"
+            strokeWidth={0.5}
+          />
+        ))}
+
+        {/* Active countries: animated on top */}
         {features.map((feature: any) => {
           const countryData = dataByNumericId.get(feature.id);
-          const value = countryData ? countryData.validatorCount : 0;
+          if (!countryData) return null;
+
+          const value = countryData.validatorCount;
+          const isTop = sortedActiveIds.indexOf(feature.id) < 5;
+          const delay = animDelay.get(feature.id) ?? 0;
 
           return (
-            <path
-              key={feature.id ?? feature.properties?.name}
+            <motion.path
+              key={`active-${feature.id}`}
               d={path(feature) ?? ""}
-              fill={value > 0 ? (colorScale(value) ?? "#1a1a2e") : "rgba(255,255,255,0.02)"}
-              stroke="rgba(255,255,255,0.06)"
-              strokeWidth={0.5}
-              className="transition-colors duration-200 cursor-pointer hover:brightness-150"
+              fill={colorScale(value) ?? "#3d3578"}
+              stroke="rgba(181,178,217,0.3)"
+              strokeWidth={0.8}
+              filter={isTop ? "url(#country-glow-strong)" : "url(#country-glow)"}
+              className="cursor-pointer"
+              initial={{ opacity: 0, fillOpacity: 0 }}
+              animate={animated ? {
+                opacity: 1,
+                fillOpacity: 1,
+              } : {}}
+              transition={{
+                duration: 0.6,
+                delay,
+                ease: "easeOut",
+              }}
               onMouseEnter={(e) => {
-                if (!countryData || !svgRef.current) return;
+                if (!svgRef.current) return;
                 const rect = svgRef.current.getBoundingClientRect();
                 setTooltip({
                   x: e.clientX - rect.left,
@@ -108,13 +176,84 @@ export function GeoHeatmap({ data }: Props) {
                 });
               }}
               onMouseMove={(e) => {
-                if (!tooltip || !svgRef.current) return;
+                if (!svgRef.current) return;
                 const rect = svgRef.current.getBoundingClientRect();
                 setTooltip((prev) =>
                   prev ? { ...prev, x: e.clientX - rect.left, y: e.clientY - rect.top } : null
                 );
               }}
               onMouseLeave={() => setTooltip(null)}
+              whileHover={{ fillOpacity: 1, scale: 1.02, filter: "url(#country-glow-strong)" }}
+            />
+          );
+        })}
+
+        {/* Pulsing dots for top 10 countries at centroids */}
+        {animated && features.map((feature: any) => {
+          const countryData = dataByNumericId.get(feature.id);
+          if (!countryData) return null;
+          const rank = sortedActiveIds.indexOf(feature.id);
+          if (rank >= 10) return null;
+
+          const centroid = path.centroid(feature);
+          if (!centroid || isNaN(centroid[0])) return null;
+
+          const radius = 2 + (countryData.validatorCount / maxValidators) * 6;
+          const delay = (animDelay.get(feature.id) ?? 0) + 0.4;
+
+          return (
+            <motion.circle
+              key={`dot-${feature.id}`}
+              cx={centroid[0]}
+              cy={centroid[1]}
+              r={radius}
+              fill="#b5b2d9"
+              className="pointer-events-none"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: [0, 0.8, 0.4], scale: [0, 1.2, 1] }}
+              transition={{
+                duration: 1,
+                delay,
+                ease: "easeOut",
+              }}
+            />
+          );
+        })}
+
+        {/* Animated ring pulse on top 3 */}
+        {animated && features.map((feature: any) => {
+          const countryData = dataByNumericId.get(feature.id);
+          if (!countryData) return null;
+          const rank = sortedActiveIds.indexOf(feature.id);
+          if (rank >= 3) return null;
+
+          const centroid = path.centroid(feature);
+          if (!centroid || isNaN(centroid[0])) return null;
+
+          const delay = (animDelay.get(feature.id) ?? 0) + 0.6;
+
+          return (
+            <motion.circle
+              key={`ring-${feature.id}`}
+              cx={centroid[0]}
+              cy={centroid[1]}
+              r={8}
+              fill="none"
+              stroke="#b5b2d9"
+              strokeWidth={1}
+              className="pointer-events-none"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: [0, 0.6, 0],
+                scale: [0.5, 2, 3],
+              }}
+              transition={{
+                duration: 2,
+                delay,
+                repeat: Infinity,
+                repeatDelay: 3,
+                ease: "easeOut",
+              }}
             />
           );
         })}
