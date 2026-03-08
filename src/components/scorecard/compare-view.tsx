@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
@@ -26,8 +27,12 @@ function getTextColor(s: number): string {
 const activeScoreKeys = (Object.entries(SCORE_WEIGHTS) as [keyof PoolScores, number][])
   .filter(([, w]) => w > 0);
 
-export function CompareView({ pools }: { pools: StakePool[] }) {
-  const [selected, setSelected] = useState<string[]>([]);
+export function CompareView({ pools, initialSelected = [] }: { pools: StakePool[]; initialSelected?: string[] }) {
+  const [selected, setSelected] = useState<string[]>(
+    initialSelected.filter((id) => pools.some((p) => p.id === id))
+  );
+
+  const router = useRouter();
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -36,6 +41,12 @@ export function CompareView({ pools }: { pools: StakePool[] }) {
       return [...prev, id];
     });
   };
+
+  // Sync URL with selection
+  useEffect(() => {
+    const params = selected.length > 0 ? `?pools=${selected.join(",")}` : "";
+    router.replace(`/compare${params}`, { scroll: false });
+  }, [selected, router]);
 
   const selectedPools = selected
     .map((id) => pools.find((p) => p.id === id))

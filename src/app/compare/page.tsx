@@ -5,9 +5,20 @@ import { AnimatedSection } from "@/components/ui/animated-section";
 
 export const dynamic = "force-dynamic";
 
-export default async function ComparePage() {
-  const pools = await getPoolsWithScores();
-  const epoch = await getLatestScoredEpoch();
+export default async function ComparePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ pools?: string }>;
+}) {
+  const [pools, epoch, params] = await Promise.all([
+    getPoolsWithScores(),
+    getLatestScoredEpoch(),
+    searchParams,
+  ]);
+
+  const initialSelected = params.pools
+    ? params.pools.split(",").filter(Boolean)
+    : [];
 
   return (
     <div>
@@ -20,7 +31,7 @@ export default async function ComparePage() {
       />
 
       <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <CompareView pools={pools} />
+        <CompareView pools={pools} initialSelected={initialSelected} />
       </AnimatedSection>
     </div>
   );

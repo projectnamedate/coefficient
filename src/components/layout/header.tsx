@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { LogoMark, LogoWordmark } from "@/components/ui/logo";
 
 const navItems = [
@@ -18,6 +19,7 @@ const navItems = [
 
 export function Header() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <motion.header
@@ -36,7 +38,8 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="flex items-center gap-0.5">
+          {/* Desktop nav */}
+          <nav className="hidden lg:flex items-center gap-0.5">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -61,8 +64,69 @@ export function Header() {
               );
             })}
           </nav>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="lg:hidden relative w-8 h-8 flex items-center justify-center"
+            aria-label="Toggle menu"
+          >
+            <div className="flex flex-col gap-1.5">
+              <motion.span
+                animate={mobileOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
+                className="block w-5 h-[1.5px] bg-beige/60 origin-center"
+              />
+              <motion.span
+                animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
+                className="block w-5 h-[1.5px] bg-beige/60"
+              />
+              <motion.span
+                animate={mobileOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
+                className="block w-5 h-[1.5px] bg-beige/60 origin-center"
+              />
+            </div>
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+            className="lg:hidden overflow-hidden border-t border-white/[0.06] bg-dark/95 backdrop-blur-xl"
+          >
+            <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-0.5">
+              {navItems.map((item, i) => {
+                const isActive = pathname === item.href;
+                return (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.03 }}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={`block px-3 py-2.5 rounded-lg text-sm transition-all ${
+                        isActive
+                          ? "text-lavender font-medium bg-lavender/10"
+                          : "text-beige/50 hover:text-white hover:bg-white/[0.04]"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }

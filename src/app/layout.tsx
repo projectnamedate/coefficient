@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://coefficient.mythx.art"),
   title: "Coefficient | Solana Stake Pool Health Dashboard",
   description:
     "Measuring which Solana stake pools help decentralize the network vs. concentrate power. Built by mythx.",
