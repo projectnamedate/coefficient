@@ -78,6 +78,11 @@ export default function AboutPage() {
                 weight={10}
                 description="What percentage of the pool's validators charge 10% commission or less? Pools that pick low-commission validators return more yield to stakers."
               />
+              <ScoreExplainer
+                name="Delegation Transparency"
+                weight={0}
+                description="A qualitative grade (A-D) based on self-dealing requirements, MEV redistribution policy, and governance breadth. Shown on each pool's detail page but not weighted into the composite score."
+              />
             </div>
           </section>
 
@@ -171,7 +176,7 @@ export default function AboutPage() {
 
           {/* Built by */}
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Built by mythx</h2>
+            <h2 className="text-lg font-semibold text-white mb-3">Built by Mythx</h2>
             <p>
               Coefficient is an open-source project by{" "}
               <a href="https://mythx.art" target="_blank" rel="noopener noreferrer" className="text-lavender hover:text-lavender-light transition-colors underline underline-offset-2">
