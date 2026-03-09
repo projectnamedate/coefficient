@@ -24,6 +24,7 @@ import { fetchStakeWizValidators } from "./fetchers/stakewiz";
 import { fetchMarinadeValidators } from "./fetchers/marinade";
 import { fetchAllPoolDelegations } from "./fetchers/stake-pools";
 import { fetchSfdpParticipants } from "./fetchers/sfdp";
+import { fetchOnChainValidatorInfo } from "./fetchers/validator-info";
 import { computeAllPoolScores } from "./scoring/index";
 import { computeNakamoto } from "./scoring/nakamoto-impact";
 import {
@@ -52,6 +53,16 @@ function loadSandwichList(): { validator_pubkey: string; sandwich_count?: number
   } catch {
     warn("Could not load sandwich-validators.json, using empty list");
     return [];
+  }
+}
+
+function loadValidatorOverrides(): Record<string, { name?: string; description?: string }> {
+  try {
+    const path = join(__dirname, "data", "validator-overrides.json");
+    return JSON.parse(readFileSync(path, "utf-8"));
+  } catch {
+    warn("Could not load validator-overrides.json, using empty overrides");
+    return {};
   }
 }
 
@@ -87,14 +98,17 @@ async function main() {
     }
   }
 
-  // 4. Parallel fetches: RPC validators + StakeWiz + Marinade
+  // 4. Parallel fetches: RPC validators + StakeWiz + Marinade + On-chain info
   log("Fetching data from all sources...");
-  const [rpcValidators, stakewizValidators, marinadeValidators, sfdpMap] = await Promise.all([
+  const connection = getConnection();
+  const [rpcValidators, stakewizValidators, marinadeValidators, sfdpMap, onChainInfoMap] = await Promise.all([
     fetchVoteAccounts(),
     fetchStakeWizValidators(),
     fetchMarinadeValidators(),
     fetchSfdpParticipants(),
+    fetchOnChainValidatorInfo(connection),
   ]);
+  const validatorOverrides = loadValidatorOverrides();
 
   if (rpcValidators.length === 0) {
     fatal("RPC returned 0 validators — cannot proceed");
@@ -146,11 +160,19 @@ async function main() {
   log(`SFDP: mapped ${voteSfdpStatus.size} validators via identity→vote lookup`);
 
   // Build merged validator list
+  // Name priority: manual override > on-chain ValidatorInfo > StakeWiz > null
   const mergedValidators = rpcValidators.map((rpc) => {
     const wiz = wizLookup.get(rpc.votePubkey);
+    const onChain = onChainInfoMap.get(rpc.nodePubkey);
+    const override = validatorOverrides[rpc.votePubkey];
+
+    const name = override?.name || onChain?.name || wiz?.name || null;
+    const description = override?.description || onChain?.details || null;
+
     return {
       pubkey: rpc.votePubkey,
-      name: wiz?.name ?? null,
+      name,
+      description,
       country: wiz?.ip_country ?? null,
       city: wiz?.ip_city ?? null,
       datacenter: wiz?.ip_org ?? null,
@@ -167,8 +189,10 @@ async function main() {
     };
   });
 
+  const namedCount = mergedValidators.filter((v) => v.name).length;
+  log(`Name resolution: ${namedCount}/${mergedValidators.length} validators have names (on-chain: ${onChainInfoMap.size}, StakeWiz: ${wizLookup.size}, overrides: ${Object.keys(validatorOverrides).length})`);
+
   // 7. Fetch pool delegations from on-chain
-  const connection = getConnection();
   const splPoolDelegations = await fetchAllPoolDelegations(connection);
 
   // 8. Handle Marinade separately (uses its own API, not SPL on-chain)
@@ -261,6 +285,7 @@ async function main() {
       activeValidators.map((v) => ({
         pubkey: v.pubkey,
         name: v.name,
+        description: v.description,
         country: v.country,
         city: v.city,
         datacenter: v.datacenter,

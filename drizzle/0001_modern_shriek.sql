@@ -1,0 +1,1 @@
+ALTER TABLE `validators` ADD `description` text;

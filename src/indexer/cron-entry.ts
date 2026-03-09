@@ -11,6 +11,7 @@ import { fetchStakeWizValidators } from "./fetchers/stakewiz";
 import { fetchMarinadeValidators } from "./fetchers/marinade";
 import { fetchAllPoolDelegations } from "./fetchers/stake-pools";
 import { fetchSfdpParticipants } from "./fetchers/sfdp";
+import { fetchOnChainValidatorInfo } from "./fetchers/validator-info";
 import { computeAllPoolScores } from "./scoring/index";
 import { computeNakamoto } from "./scoring/nakamoto-impact";
 import {
@@ -25,6 +26,7 @@ import {
 } from "./writers/db-writer";
 import { POOL_REGISTRY } from "./data/pool-registry";
 import sandwichData from "./data/sandwich-validators.json";
+import validatorOverrides from "./data/validator-overrides.json";
 
 
 export async function runIndexer(): Promise<{ status: string; epoch?: number; pools?: number; elapsed?: string }> {
@@ -41,11 +43,13 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
     return { status: "skipped", epoch: epochNumber };
   }
 
-  const [rpcValidators, stakewizValidators, marinadeValidators, sfdpMap] = await Promise.all([
+  const connection = getConnection();
+  const [rpcValidators, stakewizValidators, marinadeValidators, sfdpMap, onChainInfoMap] = await Promise.all([
     fetchVoteAccounts(),
     fetchStakeWizValidators(),
     fetchMarinadeValidators(),
     fetchSfdpParticipants(),
+    fetchOnChainValidatorInfo(connection),
   ]);
 
   if (rpcValidators.length === 0) {
@@ -82,10 +86,15 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
     if (voteKey) voteSfdpStatus.set(voteKey, status);
   }
 
+  const overrides = validatorOverrides as Record<string, { name?: string; description?: string }>;
   const mergedValidators = rpcValidators.map((rpc) => {
     const wiz = wizLookup.get(rpc.votePubkey);
+    const onChain = onChainInfoMap.get(rpc.nodePubkey);
+    const override = overrides[rpc.votePubkey];
+    const name = override?.name || onChain?.name || wiz?.name || null;
+    const description = override?.description || onChain?.details || null;
     return {
-      pubkey: rpc.votePubkey, name: wiz?.name ?? null,
+      pubkey: rpc.votePubkey, name, description,
       country: wiz?.ip_country ?? null, city: wiz?.ip_city ?? null,
       datacenter: wiz?.ip_org ?? null, client: wiz?.version?.split(" ")[0] ?? "unknown",
       activatedStake: rpc.activatedStake, commission: rpc.commission,
@@ -97,7 +106,6 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
     };
   });
 
-  const connection = getConnection();
   const splPoolDelegations = await fetchAllPoolDelegations(connection);
 
   if (marinadeValidators.length > 0) {
@@ -132,7 +140,7 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
   await writeEpoch({ epochNumber, startSlot: epochData.absoluteSlot - epochData.slotIndex, totalStake: totalNetworkStake, nakamotoCoefficient });
   await writeStakePools(POOL_REGISTRY.map((p) => ({ id: p.id, name: p.name, program: p.program })));
   const activeValidators = mergedValidators.filter((v) => v.activatedStake > 0);
-  await writeValidators(activeValidators.map((v) => ({ pubkey: v.pubkey, name: v.name, country: v.country, city: v.city, datacenter: v.datacenter, client: v.client, sfdpStatus: v.sfdpStatus })));
+  await writeValidators(activeValidators.map((v) => ({ pubkey: v.pubkey, name: v.name, description: v.description, country: v.country, city: v.city, datacenter: v.datacenter, client: v.client, sfdpStatus: v.sfdpStatus })));
   await writeValidatorSnapshots(epochNumber, activeValidators.map((v) => ({ validatorPubkey: v.pubkey, activeStake: v.activatedStake, commission: v.commission, voteCredits: v.voteCredits, skipRate: v.skipRate, apy: v.apy, wizScore: v.wizScore, stakeTier: v.stakeTier, isSuperminority: v.isSuperminority })));
 
   const allDelegations: { poolId: string; validatorPubkey: string; delegatedSol: number }[] = [];

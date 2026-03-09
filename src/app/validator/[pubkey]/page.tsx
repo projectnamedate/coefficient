@@ -56,6 +56,15 @@ export default async function ValidatorDetailPage({
         gradient={val.isSandwich ? "info" : "lavender"}
       />
 
+      {/* Description */}
+      {val.description && (
+        <AnimatedSection className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="gradient-border bg-white/[0.02] rounded-xl p-5 backdrop-blur-sm">
+            <p className="text-sm text-beige/60 leading-relaxed">{val.description}</p>
+          </div>
+        </AnimatedSection>
+      )}
+
       {/* Stats Row */}
       <AnimatedSection className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

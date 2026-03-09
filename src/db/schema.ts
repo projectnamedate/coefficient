@@ -21,6 +21,7 @@ export const validators = sqliteTable("validators", {
   datacenter: text("datacenter"),
   client: text("client"), // agave, firedancer, jito, etc
   sfdpStatus: text("sfdp_status"), // eligible, active, ineligible
+  description: text("description"),
   createdAt: text("created_at").notNull(),
 });
 
