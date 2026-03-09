@@ -25,8 +25,8 @@ export async function generateMetadata({
   const val = await getValidatorDetail(pubkey);
   if (!val) return { title: "Validator Not Found | Coefficient" };
   return {
-    title: `${val.name ?? pubkey.slice(0, 8)} | Coefficient`,
-    description: `Validator ${val.name ?? pubkey.slice(0, 8)}: ${val.pools.length} pool memberships, ${formatSol(val.snapshot?.activeStake ?? 0)} SOL staked.`,
+    title: `${val.name || pubkey.slice(0, 8)} | Coefficient`,
+    description: `Validator ${val.name || pubkey.slice(0, 8)}: ${val.pools.length} pool memberships, ${formatSol(val.snapshot?.activeStake ?? 0)} SOL staked.`,
   };
 }
 
@@ -50,7 +50,7 @@ export default async function ValidatorDetailPage({
     <div>
       <HeroSection
         eyebrow={`Epoch ${val.epoch}`}
-        title={val.name ?? pubkey.slice(0, 12)}
+        title={val.name || pubkey.slice(0, 12)}
         accent={val.isSandwich ? "Sandwich Flagged" : "Validator"}
         description={`${pubkey.slice(0, 8)}...${pubkey.slice(-8)} · ${val.country ?? "Unknown"} · ${val.datacenter ?? "Unknown DC"}`}
         gradient={val.isSandwich ? "info" : "lavender"}

@@ -281,7 +281,7 @@ export default async function PoolReportCard({
                 <div key={ch.validatorPubkey} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-white">
-                      {ch.validatorName ?? ch.validatorPubkey.slice(0, 8)}
+                      {ch.validatorName || ch.validatorPubkey.slice(0, 8)}
                     </span>
                     <span className="text-[10px] text-beige/25 font-mono">
                       {formatSol(ch.delegatedSol)} SOL
@@ -324,7 +324,7 @@ export default async function PoolReportCard({
                   <td className="px-4 py-3">
                     <div>
                       <Link href={`/validator/${v.validatorPubkey}`} className="text-sm font-semibold text-white hover:text-lavender transition-colors">
-                        {v.validatorName ?? v.validatorPubkey.slice(0, 8)}
+                        {v.validatorName || v.validatorPubkey.slice(0, 8)}
                       </Link>
                       <Link href={`/validator/${v.validatorPubkey}`} className="text-[10px] text-beige/30 font-mono ml-2 hover:text-lavender/50 transition-colors">
                         {v.validatorPubkey.slice(0, 4)}...{v.validatorPubkey.slice(-4)}

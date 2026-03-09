@@ -33,7 +33,7 @@ export async function fetchStakeWizValidators(): Promise<StakeWizValidator[]> {
     return data.map((v: any) => ({
       vote_identity: v.vote_identity ?? v.votePubkey ?? "",
       identity: v.identity ?? v.nodePubkey ?? "",
-      name: v.name ?? null,
+      name: v.name?.trim() || null,
       commission: v.commission ?? 0,
       activated_stake: v.activated_stake ?? 0,
       skip_rate: v.skip_rate ?? null,

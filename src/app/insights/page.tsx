@@ -312,7 +312,7 @@ export default async function InsightsPage() {
                   {c.changes.slice(0, 5).map((ch) => (
                     <div key={ch.validatorPubkey} className="flex items-center justify-between text-xs">
                       <span className="text-beige/60">
-                        {ch.validatorName ?? ch.validatorPubkey.slice(0, 8)}
+                        {ch.validatorName || ch.validatorPubkey.slice(0, 8)}
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-beige/30 font-mono">{ch.oldCommission}%</span>

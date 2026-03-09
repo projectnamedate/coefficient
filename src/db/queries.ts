@@ -332,7 +332,7 @@ export async function getCrossPoolOverlap(epochNumber?: number) {
   for (const r of rows) {
     if (r.delegatedSol <= 0) continue;
     const existing = byValidator.get(r.validatorPubkey) ?? {
-      name: r.validatorName ?? r.validatorPubkey.slice(0, 8),
+      name: r.validatorName || r.validatorPubkey.slice(0, 8),
       pools: [],
       totalSol: 0,
     };
@@ -601,7 +601,7 @@ export async function searchPoolsAndValidators(query: string) {
 
   return {
     pools: poolResults.map((p) => ({ type: "pool" as const, id: p.id, name: p.name, subtitle: p.lstTicker })),
-    validators: validatorResults.map((v) => ({ type: "validator" as const, id: v.pubkey, name: v.name ?? v.pubkey.slice(0, 8), subtitle: v.country ?? "" })),
+    validators: validatorResults.map((v) => ({ type: "validator" as const, id: v.pubkey, name: v.name || v.pubkey.slice(0, 8), subtitle: v.country ?? "" })),
   };
 }
 
@@ -627,7 +627,7 @@ export async function getDelegationFlows(epochNumber?: number) {
   const validatorSet = new Map<string, string>();
   for (const f of flows) {
     poolSet.set(f.poolId, f.poolName);
-    validatorSet.set(f.validatorPubkey, f.validatorName ?? f.validatorPubkey.slice(0, 8));
+    validatorSet.set(f.validatorPubkey, f.validatorName || f.validatorPubkey.slice(0, 8));
   }
 
   return {

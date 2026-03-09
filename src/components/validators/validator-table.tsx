@@ -147,7 +147,7 @@ export function ValidatorTable({ validators, countryFilter }: { validators: Vali
                     <div>
                       <div className="flex items-center gap-1.5">
                         <Link href={`/validator/${v.pubkey}`} className="text-sm font-semibold text-white hover:text-lavender transition-colors">
-                          {v.name ?? v.pubkey.slice(0, 8)}
+                          {v.name || v.pubkey.slice(0, 8)}
                         </Link>
                         {v.isSandwich && (
                           <span className="text-[10px] px-1.5 py-0.5 rounded bg-score-bad/20 text-score-bad font-mono" title={`Sandwich: ${v.sandwichPercent}% of blocks`}>
