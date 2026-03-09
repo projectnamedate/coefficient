@@ -5,6 +5,7 @@
  */
 
 import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, log, warn } from "./config";
+import { classifyStakeTier } from "./classify-tier";
 import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/solana-rpc";
 import { fetchStakeWizValidators } from "./fetchers/stakewiz";
 import { fetchMarinadeValidators } from "./fetchers/marinade";
@@ -25,12 +26,6 @@ import {
 import { POOL_REGISTRY } from "./data/pool-registry";
 import sandwichData from "./data/sandwich-validators.json";
 
-function classifyStakeTier(stake: number, medianStake: number, superminorityThreshold: number): string {
-  if (stake >= superminorityThreshold) return "superminority";
-  if (stake >= medianStake * 1.5) return "large";
-  if (stake >= medianStake * 0.75) return "medium";
-  return "small";
-}
 
 export async function runIndexer(): Promise<{ status: string; epoch?: number; pools?: number; elapsed?: string }> {
   if (!SOLANA_RPC_URL) {

@@ -18,6 +18,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
 import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, parseFlags, log, warn, fatal } from "./config";
+import { classifyStakeTier } from "./classify-tier";
 import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/solana-rpc";
 import { fetchStakeWizValidators } from "./fetchers/stakewiz";
 import { fetchMarinadeValidators } from "./fetchers/marinade";
@@ -54,16 +55,6 @@ function loadSandwichList(): { validator_pubkey: string; sandwich_count?: number
   }
 }
 
-function classifyStakeTier(
-  stake: number,
-  medianStake: number,
-  superminorityThreshold: number
-): string {
-  if (stake >= superminorityThreshold) return "superminority";
-  if (stake >= medianStake * 1.5) return "large";
-  if (stake >= medianStake * 0.75) return "medium";
-  return "small";
-}
 
 // ---------------------------------------------------------------------------
 // Main pipeline

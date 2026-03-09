@@ -96,6 +96,16 @@ export default function AboutPage() {
               financial prerequisites unrelated to performance.
             </p>
             <p className="mt-3">
+              Validators are classified into size tiers based on their active stake relative to the
+              network median:{" "}
+              <span className="text-lavender">superminority</span> (stake large enough to be in the
+              top-33% cumulative set),{" "}
+              <span className="text-lavender">large</span> (≥ 1.5× median),{" "}
+              <span className="text-lavender">medium</span> (≥ 0.75× median), and{" "}
+              <span className="text-lavender">small</span> (below 0.75× median).
+              These tiers drive the Small Validator Bias sub-score.
+            </p>
+            <p className="mt-3">
               Final scores are normalized on a curve — the highest-scoring pool maps to ~95 and the
               lowest to ~55, ensuring meaningful differentiation across the field. Letter grades range
               from A (90+) to D (below 60).
