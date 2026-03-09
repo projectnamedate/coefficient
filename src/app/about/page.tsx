@@ -96,9 +96,10 @@ export default function AboutPage() {
               public API.
             </p>
             <p className="mt-3">
-              Self-dealing scores are based on manual research into each pool&apos;s delegation
-              requirements — whether validators must buy tokens, stake through specific LSTs, or meet
-              financial prerequisites unrelated to performance.
+              Self-dealing is the only manually assigned score — it is based on research into each
+              pool&apos;s delegation requirements, such as whether validators must buy tokens, stake
+              through specific LSTs, or meet financial prerequisites unrelated to performance. All
+              other metrics are computed from on-chain data.
             </p>
             <p className="mt-3">
               Validators are classified into size tiers based on their active stake relative to the
