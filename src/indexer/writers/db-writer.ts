@@ -132,7 +132,19 @@ export async function writeValidatorSnapshots(
       stakeTier: s.stakeTier,
       isSuperminority: s.isSuperminority,
     }));
-    await db.insert(schema.validatorSnapshots).values(values).onConflictDoNothing();
+    await db.insert(schema.validatorSnapshots).values(values).onConflictDoUpdate({
+      target: [schema.validatorSnapshots.epochNumber, schema.validatorSnapshots.validatorPubkey],
+      set: {
+        activeStake: sql`excluded.active_stake`,
+        commission: sql`excluded.commission`,
+        voteCredits: sql`excluded.vote_credits`,
+        skipRate: sql`excluded.skip_rate`,
+        apy: sql`excluded.apy`,
+        wizScore: sql`excluded.wiz_score`,
+        stakeTier: sql`excluded.stake_tier`,
+        isSuperminority: sql`excluded.is_superminority`,
+      },
+    });
   }
   log(`Wrote ${snapshots.length} validator snapshots`);
 }
@@ -156,7 +168,12 @@ export async function writePoolDelegations(
       validatorPubkey: d.validatorPubkey,
       delegatedSol: d.delegatedSol,
     }));
-    await db.insert(schema.poolDelegations).values(values).onConflictDoNothing();
+    await db.insert(schema.poolDelegations).values(values).onConflictDoUpdate({
+      target: [schema.poolDelegations.epochNumber, schema.poolDelegations.poolId, schema.poolDelegations.validatorPubkey],
+      set: {
+        delegatedSol: sql`excluded.delegated_sol`,
+      },
+    });
   }
 
   if (skipped > 0) warn(`Skipped ${skipped} delegations (validator not in DB)`);
