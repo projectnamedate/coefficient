@@ -2,7 +2,6 @@ import {
   getScoreDeltas,
   getLatestScoredEpoch,
   getPoolsWithScores,
-  getPoolDatacenterConcentration,
   getCommissionChanges,
   poolOverrides,
 } from "@/db/queries";
@@ -33,15 +32,6 @@ export default async function InsightsPage() {
     getPoolsWithScores(),
   ]);
 
-  // Get datacenter concentration and commission changes for all pools
-  const dcResults = await Promise.all(
-    pools.map(async (p) => ({
-      poolId: p.id,
-      poolName: p.name,
-      datacenters: await getPoolDatacenterConcentration(p.id),
-    }))
-  );
-
   const commissionResults = await Promise.all(
     pools.map(async (p) => ({
       poolId: p.id,
@@ -64,23 +54,6 @@ export default async function InsightsPage() {
     })
     .filter((c): c is NonNullable<typeof c> => c !== null && c.delta !== 0)
     .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
-
-  // Pools with high datacenter concentration (top DC > 50% of stake)
-  const dcRisks = dcResults
-    .map((d) => {
-      const top = d.datacenters[0];
-      if (!top) return null;
-      return {
-        poolId: d.poolId,
-        poolName: d.poolName,
-        topDC: top.datacenter,
-        topPct: top.percentage,
-        dcCount: d.datacenters.length,
-        datacenters: d.datacenters.slice(0, 5),
-      };
-    })
-    .filter((d): d is NonNullable<typeof d> => d !== null && d.topPct > 0.3)
-    .sort((a, b) => b.topPct - a.topPct);
 
   // Commission rugs
   const commissionRugs = commissionResults
@@ -222,8 +195,10 @@ export default async function InsightsPage() {
                     <td className="px-4 py-3 text-xs text-beige/50 font-mono">
                       {m.mevCommissionCap != null ? `${m.mevCommissionCap}%` : "—"}
                     </td>
-                    <td className="px-4 py-3 text-xs text-beige/40 max-w-xs truncate">
-                      {m.mevPolicy}
+                    <td className="px-4 py-3 text-xs text-beige/40 max-w-xs">
+                      <div className="max-h-20 overflow-y-auto leading-relaxed">
+                        {m.mevPolicy}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -233,57 +208,8 @@ export default async function InsightsPage() {
         </div>
       </AnimatedSection>
 
-      {/* Datacenter Concentration Risks */}
-      <AnimatedSection delay={0.2} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
-        <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
-          Datacenter Concentration Risks
-        </h2>
-        {dcRisks.length === 0 ? (
-          <div className="gradient-border bg-white/[0.02] rounded-xl p-6 backdrop-blur-sm text-center">
-            <p className="text-beige/40 text-sm">No pools with &gt;30% stake in a single datacenter</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {dcRisks.map((d) => (
-              <div key={d.poolId} className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-white/[0.04] transition-colors duration-200">
-                <div className="flex items-center justify-between mb-3">
-                  <Link href={`/pool/${d.poolId}`} className="text-sm font-semibold text-white hover:text-lavender transition-colors">
-                    {d.poolName}
-                  </Link>
-                  <span className="text-xs text-beige/30 font-mono">{d.dcCount} datacenters</span>
-                </div>
-                <div className="space-y-1.5">
-                  {d.datacenters.map((dc) => (
-                    <div key={dc.datacenter} className="flex items-center gap-3">
-                      <span className="text-xs text-beige/50 w-40 truncate font-mono">{dc.datacenter}</span>
-                      <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${
-                            dc.percentage > 0.5 ? "bg-score-bad" :
-                            dc.percentage > 0.3 ? "bg-score-mid" :
-                            "bg-score-good"
-                          }`}
-                          style={{ width: `${(dc.percentage * 100).toFixed(0)}%` }}
-                        />
-                      </div>
-                      <span className={`text-xs font-mono w-12 text-right ${
-                        dc.percentage > 0.5 ? "text-score-bad" :
-                        dc.percentage > 0.3 ? "text-score-mid" :
-                        "text-beige/40"
-                      }`}>
-                        {(dc.percentage * 100).toFixed(0)}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </AnimatedSection>
-
       {/* Commission Rug Detection */}
-      <AnimatedSection delay={0.3} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <AnimatedSection delay={0.2} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
           Commission Rug Detection
         </h2>
