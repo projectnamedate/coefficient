@@ -35,7 +35,6 @@ export function Header() {
               <LogoMark size={28} className="transition-transform duration-300 group-hover:scale-110" />
               <LogoWordmark className="hidden sm:block" />
             </Link>
-            <span className="text-lavender/30 hidden md:inline">·</span>
             <a
               href="https://mythx.art"
               target="_blank"
