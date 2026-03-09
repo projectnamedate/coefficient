@@ -9,11 +9,11 @@ import { GlobalSearch } from "@/components/layout/global-search";
 
 const navItems = [
   { href: "/", label: "Scorecard" },
-  { href: "/compare", label: "Compare" },
   { href: "/flows", label: "Flows" },
+  { href: "/compare", label: "Compare" },
+  { href: "/validators", label: "Validators" },
   { href: "/insights", label: "Insights" },
   { href: "/overlap", label: "Reach" },
-  { href: "/validators", label: "Validators" },
   { href: "/about", label: "About" },
 ];
 

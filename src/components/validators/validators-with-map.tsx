@@ -47,7 +47,10 @@ export function ValidatorsWithMap({ validators, countryData }: Props) {
       </div>
 
       <div className="gradient-border bg-white/[0.02] rounded-xl overflow-hidden backdrop-blur-sm mt-6">
-        <ValidatorTable validators={validators} countryFilter={selectedCountry} />
+        <ValidatorTable
+          validators={validators}
+          countryFilter={selectedCountry ? countryData.find((c) => c.code === selectedCountry)?.name ?? selectedCountry : null}
+        />
       </div>
     </>
   );

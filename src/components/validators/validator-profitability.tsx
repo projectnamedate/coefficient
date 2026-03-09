@@ -82,7 +82,7 @@ export function ValidatorProfitability({ epochs }: { epochs: TrilliumEpochData[]
         <div className="grid grid-cols-3 gap-3 py-3">
           <div className="text-center">
             <p className="text-[10px] text-beige/30 uppercase tracking-wider">Revenue</p>
-            <p className="text-lg font-bold text-score-good font-mono mt-0.5">
+            <p className="text-lg font-bold text-white font-mono mt-0.5">
               {formatSol(
                 e.validator_inflation_reward +
                 e.validator_priority_fees +
@@ -101,7 +101,7 @@ export function ValidatorProfitability({ epochs }: { epochs: TrilliumEpochData[]
           </div>
           <div className="text-center">
             <p className="text-[10px] text-beige/30 uppercase tracking-wider">Net Income</p>
-            <p className={`text-lg font-bold font-mono mt-0.5 ${netIncome >= 0 ? "text-white" : "text-score-bad"}`}>
+            <p className={`text-lg font-bold font-mono mt-0.5 ${netIncome >= 0 ? "text-score-good" : "text-score-bad"}`}>
               {formatSol(netIncome)}
             </p>
             <p className="text-[10px] text-beige/25">SOL</p>
