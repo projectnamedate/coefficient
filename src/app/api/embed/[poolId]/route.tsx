@@ -3,25 +3,10 @@ import { NextRequest } from "next/server";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getPoolReportCard } from "@/db/queries";
+import { getGrade, getBarColorHex as getColor } from "@/lib/grades";
 
 export const dynamic = "force-dynamic";
 
-function getGrade(score: number): string {
-  if (score >= 90) return "A";
-  if (score >= 85) return "A-";
-  if (score >= 80) return "B+";
-  if (score >= 75) return "B";
-  if (score >= 70) return "B-";
-  if (score >= 65) return "C+";
-  if (score >= 60) return "C";
-  return "D";
-}
-
-function getColor(score: number): string {
-  if (score >= 70) return "#abd079";
-  if (score >= 40) return "#eee56e";
-  return "#ae4845";
-}
 
 export async function GET(
   _request: NextRequest,

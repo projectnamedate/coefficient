@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, PoolScores } from "@/lib/types";
+import { getBarColor } from "@/lib/grades";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { AnimatedBar } from "@/components/ui/motion";
 
@@ -13,11 +14,6 @@ function formatSol(amount: number): string {
   return Math.round(amount).toString();
 }
 
-function getBarColor(s: number): string {
-  if (s >= 70) return "bg-score-good";
-  if (s >= 40) return "bg-score-mid";
-  return "bg-score-bad";
-}
 
 function ScoreBar({ score, label, weight, index }: { score: number; label: string; weight: number; index: number }) {
   return (

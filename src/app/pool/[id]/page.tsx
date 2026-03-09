@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getPoolReportCard, getLatestScoredEpoch, getPoolDatacenterConcentration, getCommissionChanges, poolOverrides } from "@/db/queries";
 import { SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
 import { computeTransparencyGrade } from "@/lib/transparency";
+import { getGrade, getBarColor } from "@/lib/grades";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
 import { ScoreHistoryChart } from "@/components/scorecard/score-history-chart";
 import { ScoreBadge } from "@/components/ui/score-badge";
@@ -35,22 +36,6 @@ function formatSol(amount: number): string {
   return amount.toFixed(0);
 }
 
-function getGrade(score: number): string {
-  if (score >= 90) return "A";
-  if (score >= 85) return "A-";
-  if (score >= 80) return "B+";
-  if (score >= 75) return "B";
-  if (score >= 70) return "B-";
-  if (score >= 65) return "C+";
-  if (score >= 60) return "C";
-  return "D";
-}
-
-function getBarColor(s: number): string {
-  if (s >= 70) return "bg-score-good";
-  if (s >= 40) return "bg-score-mid";
-  return "bg-score-bad";
-}
 
 export default async function PoolReportCard({
   params,

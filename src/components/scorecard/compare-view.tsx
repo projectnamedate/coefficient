@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
+import { getBarColor } from "@/lib/grades";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
 
@@ -12,11 +13,6 @@ function formatSol(amount: number): string {
   return amount.toFixed(0);
 }
 
-function getBarColor(s: number): string {
-  if (s >= 70) return "bg-score-good";
-  if (s >= 40) return "bg-score-mid";
-  return "bg-score-bad";
-}
 
 function getTextColor(s: number): string {
   if (s >= 70) return "text-score-good";
