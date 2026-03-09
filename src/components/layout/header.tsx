@@ -12,8 +12,8 @@ const navItems = [
   { href: "/flows", label: "Flows" },
   { href: "/compare", label: "Compare" },
   { href: "/validators", label: "Validators" },
-  { href: "/insights", label: "Insights" },
   { href: "/overlap", label: "Reach" },
+  { href: "/insights", label: "Insights" },
   { href: "/about", label: "About" },
 ];
 
