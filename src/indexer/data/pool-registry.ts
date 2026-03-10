@@ -5,7 +5,7 @@ export interface PoolRegistryEntry {
   program: "spl-stake-pool" | "marinade" | "sanctum-multi";
 }
 
-// On-chain stake pool addresses for the 14 tracked multi-validator pools
+// On-chain stake pool addresses for the tracked multi-validator pools
 // Sources: pool docs, solanacompass.com/stake-pools, solscan.io, github.com/SOFZP/Solana-Stake-Pools-Research
 export const POOL_REGISTRY: PoolRegistryEntry[] = [
   {
@@ -34,7 +34,7 @@ export const POOL_REGISTRY: PoolRegistryEntry[] = [
   },
   {
     id: "phase",
-    name: "Phase Delegate",
+    name: "Phase Delegation",
     stakePoolAddress: "aero2ePURjuEgLKTzcUmF6RypBncBGd7pMUYCoSsVJ6",
     program: "spl-stake-pool",
   },
@@ -90,6 +90,12 @@ export const POOL_REGISTRY: PoolRegistryEntry[] = [
     id: "indiesol",
     name: "IndieSOL",
     stakePoolAddress: "74dxJToX8wgJAueLQNVhSbbQkNd9qeVp6m9mts6M7cUb", // Layer33 collective, LST mint: L33mHftsNpaj39z1omnGbGbuA5eKqSsbmr91rjTod48
+    program: "spl-stake-pool",
+  },
+  {
+    id: "sharkpool",
+    name: "SharkPool",
+    stakePoolAddress: "HQLwnQJFH7t9nBTP4vbdW4eHy62aecfDnj8te8VzqkFL",
     program: "spl-stake-pool",
   },
 ];

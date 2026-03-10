@@ -12,7 +12,7 @@ Most existing dashboards are validator-centric. This dashboard is **pool-centric
 
 Stake pools control ~63.8M+ SOL across ~597 validators (~15% of all staked SOL). They are the kingmakers of the Solana validator ecosystem. But they operate with wildly different philosophies:
 
-- **Good pools** (e.g., Phase Delegate, BlazeStake, StarPool) prioritize giving stake to smaller, underrepresented validators in diverse geographies
+- **Good pools** (e.g., Phase Delegation, BlazeStake, StarPool) prioritize giving stake to smaller, underrepresented validators in diverse geographies
 - **Extractive pools** (e.g., Vault) use token flywheels to attract SOL, then pit validators against each other to compete for delegation - optimizing for pool revenue rather than network health. Vault specifically requires validators to: maintain 0/0 commission to qualify for the performance pool, hold $V tokens or incentivize votes on Votex.so, and direct stake through vSOL/Kamino. The top 100 validators who delegate the most SOL back through Vault's own vSOL mechanism share 40% of undirected stake equally - effectively requiring validators to buy into the system to receive delegation, creating a circular flywheel where validator demand for vSOL drives TVL which drives more delegation power.
 - **Negligent pools** delegate to validators running sandwich attacks (e.g., Marinade sending ~20% of DeezNode's stake despite DeezNode extracting ~$13.4M/month from users)
 
@@ -202,7 +202,7 @@ Rank validators by their contribution to network health, with pool affiliation c
 
 Of the 201 "pools" listed on Solana Compass, **~170+ are single-validator LST wrappers** created via Sanctum (e.g., Drift dSOL, Helius hSOL, Backpack bpSOL). These aren't making delegation decisions across validators - they're branded staking products for one operator. Our dashboard excludes these entirely.
 
-We focus on the **~14 pools that actually distribute stake across 10+ validators** - the entities making real delegation decisions that impact network decentralization.
+We focus on the **~15 pools that actually distribute stake across 10+ validators** - the entities making real delegation decisions that impact network decentralization.
 
 ### Pools In Scope (sorted by validator count)
 
@@ -212,7 +212,7 @@ We focus on the **~14 pools that actually distribute stake across 10+ validators
 | **DoubleZero** | dzSOL | 318 | 13,357,851 | 5.62% | spl-stake-pool | Infrastructure-based (private fiber network), 5% network fee |
 | **BlazeStake** | bSOL | 234 | 1,031,679 | 5.72% | spl-stake-pool | Largest open validator set, decentralization-focused |
 | **JPool** | JSOL | 217 | 1,250,759 | 5.78% | spl-stake-pool | Community signals, top 500 APY, audited spl program |
-| **Phase Delegate** | pdSOL | 163 | 1,068,321 | 5.68% | spl-stake-pool | Prioritizes small validators explicitly |
+| **Phase Delegation** | pdSOL | 163 | 1,068,321 | 5.68% | spl-stake-pool | Prioritizes small validators explicitly |
 | **Vault** | vSOL | 121 | 1,249,140 | 5.82% | spl-stake-pool | Token flywheel, validators compete for delegation via $V |
 | **dynoSOL** | dynoSOL | 76 | 523,576 | 5.81% | spl-stake-pool | TBD - needs more research |
 | **JagPool** | jagSOL | 75 | 744,077 | 5.75% | spl-stake-pool | Regional focus (LATAM, Singapore, South Africa) |
@@ -223,7 +223,7 @@ We focus on the **~14 pools that actually distribute stake across 10+ validators
 | **Definity** | definSOL | 25 | 261,604 | 5.78% | sanctum-multi | Asia-Pacific regional focus |
 | **IndieSOL** | IndieSOL | 22 | 974 | 6.53% | spl-stake-pool | Very small, indie-focused |
 
-**Total multi-validator pool stake: ~36.8M SOL across ~14 pools**
+**Total multi-validator pool stake: ~36.8M SOL across ~15 pools**
 
 ### Notable Single-Validator Pools (shown for context, not scored)
 
@@ -345,7 +345,7 @@ The Vault (vSOL) is a textbook example of a stake pool that appears to support d
 - The 0/0 commission requirement for the performance pool means validators subsidize stakers at their own expense
 - $V token holding requirement creates artificial demand for a governance token
 - The system optimizes for Vault's TVL growth, not for network decentralization
-- Contrast with Phase Delegate: simply gives more SOL to smaller validators with no token requirement
+- Contrast with Phase Delegation: simply gives more SOL to smaller validators with no token requirement
 
 **What our dashboard would show:**
 - Vault's validators are concentrated among those willing to buy into the system

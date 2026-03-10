@@ -169,7 +169,7 @@ export default function AboutPage() {
           <section>
             <h2 className="text-lg font-semibold text-white mb-3">Scope</h2>
             <p>
-              Coefficient tracks 14 multi-validator stake pools with 10+ validators. We exclude the
+              Coefficient tracks 15 multi-validator stake pools with 10+ validators. We exclude the
               170+ single-validator Sanctum wrappers (which are just thin LSTs around individual
               validators and don&apos;t make delegation decisions).
             </p>

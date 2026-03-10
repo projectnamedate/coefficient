@@ -32,7 +32,7 @@ export const MOCK_POOLS: StakePool[] = [
     networkHealthScore: 62,
     scores: {
       smallValidatorBias: 50,
-      selfDealing: 70,
+      selfDealing: 62,
       mevSandwichPolicy: 80,
       nakamotoImpact: 55,
       validatorSetSize: 93,
@@ -52,7 +52,7 @@ export const MOCK_POOLS: StakePool[] = [
     networkHealthScore: 78,
     scores: {
       smallValidatorBias: 82,
-      selfDealing: 95,
+      selfDealing: 78,
       mevSandwichPolicy: 85,
       nakamotoImpact: 75,
       validatorSetSize: 88,
@@ -83,7 +83,7 @@ export const MOCK_POOLS: StakePool[] = [
   },
   {
     id: "phase",
-    name: "Phase Delegate",
+    name: "Phase Delegation",
     lstTicker: "pdSOL",
     program: "spl-stake-pool",
     activeSolStaked: 1068321,
@@ -112,7 +112,7 @@ export const MOCK_POOLS: StakePool[] = [
     networkHealthScore: 35,
     scores: {
       smallValidatorBias: 45,
-      selfDealing: 10,
+      selfDealing: 0,
       mevSandwichPolicy: 60,
       nakamotoImpact: 40,
       validatorSetSize: 65,
@@ -192,7 +192,7 @@ export const MOCK_POOLS: StakePool[] = [
     networkHealthScore: 52,
     scores: {
       smallValidatorBias: 50,
-      selfDealing: 75,
+      selfDealing: 72,
       mevSandwichPolicy: 30,
       nakamotoImpact: 55,
       validatorSetSize: 45,
@@ -232,7 +232,7 @@ export const MOCK_POOLS: StakePool[] = [
     networkHealthScore: 48,
     scores: {
       smallValidatorBias: 40,
-      selfDealing: 50,
+      selfDealing: 42,
       mevSandwichPolicy: 70,
       nakamotoImpact: 45,
       validatorSetSize: 40,
@@ -279,6 +279,26 @@ export const MOCK_POOLS: StakePool[] = [
       geographicDiversity: 55,
       commissionDiscipline: 70,
       transparency: 60,
+    },
+  },
+  {
+    id: "sharkpool",
+    name: "SharkPool",
+    lstTicker: "sharkSOL",
+    program: "spl-stake-pool",
+    activeSolStaked: 207928,
+    validatorCount: 10,
+    medianApy: 5.66,
+    networkHealthScore: 60,
+    scores: {
+      smallValidatorBias: 65,
+      selfDealing: 82,
+      mevSandwichPolicy: 50,
+      nakamotoImpact: 55,
+      validatorSetSize: 15,
+      geographicDiversity: 20,
+      commissionDiscipline: 75,
+      transparency: 40,
     },
   },
 ];

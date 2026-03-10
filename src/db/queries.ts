@@ -296,7 +296,11 @@ export async function getPoolReportCard(poolId: string) {
     })
     .from(poolDelegations)
     .innerJoin(validators, eq(poolDelegations.validatorPubkey, validators.pubkey))
-    .where(and(eq(poolDelegations.poolId, poolId), eq(poolDelegations.epochNumber, epoch)))
+    .where(and(
+      eq(poolDelegations.poolId, poolId),
+      eq(poolDelegations.epochNumber, epoch),
+      sql`${poolDelegations.delegatedSol} > 0`
+    ))
     .orderBy(desc(poolDelegations.delegatedSol))
     .limit(10);
 
@@ -365,7 +369,11 @@ export async function getPoolDatacenterConcentration(poolId: string, epochNumber
     })
     .from(poolDelegations)
     .innerJoin(validators, eq(poolDelegations.validatorPubkey, validators.pubkey))
-    .where(and(eq(poolDelegations.poolId, poolId), eq(poolDelegations.epochNumber, epoch)))
+    .where(and(
+      eq(poolDelegations.poolId, poolId),
+      eq(poolDelegations.epochNumber, epoch),
+      sql`${poolDelegations.delegatedSol} > 0`
+    ))
     .groupBy(validators.datacenter)
     .orderBy(desc(sql`sum(${poolDelegations.delegatedSol})`));
 
@@ -390,7 +398,11 @@ export async function getCommissionChanges(poolId: string, epochNumber?: number)
       delegatedSol: poolDelegations.delegatedSol,
     })
     .from(poolDelegations)
-    .where(and(eq(poolDelegations.poolId, poolId), eq(poolDelegations.epochNumber, epoch)));
+    .where(and(
+      eq(poolDelegations.poolId, poolId),
+      eq(poolDelegations.epochNumber, epoch),
+      sql`${poolDelegations.delegatedSol} > 0`
+    ));
 
   if (currentDelegations.length === 0) return [];
 
