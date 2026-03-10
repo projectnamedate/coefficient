@@ -1,4 +1,4 @@
-import { LogoMark } from "@/components/ui/logo";
+import { LogoMark, LogoWordmark } from "@/components/ui/logo";
 
 export function Footer() {
   return (
@@ -8,18 +8,15 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-beige/40">
           <div className="flex items-center gap-2.5">
             <LogoMark size={20} className="opacity-50" />
-            <span className="font-display text-lavender/70 text-lg tracking-wide">Coefficient</span>
-            <span className="text-beige/30">
-              by{" "}
-              <a
-                href="https://mythx.art"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-beige/40 hover:text-lavender hover:drop-shadow-[0_0_6px_rgba(181,178,217,0.4)] transition-all duration-300"
-              >
-                Mythx
-              </a>
-            </span>
+            <LogoWordmark />
+            <a
+              href="https://mythx.art"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] text-beige/50 font-mono uppercase tracking-wider flex items-center gap-1 hover:text-lavender hover:drop-shadow-[0_0_6px_rgba(181,178,217,0.4)] transition-all duration-300"
+            >
+              by Mythx
+            </a>
           </div>
           <div className="flex items-center gap-4 text-xs">
             <span>Data updates daily</span>

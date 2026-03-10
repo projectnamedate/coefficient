@@ -8,7 +8,7 @@ import { scoreSmallValidatorBias } from "./small-validator-bias";
 import { scoreSelfDealing } from "./self-dealing";
 import { scoreMevSandwich } from "./mev-sandwich";
 import { scoreNakamotoImpact, computeNakamoto } from "./nakamoto-impact";
-import { scoreValidatorSetSize } from "./validator-set-size";
+import { scoreStakeDistribution } from "./validator-set-size";
 import { scoreGeographicDiversity } from "./geographic-diversity";
 import { scoreCommissionDiscipline } from "./commission-discipline";
 import { scoreTransparency } from "./transparency";
@@ -107,7 +107,7 @@ export function computeAllPoolScores(
     const selfDealing = scoreSelfDealing(poolId);
     const mevSandwichPolicy = scoreMevSandwich(delegations, sandwichValidators);
     const nakamotoImpact = scoreNakamotoImpact(delegations, allStakes);
-    const validatorSetSizeScore = scoreValidatorSetSize(validatorCount);
+    const validatorSetSizeScore = scoreStakeDistribution(delegations);
     const geographicDiversity = scoreGeographicDiversity(delegations, countries, totalNetworkCountries);
     const commissionDiscipline = scoreCommissionDiscipline(delegations, commissions);
     const transparency = scoreTransparency(poolId, validatorCount);

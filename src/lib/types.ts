@@ -61,7 +61,7 @@ export const SCORE_LABELS: Record<keyof PoolScores, string> = {
   selfDealing: "Self-Dealing",
   mevSandwichPolicy: "MEV/Sandwich Policy",
   nakamotoImpact: "Nakamoto Impact",
-  validatorSetSize: "Validator Set Size",
+  validatorSetSize: "Stake Distribution",
   geographicDiversity: "Geographic Diversity",
   commissionDiscipline: "Commission Discipline",
   transparency: "Transparency", // weight=0, kept for schema compat

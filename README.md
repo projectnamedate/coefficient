@@ -43,7 +43,7 @@ Each pool receives a **Network Health Score** (0–100) composed of 7 weighted s
 | Small Validator Bias | 20% | Stake to validators below median vs. superminority |
 | Nakamoto Impact | 20% | Would removing this pool's delegation hurt the Nakamoto Coefficient? |
 | MEV/Sandwich Policy | 15% | Exposure to known sandwich validators |
-| Validator Set Size | 15% | Number of unique validators in the pool |
+| Stake Distribution | 15% | How evenly stake is spread across validators (Shannon entropy + count bonus) |
 | Self-Dealing | 10% | Token purchase or LST staking requirements for delegation |
 | Geographic Diversity | 10% | Shannon entropy of stake-weighted country distribution |
 | Commission Discipline | 10% | Percentage of validators at ≤10% commission |

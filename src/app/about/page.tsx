@@ -59,9 +59,9 @@ export default function AboutPage() {
                 description="How much of the pool's delegated stake goes to known sandwich attackers? Sandwich validators extract value from users through front-running. Pools should avoid delegating to them."
               />
               <ScoreExplainer
-                name="Validator Set Size"
+                name="Stake Distribution"
                 weight={15}
-                description="How many unique validators does the pool delegate to? More validators means more decentralization, with diminishing returns above ~100."
+                description="How evenly does the pool spread its stake across validators? Measured using normalized Shannon entropy. A pool that gives equal amounts to each validator scores higher than one that concentrates most stake in a few. A small bonus rewards pools that delegate to more validators."
               />
               <ScoreExplainer
                 name="Self-Dealing"
