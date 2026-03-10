@@ -19,19 +19,19 @@ Coefficient tracks multi-validator stake pools with 10+ validators. Single-valid
 | Pool | LST | Program |
 |------|-----|---------|
 | Jito | JitoSOL | SPL Stake Pool |
-| DoubleZero | dzSOL | SPL Stake Pool |
+| DoubleZero | dSOL | SPL Stake Pool |
 | BlazeStake | bSOL | SPL Stake Pool |
 | JPool | JSOL | SPL Stake Pool |
-| Phase Delegation | pdSOL | SPL Stake Pool |
+| Phase Delegation | phaseSOL | SPL Stake Pool |
 | Vault | vSOL | SPL Stake Pool |
 | dynoSOL | dynoSOL | SPL Stake Pool |
 | JagPool | jagSOL | SPL Stake Pool |
-| STKE | STKESOL | SPL Stake Pool |
+| STKE | stkeSOL | SPL Stake Pool |
 | Marinade | mSOL | Marinade |
-| Shinobi | xSHIN | SPL Stake Pool |
+| Shinobi | shinSOL | SPL Stake Pool |
 | Edgevana | edgeSOL | SPL Stake Pool |
-| Definity | definSOL | Sanctum Multi |
-| IndieSOL | IndieSOL | SPL Stake Pool |
+| Definity | dfSOL | Sanctum Multi |
+| IndieSOL | indSOL | SPL Stake Pool |
 | SharkPool | sharkSOL | SPL Stake Pool |
 
 ## Scoring
