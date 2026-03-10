@@ -54,7 +54,7 @@ export default function AboutPage() {
                 description="If this pool's delegations were removed, what would happen to the Nakamoto Coefficient? Pools whose delegations improve decentralization score higher."
               />
               <ScoreExplainer
-                name="MEV/Sandwich Policy"
+                name="Sandwich Policy"
                 weight={15}
                 description="How much of the pool's delegated stake goes to known sandwich attackers? Sandwich validators extract value from users through front-running. Pools should avoid delegating to them."
               />
@@ -155,7 +155,7 @@ export default function AboutPage() {
               <DataSource
                 name="sandwiched.me"
                 url="https://sandwiched.me"
-                description="Curated list of validators flagged for sandwich attacks, used in the MEV/Sandwich scoring."
+                description="Curated list of validators flagged for sandwich attacks, used in the Sandwich Policy scoring."
               />
               <DataSource
                 name="a-guard (GitHub)"

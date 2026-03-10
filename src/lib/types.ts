@@ -59,7 +59,7 @@ export const SCORE_WEIGHTS = {
 export const SCORE_LABELS: Record<keyof PoolScores, string> = {
   smallValidatorBias: "Small Validator Bias",
   selfDealing: "Self-Dealing",
-  mevSandwichPolicy: "MEV/Sandwich Policy",
+  mevSandwichPolicy: "Sandwich Policy",
   nakamotoImpact: "Nakamoto Impact",
   validatorSetSize: "Stake Distribution",
   geographicDiversity: "Geographic Diversity",

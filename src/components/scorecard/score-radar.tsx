@@ -105,7 +105,7 @@ export function ScoreRadar({ scores, size = 280, compareScores, className = "" }
         {/* Labels */}
         {ACTIVE_KEYS.map((key, i) => {
           const pt = polarToCart(i * angleStep, r + 20);
-          const label = SCORE_LABELS[key].replace("MEV/Sandwich Policy", "MEV").replace("Commission Discipline", "Commission");
+          const label = SCORE_LABELS[key].replace("Sandwich Policy", "Sandwich").replace("Commission Discipline", "Commission");
           return (
             <text
               key={key}

@@ -1,5 +1,5 @@
 /**
- * MEV/Sandwich Policy Score (15% weight)
+ * Sandwich Policy Score (15% weight)
  * Measures what percentage of a pool's delegated stake goes to known sandwich validators.
  * 0% sandwich stake = 100 score. Higher sandwich exposure = lower score.
  */
