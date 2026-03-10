@@ -254,7 +254,17 @@ export default async function InsightsPage() {
             </p>
           </Link>
 
-          <Link href="/pool/edgevana" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors sm:col-span-2">
+          <Link href="/pool/vault" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-score-bad/20 text-score-bad font-mono">Flywheel</span>
+              <span className="text-sm font-semibold text-white">Vault</span>
+            </div>
+            <p className="text-xs text-beige/50 leading-relaxed">
+              25% SaaS fee on yield. Kamino offers up to 7.5x leverage on vSOL, and USDC bribes on governance gauges direct stake — a full token flywheel where delegation is purchasable.
+            </p>
+          </Link>
+
+          <Link href="/pool/edgevana" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Closed Ecosystem</span>
               <span className="text-sm font-semibold text-white">Edgevana</span>
