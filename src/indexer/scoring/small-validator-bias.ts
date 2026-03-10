@@ -1,5 +1,5 @@
 /**
- * Small Validator Bias Score (25% weight)
+ * Small Validator Bias Score (20% weight)
  * Measures whether the pool delegates to validators that need stake,
  * or piles onto already-large ones.
  */

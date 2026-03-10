@@ -220,7 +220,7 @@ export async function writePoolScores(
   epochNumber: number,
   scores: PoolScoreResult[]
 ) {
-  // Only 14 pools, upsert individually is fine
+  // Small number of pools, upsert individually is fine
   for (const s of scores) {
     await db
       .insert(schema.poolScores)

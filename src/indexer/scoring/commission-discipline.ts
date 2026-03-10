@@ -1,5 +1,5 @@
 /**
- * Commission Discipline Score (5% weight)
+ * Commission Discipline Score (10% weight)
  * Percentage of pool's delegated validators that have commission ≤ 10%.
  */
 

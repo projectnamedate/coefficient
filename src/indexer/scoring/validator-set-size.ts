@@ -1,5 +1,5 @@
 /**
- * Validator Set Size Score (10% weight)
+ * Validator Set Size Score (15% weight)
  * Normalized count with diminishing returns above ~100.
  * Uses exponential curve: score = (1 - exp(-count / 80)) * 100
  */

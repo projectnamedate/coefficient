@@ -1,5 +1,5 @@
 /**
- * Self-Dealing Score (15% weight)
+ * Self-Dealing Score (10% weight)
  * Flags pools that require validators to buy pool tokens/LSTs to receive delegation.
  * Lookup from manual overrides.
  */

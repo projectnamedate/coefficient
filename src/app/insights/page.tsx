@@ -208,6 +208,64 @@ export default async function InsightsPage() {
         </div>
       </AnimatedSection>
 
+      {/* Delegation Red Flags */}
+      <AnimatedSection delay={0.15} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
+          Delegation Red Flags
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Link href="/pool/marinade" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-score-bad/20 text-score-bad font-mono">Exploit</span>
+              <span className="text-sm font-semibold text-white">Marinade</span>
+            </div>
+            <p className="text-xs text-beige/50 leading-relaxed">
+              37,000 SOL (~$5M) siphoned over 126 epochs by 85+ validators gaming the SAM auction. Validators bid high to win stake, then dropped bids to dust while a bug kept them delegated.
+            </p>
+          </Link>
+
+          <Link href="/pool/blazestake" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Flywheel</span>
+              <span className="text-sm font-semibold text-white">BlazeStake</span>
+            </div>
+            <p className="text-xs text-beige/50 leading-relaxed">
+              BLZE gauge system controls 10% of delegation. Validators can purchase votes via the Votex marketplace to direct stake to themselves with positive ROI — a partial token flywheel.
+            </p>
+          </Link>
+
+          <Link href="/pool/doublezero" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Pay-to-Play</span>
+              <span className="text-sm font-semibold text-white">DoubleZero</span>
+            </div>
+            <p className="text-xs text-beige/50 leading-relaxed">
+              Largest pool by TVL charges validators a mandatory 5% fee on block rewards and priority fees. Must join private fiber network to receive delegation.
+            </p>
+          </Link>
+
+          <Link href="/pool/stke" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Conflict</span>
+              <span className="text-sm font-semibold text-white">STKE</span>
+            </div>
+            <p className="text-xs text-beige/50 leading-relaxed">
+              SOL Strategies (NASDAQ: STKE) owns both StakeWiz — the scoring platform that determines delegation — and 4 major validators (Laine, Cogent, Orangefin) that benefit from it.
+            </p>
+          </Link>
+
+          <Link href="/pool/edgevana" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors sm:col-span-2">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Closed Ecosystem</span>
+              <span className="text-sm font-semibold text-white">Edgevana</span>
+            </div>
+            <p className="text-xs text-beige/50 leading-relaxed">
+              Validators must use Edgevana bare-metal hosting to receive delegation. Edgevana profits from both hosting fees and pool management — a direct infrastructure revenue flywheel.
+            </p>
+          </Link>
+        </div>
+      </AnimatedSection>
+
       {/* Commission Rug Detection */}
       <AnimatedSection delay={0.2} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">

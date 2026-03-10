@@ -38,14 +38,14 @@ The headline view. Every stake pool gets a composite **"Network Health Score"** 
 
 | Metric | What It Measures | How It's Computed |
 |--------|-----------------|-------------------|
-| **Small Validator Bias** (weight: 25%) | Does the pool delegate to validators that need stake, or pile onto already-large ones? | Ratio of stake going to validators below median stake vs. above. Bonus for stake to validators outside the superminority. Penalty for stake going to top-20 validators. |
-| **Self-Dealing Score** (weight: 15%) | Does the pool require validators to buy pool tokens/LSTs to receive delegation? | Flags pools where validators must purchase pool products ($V tokens, vSOL, governance tokens) or stake back through the pool's own LST to qualify for delegation. Binary + severity: no requirement = 100, optional incentive = 60, required = 0. |
+| **Small Validator Bias** (weight: 20%) | Does the pool delegate to validators that need stake, or pile onto already-large ones? | Ratio of stake going to validators below median stake vs. above. Bonus for stake to validators outside the superminority. Penalty for stake going to top-20 validators. |
+| **Self-Dealing Score** (weight: 10%) | Does the pool require validators to buy pool tokens/LSTs to receive delegation? | Flags pools where validators must purchase pool products ($V tokens, vSOL, governance tokens) or stake back through the pool's own LST to qualify for delegation. Binary + severity: no requirement = 100, optional incentive = 60, required = 0. |
 | **MEV/Sandwich Policy** (weight: 15%) | Does the pool blacklist sandwich validators? | Binary: does the pool have an active blacklist? Plus: % of pool's delegated stake going to known sandwich validators (from Sandwiched.me + Pine Stake data). 0% = perfect score. |
-| **Nakamoto Coefficient Impact** (weight: 15%) | Would removing this pool's delegation improve or worsen the Nakamoto coefficient? | Simulate removal of pool's stake from all its validators. If Nakamoto coefficient drops, pool is net-positive. If it stays the same or rises, pool is concentrating stake. |
-| **Validator Set Size** (weight: 10%) | How many validators does the pool support? | Normalized count. More validators = better, with diminishing returns above ~100. |
+| **Nakamoto Coefficient Impact** (weight: 20%) | Would removing this pool's delegation improve or worsen the Nakamoto coefficient? | Simulate removal of pool's stake from all its validators. If Nakamoto coefficient drops, pool is net-positive. If it stays the same or rises, pool is concentrating stake. |
+| **Validator Set Size** (weight: 15%) | How many validators does the pool support? | Normalized count. More validators = better, with diminishing returns above ~100. |
 | **Geographic Diversity** (weight: 10%) | Does the pool spread stake across regions and data centers? | Shannon entropy of delegated validators' geographic distribution (country + data center). Higher entropy = better score. |
-| **Commission Discipline** (weight: 5%) | Does the pool enforce reasonable commission? | % of delegated validators at or below 10% commission. Deduct for validators with no commission cap. |
-| **Transparency** (weight: 5%) | Are criteria, blacklists, and APIs public? | Qualitative checklist: published delegation criteria, public API, open blacklist, governance process. No Discord-only application gatekeeping. |
+| **Commission Discipline** (weight: 10%) | Does the pool enforce reasonable commission? | % of delegated validators at or below 10% commission. Deduct for validators with no commission cap. |
+| **Transparency** (weight: 0%) | Are criteria, blacklists, and APIs public? | Qualitative checklist: published delegation criteria, public API, open blacklist, governance process. Shown on pool detail pages but not weighted into composite score. |
 
 #### Scorecard UI
 
@@ -222,8 +222,9 @@ We focus on the **~15 pools that actually distribute stake across 10+ validators
 | **Edgevana** | edgeSOL | 48 | 828,375 | 5.75% | spl-stake-pool | Requires Edgevana infrastructure hosting |
 | **Definity** | definSOL | 25 | 261,604 | 5.78% | sanctum-multi | Asia-Pacific regional focus |
 | **IndieSOL** | IndieSOL | 22 | 974 | 6.53% | spl-stake-pool | Very small, indie-focused |
+| **SharkPool** | sharkSOL | 10 | 207,928 | 5.66% | spl-stake-pool | University validator partnerships (Princeton, UPenn) |
 
-**Total multi-validator pool stake: ~36.8M SOL across ~15 pools**
+**Total multi-validator pool stake: ~37M SOL across ~15 pools**
 
 ### Notable Single-Validator Pools (shown for context, not scored)
 

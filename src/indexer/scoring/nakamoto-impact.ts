@@ -1,5 +1,5 @@
 /**
- * Nakamoto Impact Score (15% weight)
+ * Nakamoto Impact Score (20% weight)
  * Simulates removing a pool's delegations and measures the impact on the Nakamoto coefficient.
  * Positive impact (removing pool hurts decentralization) = high score.
  * Negative impact (removing pool helps decentralization) = low score.
