@@ -102,7 +102,7 @@ export default async function InsightsPage() {
           : `Epoch ${epoch ?? "—"}`}
         title="Pool"
         accent="Insights"
-        description="Score changes, MEV redistribution policies, datacenter concentration risks, commission rugs, and delegation transparency grades."
+        description="Score changes, MEV redistribution policies, datacenter concentration risks, and delegation transparency grades."
         gradient="lavender"
       />
 
