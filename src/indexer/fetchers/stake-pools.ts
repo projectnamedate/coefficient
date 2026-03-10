@@ -3,6 +3,11 @@ import { stakePoolInfo, StakePoolLayout, ValidatorListLayout } from "@solana/spl
 import { LAMPORTS_PER_SOL, log, warn } from "../config";
 import { POOL_REGISTRY, type PoolRegistryEntry } from "../data/pool-registry";
 
+// SPL stake pools maintain a minimum ~1 SOL rent-exempt reserve per validator
+// stake account. Filter out these placeholder entries that don't represent
+// actual delegation intent.
+const MIN_MEANINGFUL_DELEGATION_SOL = 1.1;
+
 export interface PoolDelegationData {
   poolId: string;
   validators: {
@@ -36,7 +41,7 @@ async function fetchSinglePool(
           : Number(entry.transientStakeLamports ?? 0);
         const sol = (stakeLamports + transientLamports) / LAMPORTS_PER_SOL;
 
-        if (voteAddress && sol > 0) {
+        if (voteAddress && sol > MIN_MEANINGFUL_DELEGATION_SOL) {
           validators.push({ voteAccountAddress: voteAddress, activeSol: sol });
           totalSol += sol;
         }
@@ -84,7 +89,7 @@ async function fetchSanctumMultiPool(
         : Number(entry.transientStakeLamports ?? 0);
       const sol = (stakeLamports + transientLamports) / LAMPORTS_PER_SOL;
 
-      if (voteAddress && sol > 0) {
+      if (voteAddress && sol > MIN_MEANINGFUL_DELEGATION_SOL) {
         validators.push({ voteAccountAddress: voteAddress, activeSol: sol });
         totalSol += sol;
       }

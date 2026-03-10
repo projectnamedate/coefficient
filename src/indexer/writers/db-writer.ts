@@ -36,7 +36,7 @@ export async function writeEpoch(epoch: {
 }
 
 export async function writeStakePools(
-  pools: { id: string; name: string; program: string }[]
+  pools: { id: string; name: string; lstTicker: string; program: string }[]
 ) {
   const now = new Date().toISOString();
   for (const p of pools) {
@@ -45,11 +45,18 @@ export async function writeStakePools(
       .values({
         id: p.id,
         name: p.name,
-        lstTicker: p.id.toUpperCase(),
+        lstTicker: p.lstTicker,
         program: p.program,
         createdAt: now,
       })
-      .onConflictDoNothing();
+      .onConflictDoUpdate({
+        target: schema.stakePools.id,
+        set: {
+          name: p.name,
+          lstTicker: p.lstTicker,
+          program: p.program,
+        },
+      });
   }
   log(`Wrote ${pools.length} stake pools`);
 }

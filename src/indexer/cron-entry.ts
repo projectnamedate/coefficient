@@ -109,10 +109,12 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
   const splPoolDelegations = await fetchAllPoolDelegations(connection);
 
   if (marinadeValidators.length > 0) {
-    const marinadeDelegations = marinadeValidators.map((v) => ({
-      voteAccountAddress: v.vote_account,
-      activeSol: v.marinade_stake / LAMPORTS_PER_SOL,
-    }));
+    const marinadeDelegations = marinadeValidators
+      .map((v) => ({
+        voteAccountAddress: v.vote_account,
+        activeSol: v.marinade_stake / LAMPORTS_PER_SOL,
+      }))
+      .filter((d) => d.activeSol > 1.1); // Exclude minimum-stake placeholders
     splPoolDelegations.push({
       poolId: "marinade",
       validators: marinadeDelegations,
@@ -138,7 +140,7 @@ export async function runIndexer(): Promise<{ status: string; epoch?: number; po
 
   // Write to DB
   await writeEpoch({ epochNumber, startSlot: epochData.absoluteSlot - epochData.slotIndex, totalStake: totalNetworkStake, nakamotoCoefficient });
-  await writeStakePools(POOL_REGISTRY.map((p) => ({ id: p.id, name: p.name, program: p.program })));
+  await writeStakePools(POOL_REGISTRY.map((p) => ({ id: p.id, name: p.name, lstTicker: p.lstTicker, program: p.program })));
   const activeValidators = mergedValidators.filter((v) => v.activatedStake > 0);
   await writeValidators(activeValidators.map((v) => ({ pubkey: v.pubkey, name: v.name, description: v.description, country: v.country, city: v.city, datacenter: v.datacenter, client: v.client, sfdpStatus: v.sfdpStatus })));
   await writeValidatorSnapshots(epochNumber, activeValidators.map((v) => ({ validatorPubkey: v.pubkey, activeStake: v.activatedStake, commission: v.commission, voteCredits: v.voteCredits, skipRate: v.skipRate, apy: v.apy, wizScore: v.wizScore, stakeTier: v.stakeTier, isSuperminority: v.isSuperminority })));

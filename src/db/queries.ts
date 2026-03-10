@@ -11,6 +11,10 @@ import {
 } from "./schema";
 import type { StakePool, PoolScores } from "@/lib/types";
 
+// SPL stake pools maintain ~1 SOL minimum per validator stake account.
+// Filter out these placeholder entries across all queries.
+const MIN_DELEGATION_SOL = 1.1;
+
 /** Get the latest epoch number that has scores */
 export async function getLatestScoredEpoch(): Promise<number | null> {
   const result = await db
@@ -299,7 +303,7 @@ export async function getPoolReportCard(poolId: string) {
     .where(and(
       eq(poolDelegations.poolId, poolId),
       eq(poolDelegations.epochNumber, epoch),
-      sql`${poolDelegations.delegatedSol} > 0`
+      sql`${poolDelegations.delegatedSol} > ${MIN_DELEGATION_SOL}`
     ))
     .orderBy(desc(poolDelegations.delegatedSol))
     .limit(10);
@@ -372,7 +376,7 @@ export async function getPoolDatacenterConcentration(poolId: string, epochNumber
     .where(and(
       eq(poolDelegations.poolId, poolId),
       eq(poolDelegations.epochNumber, epoch),
-      sql`${poolDelegations.delegatedSol} > 0`
+      sql`${poolDelegations.delegatedSol} > ${MIN_DELEGATION_SOL}`
     ))
     .groupBy(validators.datacenter)
     .orderBy(desc(sql`sum(${poolDelegations.delegatedSol})`));
@@ -401,7 +405,7 @@ export async function getCommissionChanges(poolId: string, epochNumber?: number)
     .where(and(
       eq(poolDelegations.poolId, poolId),
       eq(poolDelegations.epochNumber, epoch),
-      sql`${poolDelegations.delegatedSol} > 0`
+      sql`${poolDelegations.delegatedSol} > ${MIN_DELEGATION_SOL}`
     ));
 
   if (currentDelegations.length === 0) return [];
@@ -554,7 +558,7 @@ export async function getValidatorDetail(pubkey: string) {
     .where(and(
       eq(poolDelegations.validatorPubkey, pubkey),
       eq(poolDelegations.epochNumber, epoch),
-      sql`${poolDelegations.delegatedSol} > 0`
+      sql`${poolDelegations.delegatedSol} > ${MIN_DELEGATION_SOL}`
     ))
     .orderBy(desc(poolDelegations.delegatedSol));
 
@@ -633,7 +637,7 @@ export async function getDelegationFlows(epochNumber?: number) {
     .from(poolDelegations)
     .innerJoin(stakePools, eq(poolDelegations.poolId, stakePools.id))
     .innerJoin(validators, eq(poolDelegations.validatorPubkey, validators.pubkey))
-    .where(and(eq(poolDelegations.epochNumber, epoch), sql`${poolDelegations.delegatedSol} > 0`));
+    .where(and(eq(poolDelegations.epochNumber, epoch), sql`${poolDelegations.delegatedSol} > ${MIN_DELEGATION_SOL}`));
 
   const poolSet = new Map<string, string>();
   const validatorSet = new Map<string, string>();

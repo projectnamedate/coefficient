@@ -198,10 +198,12 @@ async function main() {
   // 8. Handle Marinade separately (uses its own API, not SPL on-chain)
   const marinadePool = POOL_REGISTRY.find((p) => p.id === "marinade");
   if (marinadePool && marinadeValidators.length > 0) {
-    const marinadeDelegations = marinadeValidators.map((v) => ({
-      voteAccountAddress: v.vote_account,
-      activeSol: v.marinade_stake / LAMPORTS_PER_SOL,
-    }));
+    const marinadeDelegations = marinadeValidators
+      .map((v) => ({
+        voteAccountAddress: v.vote_account,
+        activeSol: v.marinade_stake / LAMPORTS_PER_SOL,
+      }))
+      .filter((d) => d.activeSol > 1.1); // Exclude minimum-stake placeholders
     const totalMarinadeSol = marinadeDelegations.reduce((s, d) => s + d.activeSol, 0);
     splPoolDelegations.push({
       poolId: "marinade",
@@ -276,7 +278,7 @@ async function main() {
 
     // Write stake pool entries
     await writeStakePools(
-      POOL_REGISTRY.map((p) => ({ id: p.id, name: p.name, program: p.program }))
+      POOL_REGISTRY.map((p) => ({ id: p.id, name: p.name, lstTicker: p.lstTicker, program: p.program }))
     );
 
     // Write validators (only those with stake)
