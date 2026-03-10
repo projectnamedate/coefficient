@@ -216,7 +216,7 @@ export default async function InsightsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link href="/pool/marinade" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-score-bad/20 text-score-bad font-mono">Exploit</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-mono">Exploit</span>
               <span className="text-sm font-semibold text-white">Marinade</span>
             </div>
             <p className="text-xs text-beige/50 leading-relaxed">
@@ -226,7 +226,7 @@ export default async function InsightsPage() {
 
           <Link href="/pool/blazestake" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Flywheel</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-mono">Flywheel</span>
               <span className="text-sm font-semibold text-white">BlazeStake</span>
             </div>
             <p className="text-xs text-beige/50 leading-relaxed">
@@ -236,7 +236,7 @@ export default async function InsightsPage() {
 
           <Link href="/pool/doublezero" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Pay-to-Play</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-mono">Pay-to-Play</span>
               <span className="text-sm font-semibold text-white">DoubleZero</span>
             </div>
             <p className="text-xs text-beige/50 leading-relaxed">
@@ -246,7 +246,7 @@ export default async function InsightsPage() {
 
           <Link href="/pool/stke" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Conflict</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-mono">Conflict</span>
               <span className="text-sm font-semibold text-white">STKE</span>
             </div>
             <p className="text-xs text-beige/50 leading-relaxed">
@@ -256,7 +256,7 @@ export default async function InsightsPage() {
 
           <Link href="/pool/vault" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-score-bad/20 text-score-bad font-mono">Flywheel</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-mono">Flywheel</span>
               <span className="text-sm font-semibold text-white">Vault</span>
             </div>
             <p className="text-xs text-beige/50 leading-relaxed">
@@ -266,7 +266,7 @@ export default async function InsightsPage() {
 
           <Link href="/pool/edgevana" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-score-mid/20 text-score-mid font-mono">Closed Ecosystem</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-mono">Closed Ecosystem</span>
               <span className="text-sm font-semibold text-white">Edgevana</span>
             </div>
             <p className="text-xs text-beige/50 leading-relaxed">
