@@ -236,11 +236,11 @@ export default async function InsightsPage() {
 
           <Link href="/pool/doublezero" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-mono">Pay-to-Play</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-score-good/20 text-score-good font-mono">Resolved</span>
               <span className="text-sm font-semibold text-white">DoubleZero</span>
             </div>
             <p className="text-xs text-beige/50 leading-relaxed">
-              Largest pool by TVL charges validators a mandatory 5% fee on block rewards and priority fees. Must join private fiber network to receive delegation.
+              Previously charged a 5% fee on block rewards. As of epoch 939, fees are removed and validators now earn 1-7% of stakeweight for contributing to multicast. Geographic decentralization bonus included.
             </p>
           </Link>
 

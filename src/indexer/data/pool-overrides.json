@@ -9,10 +9,10 @@
     "mevCommissionCap": 10
   },
   "doublezero": {
-    "selfDealingScore": 62,
-    "selfDealingNotes": "Mandatory DoubleZero network membership with 5% revenue fee on block rewards and priority fees. Validators must connect to private fiber network and pay infrastructure fees as a condition of delegation. 2Z token exists but not required for delegation. Pay-to-play infrastructure model.",
-    "transparencyNotes": "Published criteria, weekly rebalancing. Co-founded by Austin Federa (former Solana Foundation). Infrastructure provides real value (low-latency fiber) but creates financial barrier.",
-    "mevPolicy": "No specific MEV/Jito requirement. Focus on infrastructure performance. Separate 5% network fee on block rewards.",
+    "selfDealingScore": 85,
+    "selfDealingNotes": "5% validator fee REMOVED as of epoch 939. Validators now earn from DoubleZero: 1% baseline (IBRL connection), 2% shred distribution (multicast), up to 4% geographic decentralization bonus. Multicast connection requires one CLI command. 2Z token exists but not required for delegation. Previously pay-to-play, now pay-to-participate (validators are compensated).",
+    "transparencyNotes": "Published criteria, weekly rebalancing. Co-founded by Austin Federa (former Solana Foundation). DZDP Phase II expanded pool from 3M to 13M SOL. Geographic diversity bonus actively incentivizes decentralization.",
+    "mevPolicy": "No specific MEV/Jito requirement. Multicast shred distribution equalizes block data access across validators regardless of stake size.",
     "jitoClient": "partial",
     "mevTipsToStakers": false,
     "mevCommissionCap": null
