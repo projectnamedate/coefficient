@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from "react";
-import * as d3 from "d3";
+import { geoNaturalEarth1, geoPath } from "d3-geo";
+import { scaleSequential } from "d3-scale";
+import { interpolateRgbBasis } from "d3-interpolate";
 import * as topojson from "topojson-client";
 import { motion, AnimatePresence } from "framer-motion";
+import { formatSol } from "@/lib/format";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -32,12 +35,6 @@ interface Props {
   data: CountryData[];
   selectedCountry?: string | null;
   onCountryClick?: (code: string | null) => void;
-}
-
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
 }
 
 export function GeoHeatmap({ data, selectedCountry, onCountryClick }: Props) {
@@ -90,15 +87,15 @@ export function GeoHeatmap({ data, selectedCountry, onCountryClick }: Props) {
 
   const width = 960;
   const height = 480;
-  const projection = d3.geoNaturalEarth1()
+  const projection = geoNaturalEarth1()
     .scale(160)
     .translate([width / 2, height / 2]);
-  const pathGen = d3.geoPath(projection);
+  const pathGen = geoPath(projection);
 
   const maxValidators = Math.max(...data.map((d) => d.validatorCount), 1);
-  const colorScale = d3.scaleSequential()
+  const colorScale = scaleSequential()
     .domain([0, maxValidators])
-    .interpolator(d3.interpolateRgbBasis([
+    .interpolator(interpolateRgbBasis([
       "#2a2550",
       "#3d3578",
       "#7c6ff5",

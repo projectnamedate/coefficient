@@ -4,10 +4,7 @@
  * 0% sandwich stake = 100 score. Higher sandwich exposure = lower score.
  */
 
-interface DelegationEntry {
-  validatorPubkey: string;
-  delegatedSol: number;
-}
+import type { DelegationEntry } from "./types";
 
 export function scoreMevSandwich(
   poolDelegations: DelegationEntry[],

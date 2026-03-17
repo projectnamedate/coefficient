@@ -4,12 +4,13 @@ import { notFound } from "next/navigation";
 import { getPoolReportCard, getLatestScoredEpoch, getPoolDatacenterConcentration, getCommissionChanges, poolOverrides } from "@/db/queries";
 import { SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
 import { computeTransparencyGrade } from "@/lib/transparency";
-import { getGrade, getBarColor } from "@/lib/grades";
+import { getGrade, getBarColor, getGradeColor } from "@/lib/grades";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
 import { ScoreHistoryChart } from "@/components/scorecard/score-history-chart";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { HeroSection } from "@/components/ui/hero-section";
+import { formatSol } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -30,12 +31,6 @@ export async function generateMetadata({
   };
 }
 
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
-}
-
 
 export default async function PoolReportCard({
   params,
@@ -43,6 +38,8 @@ export default async function PoolReportCard({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  if (!/^[a-z0-9-]+$/.test(id)) notFound();
+
   const [pool, datacenters, commissionChanges] = await Promise.all([
     getPoolReportCard(id),
     getPoolDatacenterConcentration(id),
@@ -208,12 +205,7 @@ export default async function PoolReportCard({
                   Delegation Transparency
                 </h2>
                 <div className="flex items-center gap-4">
-                  <span className={`text-4xl font-bold font-mono ${
-                    grade === "A" ? "text-score-good" :
-                    grade === "B" ? "text-score-mid" :
-                    grade === "C" ? "text-beige/60" :
-                    "text-score-bad"
-                  }`}>
+                  <span className={`text-4xl font-bold font-mono ${getGradeColor(grade)}`}>
                     {grade}
                   </span>
                   <div className="flex-1">

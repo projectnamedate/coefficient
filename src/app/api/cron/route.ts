@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { runIndexer } from "@/indexer/cron-entry";
 
 export const maxDuration = 60;
@@ -33,8 +34,16 @@ async function sendAlert(message: string) {
 }
 
 export async function GET(request: Request) {
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+  }
+
+  const authHeader = request.headers.get("authorization") ?? "";
+  const expected = `Bearer ${cronSecret}`;
+  const authBuf = Buffer.from(authHeader);
+  const expectedBuf = Buffer.from(expected);
+  if (authBuf.length !== expectedBuf.length || !timingSafeEqual(authBuf, expectedBuf)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -54,6 +63,6 @@ export async function GET(request: Request) {
 
     await sendAlert(`Coefficient indexer FAILED: ${message}`);
 
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

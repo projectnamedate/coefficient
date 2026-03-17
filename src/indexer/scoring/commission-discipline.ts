@@ -3,10 +3,7 @@
  * Percentage of pool's delegated validators that have commission ≤ 10%.
  */
 
-interface DelegationEntry {
-  validatorPubkey: string;
-  delegatedSol: number;
-}
+import type { DelegationEntry } from "./types";
 
 export function scoreCommissionDiscipline(
   poolDelegations: DelegationEntry[],

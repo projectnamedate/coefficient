@@ -4,17 +4,11 @@ import { join } from "node:path";
 import { getPoolReportCard } from "@/db/queries";
 import { SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
 import { getGrade, getBarColorHex as getBarColor } from "@/lib/grades";
+import { formatSol } from "@/lib/format";
 
 export const alt = "Coefficient – Solana Stake Pool Health Score";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-
-
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
-}
 
 export default async function Image({
   params,

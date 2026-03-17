@@ -7,13 +7,7 @@ import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, PoolScores } from "@/lib/types"
 import { getBarColor } from "@/lib/grades";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { AnimatedBar } from "@/components/ui/motion";
-
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return Math.round(amount).toString();
-}
-
+import { formatSol } from "@/lib/format";
 
 function ScoreBar({ score, label, weight, index }: { score: number; label: string; weight: number; index: number }) {
   return (

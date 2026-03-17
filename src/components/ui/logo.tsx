@@ -73,12 +73,3 @@ export function LogoWordmark({ className = "" }: { className?: string }) {
     </svg>
   );
 }
-
-export function LogoCombined({ className = "" }: { className?: string }) {
-  return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <LogoMark size={30} />
-      <LogoWordmark />
-    </div>
-  );
-}

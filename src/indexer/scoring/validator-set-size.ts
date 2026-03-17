@@ -7,10 +7,7 @@
  * 20% of score: Diminishing-returns count bonus (breadth)
  */
 
-interface DelegationEntry {
-  validatorPubkey: string;
-  delegatedSol: number;
-}
+import type { DelegationEntry } from "./types";
 
 function shannonEntropy(shares: number[]): number {
   let h = 0;
@@ -51,6 +48,3 @@ export function scoreStakeDistribution(delegations: DelegationEntry[]): number {
   const score = evenness * 80 + countBonus * 0.2;
   return Math.round(Math.max(0, Math.min(100, score)));
 }
-
-// Keep old export name for backwards compatibility in scoring/index.ts
-export const scoreValidatorSetSize = scoreStakeDistribution;

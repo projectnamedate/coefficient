@@ -4,10 +4,7 @@
  * Higher entropy = more evenly spread across countries = better.
  */
 
-interface DelegationEntry {
-  validatorPubkey: string;
-  delegatedSol: number;
-}
+import type { DelegationEntry } from "./types";
 
 export function scoreGeographicDiversity(
   poolDelegations: DelegationEntry[],

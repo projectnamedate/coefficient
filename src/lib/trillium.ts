@@ -37,7 +37,7 @@ export async function getValidatorProfitability(
   pubkey: string
 ): Promise<TrilliumEpochData[]> {
   try {
-    const res = await fetch(`${BASE}/validator_rewards/${pubkey}`, {
+    const res = await fetch(`${BASE}/validator_rewards/${encodeURIComponent(pubkey)}`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return [];

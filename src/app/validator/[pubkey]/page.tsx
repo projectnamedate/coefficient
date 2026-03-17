@@ -7,14 +7,9 @@ import { ValidatorProfitability } from "@/components/validators/validator-profit
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
+import { formatSol } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
-
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
-}
 
 export async function generateMetadata({
   params,
@@ -36,6 +31,8 @@ export default async function ValidatorDetailPage({
   params: Promise<{ pubkey: string }>;
 }) {
   const { pubkey } = await params;
+  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(pubkey)) notFound();
+
   const [val, trilliumData] = await Promise.all([
     getValidatorDetail(pubkey),
     getValidatorProfitability(pubkey),

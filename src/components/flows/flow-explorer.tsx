@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { formatSol } from "@/lib/format";
 
 interface FlowData {
   pools: { id: string; name: string }[];
@@ -10,12 +11,6 @@ interface FlowData {
 }
 
 type ViewMode = "pools" | "validators";
-
-function formatSol(value: number): string {
-  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
-  if (value >= 1_000) return `${(value / 1_000).toFixed(0)}K`;
-  return value.toFixed(0);
-}
 
 function FlowBar({
   label,

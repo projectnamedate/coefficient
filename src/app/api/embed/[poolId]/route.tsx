@@ -13,6 +13,18 @@ export async function GET(
   { params }: { params: Promise<{ poolId: string }> }
 ) {
   const { poolId } = await params;
+
+  if (!/^[a-z0-9-]+$/.test(poolId)) {
+    return new ImageResponse(
+      (
+        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#1a1a1a", color: "#cdc8bd", fontSize: 18 }}>
+          Invalid pool ID
+        </div>
+      ),
+      { width: 320, height: 160 }
+    );
+  }
+
   const pool = await getPoolReportCard(poolId);
 
   const bnRigidly = await readFile(

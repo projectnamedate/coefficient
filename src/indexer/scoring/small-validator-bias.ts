@@ -4,10 +4,7 @@
  * or piles onto already-large ones.
  */
 
-interface DelegationEntry {
-  validatorPubkey: string;
-  delegatedSol: number;
-}
+import type { DelegationEntry } from "./types";
 
 export function scoreSmallValidatorBias(
   poolDelegations: DelegationEntry[],

@@ -5,10 +5,7 @@
  * Negative impact (removing pool helps decentralization) = low score.
  */
 
-interface DelegationEntry {
-  validatorPubkey: string;
-  delegatedSol: number;
-}
+import type { DelegationEntry } from "./types";
 
 function computeNakamoto(stakes: number[]): number {
   if (stakes.length === 0) return 0;

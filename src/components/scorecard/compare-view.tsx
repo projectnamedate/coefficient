@@ -1,18 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
 import { getBarColor } from "@/lib/grades";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
-
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
-}
-
+import { formatSol } from "@/lib/format";
 
 function getTextColor(s: number): string {
   if (s >= 70) return "text-score-good";

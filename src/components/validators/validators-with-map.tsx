@@ -2,27 +2,7 @@
 
 import { useState } from "react";
 import { GeoHeatmap, type CountryData } from "@/components/validators/geo-heatmap";
-import { ValidatorTable } from "@/components/validators/validator-table";
-
-interface ValidatorRow {
-  pubkey: string;
-  name: string | null;
-  country: string | null;
-  city: string | null;
-  datacenter: string | null;
-  client: string | null;
-  sfdpStatus: string | null;
-  activeStake: number;
-  commission: number;
-  skipRate: number | null;
-  apy: number | null;
-  wizScore: number | null;
-  stakeTier: string | null;
-  isSuperminority: boolean | null;
-  isSandwich: boolean;
-  sandwichPercent: number | null;
-  pools: { poolId: string; poolName: string; delegatedSol: number }[];
-}
+import { ValidatorTable, type ValidatorRow } from "@/components/validators/validator-table";
 
 interface Props {
   validators: ValidatorRow[];

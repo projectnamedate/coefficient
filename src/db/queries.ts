@@ -214,10 +214,6 @@ function toIso2(raw: string): string {
   return NAME_TO_ISO2[raw] ?? raw;
 }
 
-function countryName(code: string): string {
-  return COUNTRY_NAMES[code] ?? code;
-}
-
 /** Get historical scores for a pool (all epochs) */
 export async function getPoolScoreHistory(poolId: string) {
   const rows = await db
@@ -593,7 +589,8 @@ export async function getValidatorDetail(pubkey: string) {
 
 /** Search pools and validators by name */
 export async function searchPoolsAndValidators(query: string) {
-  const pattern = `%${query}%`;
+  const escaped = query.replace(/[%_\\]/g, '\\$&');
+  const pattern = `%${escaped}%`;
 
   const poolResults = await db
     .select({

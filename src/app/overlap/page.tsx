@@ -1,14 +1,9 @@
 import { getCrossPoolOverlap, getLatestScoredEpoch } from "@/db/queries";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
+import { formatSol } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
-
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
-}
 
 export default async function OverlapPage() {
   const [overlap, epoch] = await Promise.all([

@@ -14,10 +14,8 @@ import { scoreCommissionDiscipline } from "./commission-discipline";
 import { scoreTransparency } from "./transparency";
 import { log } from "../config";
 
-interface DelegationEntry {
-  validatorPubkey: string;
-  delegatedSol: number;
-}
+import type { DelegationEntry } from "./types";
+export type { DelegationEntry };
 
 interface ValidatorInfo {
   pubkey: string;

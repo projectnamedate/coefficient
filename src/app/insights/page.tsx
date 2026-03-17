@@ -9,21 +9,10 @@ import { computeTransparencyGrade } from "@/lib/transparency";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import Link from "next/link";
+import { formatSol } from "@/lib/format";
+import { getGradeColor } from "@/lib/grades";
 
 export const dynamic = "force-dynamic";
-
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
-}
-
-function gradeColor(grade: string): string {
-  if (grade === "A") return "text-score-good";
-  if (grade === "B") return "text-score-mid";
-  if (grade === "C") return "text-beige/60";
-  return "text-score-bad";
-}
 
 export default async function InsightsPage() {
   const [deltas, epoch, pools] = await Promise.all([
@@ -172,7 +161,7 @@ export default async function InsightsPage() {
                       </Link>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`text-lg font-bold font-mono ${gradeColor(m.transparencyGrade)}`}>
+                      <span className={`text-lg font-bold font-mono ${getGradeColor(m.transparencyGrade)}`}>
                         {m.transparencyGrade}
                       </span>
                     </td>

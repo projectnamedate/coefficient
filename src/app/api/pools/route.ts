@@ -6,10 +6,12 @@ export async function GET() {
     const epoch = await getLatestScoredEpoch();
     const pools = await getPoolsWithScores();
 
-    return NextResponse.json({ epoch, pools });
+    return NextResponse.json({ epoch, pools }, {
+      headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200" },
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error("API /pools error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

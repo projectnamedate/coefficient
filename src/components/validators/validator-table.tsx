@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { formatSol } from "@/lib/format";
 
-interface ValidatorRow {
+export interface ValidatorRow {
   pubkey: string;
   name: string | null;
   country: string | null;
@@ -21,12 +22,6 @@ interface ValidatorRow {
   isSandwich: boolean;
   sandwichPercent: number | null;
   pools: { poolId: string; poolName: string; delegatedSol: number }[];
-}
-
-function formatSol(amount: number): string {
-  if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
-  if (amount >= 1_000) return `${(amount / 1_000).toFixed(0)}K`;
-  return amount.toFixed(0);
 }
 
 function TierBadge({ tier }: { tier: string | null }) {

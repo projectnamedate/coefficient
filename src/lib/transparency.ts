@@ -56,7 +56,7 @@ export function computeTransparencyScore(
   return Math.round(Math.max(0, Math.min(100, score)));
 }
 
-export function transparencyGradeFromScore(score: number): string {
+function transparencyGradeFromScore(score: number): string {
   if (score >= 80) return "A";
   if (score >= 65) return "B";
   if (score >= 45) return "C";

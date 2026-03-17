@@ -18,6 +18,14 @@ export function getBarColor(s: number): string {
   return "bg-score-bad";
 }
 
+/** Tailwind text-color class for a letter grade. */
+export function getGradeColor(grade: string): string {
+  if (grade === "A") return "text-score-good";
+  if (grade === "B") return "text-score-mid";
+  if (grade === "C") return "text-beige/60";
+  return "text-score-bad";
+}
+
 /** Hex color for score bar (OG / Satori images). */
 export function getBarColorHex(s: number): string {
   if (s >= 70) return "#abd079";
