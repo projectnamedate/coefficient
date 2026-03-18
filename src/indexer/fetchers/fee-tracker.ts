@@ -65,62 +65,95 @@ export interface FeeAccountBalance {
 }
 
 /**
- * Classify a Helius-parsed transaction for a fee account.
+ * Determine if the fee account's token balance changed in this transaction.
+ *
+ * Critical: Helius returns ALL transactions that touch the address, including
+ * epoch update cranks that list the fee account as a read-only reference,
+ * and other users' swaps that route through AMMs. We only care about
+ * transactions where the fee account's actual token balance changed.
+ *
+ * Uses accountData.tokenBalanceChanges (the authoritative source) rather than
+ * tokenTransfers (which uses wallet owner addresses, not token account addresses).
  */
-function classifyHeliusTransaction(tx: any): { type: FeeEventType; destination: string | null; label: string | null } {
-  const txType = tx.type as string;
-  const description = tx.description ?? "";
+function getFeeAccountBalanceChange(tx: any, feeAccountAddress: string): { direction: "outgoing" | "incoming" | "none"; amount: number } {
+  const accountData = tx.accountData ?? [];
+  const feeAcctData = accountData.find((a: any) => a.account === feeAccountAddress);
 
-  // Helius classifies swaps automatically
-  if (txType === "SWAP") {
-    return { type: "swapped", destination: null, label: "DEX Swap" };
+  if (!feeAcctData) return { direction: "none", amount: 0 };
+
+  const tokenChanges = feeAcctData.tokenBalanceChanges ?? [];
+  for (const change of tokenChanges) {
+    const rawChange = change.rawTokenAmount?.tokenAmount;
+    if (!rawChange) continue;
+    const decimals = change.rawTokenAmount?.decimals ?? 9;
+    const amount = Number(rawChange) / Math.pow(10, decimals);
+
+    if (amount < 0) return { direction: "outgoing", amount: Math.abs(amount) };
+    if (amount > 0) return { direction: "incoming", amount };
   }
 
-  // Token transfers — check destination
+  return { direction: "none", amount: 0 };
+}
+
+/**
+ * Classify a Helius-parsed transaction for a fee account.
+ * Only classifies as a sell action (swapped/redeemed/transferred) if the
+ * fee account actually sent tokens out. Otherwise ignores the transaction
+ * or classifies as "collected" if tokens came in.
+ */
+function classifyHeliusTransaction(tx: any, feeAccountAddress: string): { type: FeeEventType; destination: string | null; label: string | null; amount: number } | null {
+  const txType = tx.type as string;
+  const { direction, amount } = getFeeAccountBalanceChange(tx, feeAccountAddress);
+
+  // Skip transactions that don't change the fee account's token balance
+  if (direction === "none") return null;
+
+  // Incoming tokens = fee collection (epoch fee minting)
+  if (direction === "incoming") {
+    return { type: "collected", destination: null, label: null, amount };
+  }
+
+  // From here, direction === "outgoing" — the fee account lost tokens.
+  // Now classify what kind of outgoing action it was.
+
+  // DEX swap where fee account is the seller
+  if (txType === "SWAP") {
+    return { type: "swapped", destination: null, label: "DEX Swap", amount };
+  }
+
+  // Stake pool redemption (withdraw LST for SOL)
+  if (txType === "UNSTAKE_SOL" || txType === "WITHDRAW") {
+    return { type: "redeemed", destination: null, label: "Pool Redemption", amount };
+  }
+
+  // Token transfer out — check if destination is a known exchange
   if (txType === "TRANSFER" || txType === "TOKEN_TRANSFER") {
     const transfers = tx.tokenTransfers ?? [];
     for (const t of transfers) {
       const dest = t.toUserAccount ?? t.toTokenAccount ?? "";
       const cex = CEX_ADDRESSES.get(dest);
       if (cex) {
-        return { type: "transferred", destination: dest, label: cex };
+        return { type: "transferred", destination: dest, label: cex, amount };
       }
     }
-    // Transfer to unknown address
-    const firstTransfer = transfers[0];
-    return {
-      type: "unknown",
-      destination: firstTransfer?.toUserAccount ?? null,
-      label: null,
-    };
+    return { type: "transferred", destination: null, label: null, amount };
   }
 
-  // Stake pool withdraw/unstake
-  if (txType === "UNSTAKE_SOL" || txType === "WITHDRAW") {
-    return { type: "redeemed", destination: null, label: "Pool Redemption" };
-  }
-
-  // Token mint = fee collection
-  if (txType === "TOKEN_MINT") {
-    return { type: "collected", destination: null, label: null };
-  }
-
-  // Check account keys for known programs as fallback
-  const accountKeys: string[] = tx.accountData?.map((a: any) => a.account) ?? [];
+  // Fallback: check program IDs for known DEX/pool programs
   const instructions = tx.instructions ?? [];
   const programIds = instructions.map((ix: any) => ix.programId);
-  const allPrograms = [...programIds, ...accountKeys];
 
-  for (const pid of allPrograms) {
+  for (const pid of programIds) {
     if (DEX_PROGRAMS.has(pid)) {
-      return { type: "swapped", destination: null, label: "DEX Swap" };
+      return { type: "swapped", destination: null, label: "DEX Swap", amount };
     }
     if (STAKE_POOL_PROGRAMS.has(pid)) {
-      return { type: "redeemed", destination: null, label: "Pool Redemption" };
+      return { type: "redeemed", destination: null, label: "Pool Redemption", amount };
     }
   }
 
-  return { type: "unknown", destination: null, label: null };
+  // Outgoing but can't classify further
+  return { type: "unknown", destination: null, label: null, amount };
 }
 
 /**
@@ -160,27 +193,13 @@ export async function trackPoolFeeAccount(
 
     const events: FeeEvent[] = [];
     for (const tx of transactions) {
-      const { type, destination, label } = classifyHeliusTransaction(tx);
+      const classified = classifyHeliusTransaction(tx, feeAccountAddress);
+      if (!classified) continue; // Transaction didn't change the fee account's token balance
+      const { type, destination, label, amount } = classified;
 
-      // Try to extract SOL amount from native transfers or token transfers
-      let amountSol: number | null = null;
-      const nativeTransfers = tx.nativeTransfers ?? [];
-      const tokenTransfers = tx.tokenTransfers ?? [];
-
-      if (nativeTransfers.length > 0) {
-        // Sum outgoing SOL from the fee account
-        const outgoing = nativeTransfers
-          .filter((t: any) => t.fromUserAccount === feeAccountAddress)
-          .reduce((s: number, t: any) => s + (t.amount ?? 0), 0);
-        if (outgoing > 0) amountSol = outgoing / LAMPORTS_PER_SOL;
-      }
-      if (!amountSol && tokenTransfers.length > 0) {
-        // Token amounts from Helius — treated as approximate SOL equivalent (LST ≈ SOL)
-        const outgoing = tokenTransfers
-          .filter((t: any) => t.fromUserAccount === feeAccountAddress)
-          .reduce((s: number, t: any) => s + (t.tokenAmount ?? 0), 0);
-        if (outgoing > 0) amountSol = outgoing;
-      }
+      // Amount comes from accountData.tokenBalanceChanges (authoritative)
+      // Treated as approximate SOL equivalent since LST ≈ SOL
+      const amountSol = amount > 0 ? amount : null;
 
       events.push({
         poolId,
@@ -226,10 +245,18 @@ export async function getFeeAccountBalance(
 
 /**
  * Track all pool fee accounts and return classified events + balances.
+ *
+ * Tracks the managerFeeAccount (token account) for:
+ * - Incoming mints (epoch fee collection)
+ * - Balance decreases (tokens withdrawn/sold — classified by transaction type)
+ *
+ * Note: Most pools accumulate LST in the fee account and rarely sell.
+ * When a balance decrease IS detected, the transaction type reveals the method
+ * (DEX swap, pool redemption, transfer to exchange, etc.)
  */
 export async function trackAllPoolFees(
   connection: Connection,
-  poolFeeAccounts: { poolId: string; managerFeeAccount: string }[],
+  poolFeeAccounts: { poolId: string; managerFeeAccount: string; managerWallet?: string }[],
 ): Promise<{ events: FeeEvent[]; balances: FeeAccountBalance[] }> {
   const allEvents: FeeEvent[] = [];
   const allBalances: FeeAccountBalance[] = [];
@@ -237,22 +264,22 @@ export async function trackAllPoolFees(
   for (const pool of poolFeeAccounts) {
     if (!pool.managerFeeAccount) continue;
 
-    // Fetch transaction history from Helius
+    // Track the fee token account for both collections and withdrawals
     const events = await trackPoolFeeAccount(pool.poolId, pool.managerFeeAccount);
     allEvents.push(...events);
 
-    // Get current balance
+    // Get current balance of the fee token account
     const balance = await getFeeAccountBalance(connection, pool.managerFeeAccount);
     if (balance) {
       allBalances.push({
         poolId: pool.poolId,
         feeAccountAddress: pool.managerFeeAccount,
         tokenBalance: balance.tokenBalance,
-        solEquivalent: balance.tokenBalance, // LST ≈ SOL (slightly > 1:1 due to accumulated rewards)
+        solEquivalent: balance.tokenBalance, // LST ≈ SOL
       });
     }
 
-    // Rate limit: avoid hammering Helius
+    // Rate limit
     await new Promise((r) => setTimeout(r, 300));
   }
 

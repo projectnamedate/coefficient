@@ -361,7 +361,14 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
       const { trackAllPoolFees } = await import("./fetchers/fee-tracker");
       const poolFeeAccounts = revenueResults
         .filter((r) => r.managerFeeAccount)
-        .map((r) => ({ poolId: r.poolId, managerFeeAccount: r.managerFeeAccount! }));
+        .map((r) => {
+          const poolData = splPoolDelegations.find((p) => p.poolId === r.poolId);
+          return {
+            poolId: r.poolId,
+            managerFeeAccount: r.managerFeeAccount!,
+            managerWallet: poolData?.feeData?.managerWallet,
+          };
+        });
 
       const { events, balances } = await trackAllPoolFees(connection, poolFeeAccounts);
       await writePoolFeeEvents(epochNumber, events);

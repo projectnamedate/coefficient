@@ -22,7 +22,8 @@ export interface PoolFeeData {
   depositFeeDenominator: number;
   withdrawalFeeNumerator: number;
   withdrawalFeeDenominator: number;
-  managerFeeAccount: string;
+  managerFeeAccount: string; // token account that receives minted LST
+  managerWallet: string; // the wallet that owns the fee account — this is who we track for sells
   totalLamports: number;
   lastEpochTotalLamports: number;
 }
@@ -76,6 +77,7 @@ async function fetchSinglePool(
       withdrawalFeeNumerator: toBN(info.stakeWithdrawalFee?.numerator),
       withdrawalFeeDenominator: toBN(info.stakeWithdrawalFee?.denominator),
       managerFeeAccount: String(info.managerFeeAccount ?? ""),
+      managerWallet: String(info.manager ?? ""),
       totalLamports: toBN(info.totalLamports),
       lastEpochTotalLamports: toBN(info.lastEpochTotalLamports),
     };
@@ -137,6 +139,9 @@ async function fetchSanctumMultiPool(
       managerFeeAccount: typeof poolData.managerFeeAccount?.toBase58 === "function"
         ? poolData.managerFeeAccount.toBase58()
         : String(poolData.managerFeeAccount ?? ""),
+      managerWallet: typeof poolData.manager?.toBase58 === "function"
+        ? poolData.manager.toBase58()
+        : String(poolData.manager ?? ""),
       totalLamports: toBN(poolData.totalLamports),
       lastEpochTotalLamports: toBN(poolData.lastEpochTotalLamports),
     };
