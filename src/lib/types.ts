@@ -8,6 +8,11 @@ export interface StakePool {
   medianApy: number;
   networkHealthScore: number;
   scores: PoolScores;
+  // Revenue data (Tier 1)
+  epochFeePercent: number | null;
+  epochRevenueSol: number | null;
+  cumulativeRevenueSol: number | null;
+  feeSource: string | null;
 }
 
 export interface PoolScores {

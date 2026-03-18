@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPoolReportCard, getLatestScoredEpoch, getPoolDatacenterConcentration, getCommissionChanges, poolOverrides } from "@/db/queries";
+import { getPoolReportCard, getLatestScoredEpoch, getPoolDatacenterConcentration, getCommissionChanges, poolOverrides, getPoolFeeBehavior } from "@/db/queries";
 import { SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
 import { computeTransparencyGrade } from "@/lib/transparency";
 import { getGrade, getBarColor, getGradeColor } from "@/lib/grades";
@@ -10,7 +10,7 @@ import { ScoreHistoryChart } from "@/components/scorecard/score-history-chart";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { HeroSection } from "@/components/ui/hero-section";
-import { formatSol } from "@/lib/format";
+import { formatSol, formatSolPrecise } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -40,10 +40,11 @@ export default async function PoolReportCard({
   const { id } = await params;
   if (!/^[a-z0-9-]+$/.test(id)) notFound();
 
-  const [pool, datacenters, commissionChanges] = await Promise.all([
+  const [pool, datacenters, commissionChanges, feeBehavior] = await Promise.all([
     getPoolReportCard(id),
     getPoolDatacenterConcentration(id),
     getCommissionChanges(id),
+    getPoolFeeBehavior(id),
   ]);
 
   if (!pool) notFound();
@@ -150,6 +151,174 @@ export default async function PoolReportCard({
           />
         </div>
       </AnimatedSection>
+
+      {/* Pool Revenue */}
+      {pool.epochFeePercent != null && (
+        <AnimatedSection delay={0.12} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="gradient-border bg-white/[0.02] rounded-xl p-6 backdrop-blur-sm">
+            <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider mb-4">
+              Pool Revenue
+              {pool.feeSource === "estimated" && (
+                <span className="ml-2 text-[10px] text-score-mid font-normal normal-case">(estimated)</span>
+              )}
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div>
+                <p className="text-[10px] text-beige/40 uppercase tracking-wider mb-1">Epoch Fee</p>
+                <p className="text-lg font-mono font-semibold text-white">
+                  {((pool.epochFeePercent ?? 0) * 100).toFixed(1)}%
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] text-beige/40 uppercase tracking-wider mb-1">This Epoch</p>
+                <p className="text-lg font-mono font-semibold text-white">
+                  {formatSolPrecise(pool.epochRevenueSol ?? 0)} <span className="text-xs text-beige/40">SOL</span>
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] text-beige/40 uppercase tracking-wider mb-1">Cumulative</p>
+                <p className="text-lg font-mono font-semibold text-white">
+                  {formatSol(pool.cumulativeRevenueSol ?? 0)} <span className="text-xs text-beige/40">SOL</span>
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] text-beige/40 uppercase tracking-wider mb-1">Est. Annual</p>
+                <p className="text-lg font-mono font-semibold text-white">
+                  {formatSol((pool.epochRevenueSol ?? 0) * 146)} <span className="text-xs text-beige/40">SOL/yr</span>
+                </p>
+              </div>
+            </div>
+            {pool.managerFeeAccount && (
+              <p className="text-[10px] text-beige/20 font-mono mt-4 truncate">
+                Fee account: {pool.managerFeeAccount}
+              </p>
+            )}
+            {pool.feeHistory && pool.feeHistory.length > 1 && (
+              <div className="mt-4 pt-4 border-t border-white/5">
+                <p className="text-[10px] text-beige/30 uppercase tracking-wider mb-2">Revenue by Epoch</p>
+                <div className="flex items-end gap-1 h-16">
+                  {(() => {
+                    const maxRev = Math.max(...pool.feeHistory.map((h: any) => h.epochRevenueSol ?? 0), 1);
+                    return pool.feeHistory.map((h: any) => (
+                      <div
+                        key={h.epochNumber}
+                        className="flex-1 bg-lavender/30 rounded-t hover:bg-lavender/50 transition-colors"
+                        style={{ height: `${Math.max(((h.epochRevenueSol ?? 0) / maxRev) * 100, 2)}%` }}
+                        title={`Epoch ${h.epochNumber}: ${formatSolPrecise(h.epochRevenueSol ?? 0)} SOL`}
+                      />
+                    ));
+                  })()}
+                </div>
+              </div>
+            )}
+          </div>
+        </AnimatedSection>
+      )}
+
+      {/* Fee Behavior (Tier 2) */}
+      {feeBehavior.summary.length > 0 && (
+        <AnimatedSection delay={0.13} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="gradient-border bg-white/[0.02] rounded-xl p-6 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-medium text-beige/50 uppercase tracking-wider">
+                Fee Behavior — Are They Selling?
+              </h2>
+              {feeBehavior.retentionRate != null && (
+                <span className={`text-xs font-mono px-2 py-1 rounded-full ${
+                  feeBehavior.retentionRate >= 0.8 ? "bg-score-good/20 text-score-good" :
+                  feeBehavior.retentionRate >= 0.5 ? "bg-score-mid/20 text-score-mid" :
+                  "bg-score-bad/20 text-score-bad"
+                }`}>
+                  {(feeBehavior.retentionRate * 100).toFixed(0)}% retained
+                </span>
+              )}
+            </div>
+
+            {/* Summary bars */}
+            <div className="space-y-2 mb-4">
+              {(() => {
+                const typeLabels: Record<string, { label: string; color: string }> = {
+                  collected: { label: "Collected", color: "bg-lavender/40" },
+                  redeemed: { label: "Redeemed", color: "bg-score-mid" },
+                  swapped: { label: "Swapped on DEX", color: "bg-orange-400" },
+                  transferred: { label: "Sent to Exchange", color: "bg-score-bad" },
+                  unknown: { label: "Other", color: "bg-white/10" },
+                };
+                const totalEvents = feeBehavior.summary.reduce((s, e) => s + e.count, 0);
+                return feeBehavior.summary
+                  .filter((e) => e.count > 0)
+                  .sort((a, b) => b.count - a.count)
+                  .map((e) => {
+                    const info = typeLabels[e.eventType] ?? { label: e.eventType, color: "bg-white/10" };
+                    const pct = totalEvents > 0 ? (e.count / totalEvents) * 100 : 0;
+                    return (
+                      <div key={e.eventType} className="flex items-center gap-3">
+                        <span className="text-xs text-beige/50 w-32 shrink-0">{info.label}</span>
+                        <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+                          <div className={`h-full rounded-full ${info.color}`} style={{ width: `${Math.max(pct, 2)}%` }} />
+                        </div>
+                        <span className="text-xs font-mono text-beige/40 w-12 text-right">{e.count}</span>
+                        {e.totalSol > 0 && (
+                          <span className="text-[10px] font-mono text-beige/25 w-20 text-right">{formatSolPrecise(e.totalSol)} SOL</span>
+                        )}
+                      </div>
+                    );
+                  });
+              })()}
+            </div>
+
+            {/* Recent events */}
+            {feeBehavior.recentEvents.length > 0 && (
+              <div className="border-t border-white/5 pt-3">
+                <p className="text-[10px] text-beige/30 uppercase tracking-wider mb-2">Recent Activity</p>
+                <div className="space-y-1 max-h-40 overflow-y-auto">
+                  {feeBehavior.recentEvents.slice(0, 10).map((e) => (
+                    <div key={e.id} className="flex items-center justify-between text-xs">
+                      <span className={`font-mono px-1.5 py-0.5 rounded text-[10px] ${
+                        e.eventType === "swapped" ? "bg-orange-400/20 text-orange-300" :
+                        e.eventType === "transferred" ? "bg-score-bad/20 text-score-bad" :
+                        e.eventType === "redeemed" ? "bg-score-mid/20 text-score-mid" :
+                        e.eventType === "collected" ? "bg-lavender/20 text-lavender" :
+                        "bg-white/5 text-beige/30"
+                      }`}>
+                        {e.eventType}
+                      </span>
+                      {e.amountSol != null && (
+                        <span className="text-beige/40 font-mono">{formatSolPrecise(e.amountSol)} SOL</span>
+                      )}
+                      {e.destinationLabel && (
+                        <span className="text-score-bad text-[10px]">{e.destinationLabel}</span>
+                      )}
+                      {e.txSignature && (
+                        <a
+                          href={`https://solscan.io/tx/${e.txSignature}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-beige/20 font-mono hover:text-lavender transition-colors"
+                        >
+                          {e.txSignature.slice(0, 8)}...
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Current balance */}
+            {feeBehavior.currentBalance && (
+              <div className="border-t border-white/5 pt-3 mt-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-beige/30 uppercase">Current Fee Account Balance</span>
+                  <span className="text-sm font-mono text-white">
+                    {formatSolPrecise(feeBehavior.currentBalance.tokenBalance ?? 0)} <span className="text-beige/30 text-xs">tokens</span>
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </AnimatedSection>
+      )}
 
       {/* MEV & Transparency */}
       <AnimatedSection delay={0.15} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">

@@ -13,6 +13,7 @@ import { fetchSfdpParticipants } from "./fetchers/sfdp";
 import { fetchOnChainValidatorInfo } from "./fetchers/validator-info";
 import { computeAllPoolScores } from "./scoring/index";
 import { computeNakamoto } from "./scoring/nakamoto-impact";
+import { computeAllPoolRevenue, type PoolRevenueResult } from "./scoring/revenue";
 import {
   isEpochIndexed,
   writeEpoch,
@@ -22,6 +23,10 @@ import {
   writePoolDelegations,
   writeSandwichList,
   writePoolScores,
+  writePoolFeeSnapshots,
+  writePoolFeeEvents,
+  writePoolFeeBalances,
+  getPreviousCumulativeRevenue,
 } from "./writers/db-writer";
 import { POOL_REGISTRY } from "./data/pool-registry";
 
@@ -199,7 +204,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
   // 10. Build pool delegation map for scoring
   const poolDelegationMap = new Map<string, { validatorPubkey: string; delegatedSol: number }[]>();
   for (const pool of splPoolDelegations) {
-    if ((pool as any).error) continue;
+    if (pool.error) continue;
     poolDelegationMap.set(
       pool.poolId,
       pool.validators.map((v) => ({
@@ -223,6 +228,23 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     poolDelegationMap,
     validatorInfoForScoring,
     sandwichValidatorSet
+  );
+
+  // 11b. Compute pool revenue
+  log("Computing pool revenue...");
+  const previousCumulatives = dryRun ? new Map<string, number>() : await getPreviousCumulativeRevenue();
+  const poolRevenueData = splPoolDelegations
+    .filter((p) => !(p as any).error)
+    .map((p) => ({
+      poolId: p.poolId,
+      feeData: p.feeData,
+      program: POOL_REGISTRY.find((r) => r.id === p.poolId)?.program ?? "spl-stake-pool",
+    }));
+
+  const revenueResults = computeAllPoolRevenue(
+    poolRevenueData,
+    poolScores,
+    previousCumulatives,
   );
 
   // 12. Print summary
@@ -252,9 +274,29 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
       nakamotoCoefficient,
     });
 
-    // Write stake pool entries
+    // Write stake pool entries (with fee data from on-chain)
+    const feeDataMap = new Map(
+      splPoolDelegations
+        .filter((p) => p.feeData)
+        .map((p) => [p.poolId, p.feeData!])
+    );
     await writeStakePools(
-      POOL_REGISTRY.map((p) => ({ id: p.id, name: p.name, lstTicker: p.lstTicker, program: p.program }))
+      POOL_REGISTRY.map((p) => {
+        const fee = feeDataMap.get(p.id);
+        return {
+          id: p.id,
+          name: p.name,
+          lstTicker: p.lstTicker,
+          program: p.program,
+          epochFeeNumerator: fee?.epochFeeNumerator,
+          epochFeeDenominator: fee?.epochFeeDenominator,
+          depositFeeNumerator: fee?.depositFeeNumerator,
+          depositFeeDenominator: fee?.depositFeeDenominator,
+          withdrawalFeeNumerator: fee?.withdrawalFeeNumerator,
+          withdrawalFeeDenominator: fee?.withdrawalFeeDenominator,
+          managerFeeAccount: fee?.managerFeeAccount,
+        };
+      })
     );
 
     // Write validators (only those with stake)
@@ -307,8 +349,24 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
       }))
     );
 
-    // Write pool scores
-    await writePoolScores(epochNumber, poolScores);
+    // Write pool scores (with revenue data)
+    await writePoolScores(epochNumber, poolScores, revenueResults);
+
+    // Write pool fee snapshots
+    await writePoolFeeSnapshots(epochNumber, revenueResults);
+
+    // Tier 2: Fee destination tracking (opt-in)
+    if (process.env.ENABLE_FEE_TRACKING === "true") {
+      log("Running fee destination tracker (Tier 2)...");
+      const { trackAllPoolFees } = await import("./fetchers/fee-tracker");
+      const poolFeeAccounts = revenueResults
+        .filter((r) => r.managerFeeAccount)
+        .map((r) => ({ poolId: r.poolId, managerFeeAccount: r.managerFeeAccount! }));
+
+      const { events, balances } = await trackAllPoolFees(connection, poolFeeAccounts);
+      await writePoolFeeEvents(epochNumber, events);
+      await writePoolFeeBalances(epochNumber, balances);
+    }
 
     log("Database write complete.");
   }

@@ -1,8 +1,10 @@
 import { db } from "../../db/index";
-import { eq, sql, inArray } from "drizzle-orm";
+import { eq, sql, inArray, desc } from "drizzle-orm";
 import * as schema from "../../db/schema";
 import { log, warn } from "../config";
 import type { PoolScoreResult } from "../scoring/index";
+import type { PoolRevenueResult } from "../scoring/revenue";
+import type { FeeEvent, FeeAccountBalance } from "../fetchers/fee-tracker";
 
 function chunk<T>(arr: T[], size: number): T[][] {
   return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
@@ -36,7 +38,19 @@ export async function writeEpoch(epoch: {
 }
 
 export async function writeStakePools(
-  pools: { id: string; name: string; lstTicker: string; program: string }[]
+  pools: {
+    id: string;
+    name: string;
+    lstTicker: string;
+    program: string;
+    epochFeeNumerator?: number;
+    epochFeeDenominator?: number;
+    depositFeeNumerator?: number;
+    depositFeeDenominator?: number;
+    withdrawalFeeNumerator?: number;
+    withdrawalFeeDenominator?: number;
+    managerFeeAccount?: string;
+  }[]
 ) {
   const now = new Date().toISOString();
   for (const p of pools) {
@@ -47,6 +61,13 @@ export async function writeStakePools(
         name: p.name,
         lstTicker: p.lstTicker,
         program: p.program,
+        epochFeeNumerator: p.epochFeeNumerator ?? null,
+        epochFeeDenominator: p.epochFeeDenominator ?? null,
+        depositFeeNumerator: p.depositFeeNumerator ?? null,
+        depositFeeDenominator: p.depositFeeDenominator ?? null,
+        withdrawalFeeNumerator: p.withdrawalFeeNumerator ?? null,
+        withdrawalFeeDenominator: p.withdrawalFeeDenominator ?? null,
+        managerFeeAccount: p.managerFeeAccount ?? null,
         createdAt: now,
       })
       .onConflictDoUpdate({
@@ -55,6 +76,13 @@ export async function writeStakePools(
           name: p.name,
           lstTicker: p.lstTicker,
           program: p.program,
+          epochFeeNumerator: p.epochFeeNumerator ?? null,
+          epochFeeDenominator: p.epochFeeDenominator ?? null,
+          depositFeeNumerator: p.depositFeeNumerator ?? null,
+          depositFeeDenominator: p.depositFeeDenominator ?? null,
+          withdrawalFeeNumerator: p.withdrawalFeeNumerator ?? null,
+          withdrawalFeeDenominator: p.withdrawalFeeDenominator ?? null,
+          managerFeeAccount: p.managerFeeAccount ?? null,
         },
       });
   }
@@ -225,10 +253,14 @@ export async function writeSandwichList(
 
 export async function writePoolScores(
   epochNumber: number,
-  scores: PoolScoreResult[]
+  scores: PoolScoreResult[],
+  revenueResults?: PoolRevenueResult[]
 ) {
+  const revenueMap = new Map(revenueResults?.map((r) => [r.poolId, r]) ?? []);
+
   // Small number of pools, upsert individually is fine
   for (const s of scores) {
+    const rev = revenueMap.get(s.poolId);
     await db
       .insert(schema.poolScores)
       .values({
@@ -246,6 +278,10 @@ export async function writePoolScores(
         activeSolStaked: s.activeSolStaked,
         validatorCount: s.validatorCount,
         medianApy: s.medianApy,
+        epochFeePercent: rev?.epochFeePercent ?? null,
+        epochRevenueSol: rev?.epochRevenueSol ?? null,
+        cumulativeRevenueSol: rev?.cumulativeRevenueSol ?? null,
+        feeSource: rev?.feeSource ?? null,
       })
       .onConflictDoUpdate({
         target: [schema.poolScores.epochNumber, schema.poolScores.poolId],
@@ -262,8 +298,114 @@ export async function writePoolScores(
           activeSolStaked: s.activeSolStaked,
           validatorCount: s.validatorCount,
           medianApy: s.medianApy,
+          epochFeePercent: rev?.epochFeePercent ?? null,
+          epochRevenueSol: rev?.epochRevenueSol ?? null,
+          cumulativeRevenueSol: rev?.cumulativeRevenueSol ?? null,
+          feeSource: rev?.feeSource ?? null,
         },
       });
   }
   log(`Wrote ${scores.length} pool scores`);
+}
+
+export async function writePoolFeeSnapshots(
+  epochNumber: number,
+  revenueResults: PoolRevenueResult[]
+) {
+  for (const r of revenueResults) {
+    await db
+      .insert(schema.poolFeeSnapshots)
+      .values({
+        epochNumber,
+        poolId: r.poolId,
+        epochFeePercent: r.epochFeePercent,
+        totalPoolLamports: r.totalPoolLamports,
+        lastEpochTotalLamports: r.lastEpochTotalLamports,
+        epochRevenueSol: r.epochRevenueSol,
+        cumulativeRevenueSol: r.cumulativeRevenueSol,
+        managerFeeAccount: r.managerFeeAccount,
+        feeSource: r.feeSource,
+      })
+      .onConflictDoUpdate({
+        target: [schema.poolFeeSnapshots.epochNumber, schema.poolFeeSnapshots.poolId],
+        set: {
+          epochFeePercent: r.epochFeePercent,
+          totalPoolLamports: r.totalPoolLamports,
+          lastEpochTotalLamports: r.lastEpochTotalLamports,
+          epochRevenueSol: r.epochRevenueSol,
+          cumulativeRevenueSol: r.cumulativeRevenueSol,
+          managerFeeAccount: r.managerFeeAccount,
+          feeSource: r.feeSource,
+        },
+      });
+  }
+  log(`Wrote ${revenueResults.length} pool fee snapshots`);
+}
+
+export async function writePoolFeeEvents(
+  epochNumber: number,
+  events: FeeEvent[]
+) {
+  const now = new Date().toISOString();
+  const valid = events.filter((e) => e.txSignature);
+  const batches = chunk(valid, 50);
+  for (const batch of batches) {
+    const values = batch.map((e) => ({
+      epochNumber,
+      poolId: e.poolId,
+      eventType: e.eventType,
+      amountSol: e.amountSol,
+      txSignature: e.txSignature,
+      destination: e.destination,
+      destinationLabel: e.destinationLabel,
+      blockTime: e.blockTime,
+      createdAt: now,
+    }));
+    await db.insert(schema.poolFeeEvents).values(values).onConflictDoNothing();
+  }
+  log(`Wrote ${valid.length} pool fee events`);
+}
+
+export async function writePoolFeeBalances(
+  epochNumber: number,
+  balances: FeeAccountBalance[]
+) {
+  for (const b of balances) {
+    await db
+      .insert(schema.poolFeeBalances)
+      .values({
+        epochNumber,
+        poolId: b.poolId,
+        feeAccountAddress: b.feeAccountAddress,
+        tokenBalance: b.tokenBalance,
+        solEquivalent: b.solEquivalent,
+      })
+      .onConflictDoUpdate({
+        target: [schema.poolFeeBalances.epochNumber, schema.poolFeeBalances.poolId],
+        set: {
+          tokenBalance: b.tokenBalance,
+          solEquivalent: b.solEquivalent,
+        },
+      });
+  }
+  log(`Wrote ${balances.length} pool fee balances`);
+}
+
+export async function getPreviousCumulativeRevenue(): Promise<Map<string, number>> {
+  // Get latest epoch with fee data
+  const latestEpoch = await db
+    .select({ epoch: sql<number>`max(${schema.poolFeeSnapshots.epochNumber})` })
+    .from(schema.poolFeeSnapshots);
+  const maxEpoch = latestEpoch[0]?.epoch;
+  if (!maxEpoch) return new Map();
+
+  const rows = await db
+    .select({
+      poolId: schema.poolFeeSnapshots.poolId,
+      cumulative: schema.poolFeeSnapshots.cumulativeRevenueSol,
+    })
+    .from(schema.poolFeeSnapshots)
+    .where(eq(schema.poolFeeSnapshots.epochNumber, maxEpoch));
+
+  return new Map(rows.map((r) => [r.poolId, r.cumulative ?? 0]));
 }

@@ -8,6 +8,9 @@ import {
   validatorSnapshots,
   poolDelegations,
   sandwichList,
+  poolFeeSnapshots,
+  poolFeeEvents,
+  poolFeeBalances,
 } from "./schema";
 import type { StakePool, PoolScores } from "@/lib/types";
 
@@ -48,6 +51,10 @@ export async function getPoolsWithScores(epochNumber?: number): Promise<StakePoo
       geographicDiversity: poolScores.geographicDiversity,
       commissionDiscipline: poolScores.commissionDiscipline,
       transparency: poolScores.transparency,
+      epochFeePercent: poolScores.epochFeePercent,
+      epochRevenueSol: poolScores.epochRevenueSol,
+      cumulativeRevenueSol: poolScores.cumulativeRevenueSol,
+      feeSource: poolScores.feeSource,
     })
     .from(stakePools)
     .innerJoin(poolScores, eq(stakePools.id, poolScores.poolId))
@@ -62,6 +69,10 @@ export async function getPoolsWithScores(epochNumber?: number): Promise<StakePoo
     validatorCount: r.validatorCount ?? 0,
     medianApy: r.medianApy ?? 0,
     networkHealthScore: r.networkHealthScore,
+    epochFeePercent: r.epochFeePercent ?? null,
+    epochRevenueSol: r.epochRevenueSol ?? null,
+    cumulativeRevenueSol: r.cumulativeRevenueSol ?? null,
+    feeSource: r.feeSource ?? null,
     scores: {
       smallValidatorBias: r.smallValidatorBias,
       selfDealing: r.selfDealing,
@@ -278,6 +289,11 @@ export async function getPoolReportCard(poolId: string) {
       geographicDiversity: poolScores.geographicDiversity,
       commissionDiscipline: poolScores.commissionDiscipline,
       transparency: poolScores.transparency,
+      epochFeePercent: poolScores.epochFeePercent,
+      epochRevenueSol: poolScores.epochRevenueSol,
+      cumulativeRevenueSol: poolScores.cumulativeRevenueSol,
+      feeSource: poolScores.feeSource,
+      managerFeeAccount: stakePools.managerFeeAccount,
     })
     .from(stakePools)
     .innerJoin(poolScores, eq(stakePools.id, poolScores.poolId))
@@ -306,7 +322,26 @@ export async function getPoolReportCard(poolId: string) {
 
   const history = await getPoolScoreHistory(poolId);
 
-  return { ...poolRow[0], epoch, topValidators, history };
+  // Get fee revenue history
+  const feeHistory = await db
+    .select({
+      epochNumber: poolFeeSnapshots.epochNumber,
+      epochFeePercent: poolFeeSnapshots.epochFeePercent,
+      epochRevenueSol: poolFeeSnapshots.epochRevenueSol,
+      cumulativeRevenueSol: poolFeeSnapshots.cumulativeRevenueSol,
+      feeSource: poolFeeSnapshots.feeSource,
+    })
+    .from(poolFeeSnapshots)
+    .where(eq(poolFeeSnapshots.poolId, poolId))
+    .orderBy(poolFeeSnapshots.epochNumber);
+
+  return {
+    ...poolRow[0],
+    epoch,
+    topValidators,
+    history,
+    feeHistory,
+  };
 }
 
 /** Get validators that appear in multiple pools (overlap/systemic risk) */
@@ -651,5 +686,51 @@ export async function getDelegationFlows(epochNumber?: number) {
       target: f.validatorPubkey,
       value: f.delegatedSol,
     })),
+  };
+}
+
+/** Get fee behavior summary for a pool (Tier 2) */
+export async function getPoolFeeBehavior(poolId: string) {
+  const events = await db
+    .select({
+      eventType: poolFeeEvents.eventType,
+      count: sql<number>`count(*)`,
+      totalSol: sql<number>`sum(${poolFeeEvents.amountSol})`,
+    })
+    .from(poolFeeEvents)
+    .where(eq(poolFeeEvents.poolId, poolId))
+    .groupBy(poolFeeEvents.eventType);
+
+  const recentEvents = await db
+    .select()
+    .from(poolFeeEvents)
+    .where(eq(poolFeeEvents.poolId, poolId))
+    .orderBy(desc(poolFeeEvents.blockTime))
+    .limit(20);
+
+  // Latest balance
+  const latestBalance = await db
+    .select()
+    .from(poolFeeBalances)
+    .where(eq(poolFeeBalances.poolId, poolId))
+    .orderBy(desc(poolFeeBalances.epochNumber))
+    .limit(1);
+
+  // Calculate retention rate
+  const totalCollected = events.find((e) => e.eventType === "collected")?.totalSol ?? 0;
+  const totalSold = (events.find((e) => e.eventType === "swapped")?.totalSol ?? 0)
+    + (events.find((e) => e.eventType === "redeemed")?.totalSol ?? 0)
+    + (events.find((e) => e.eventType === "transferred")?.totalSol ?? 0);
+  const retentionRate = totalCollected > 0 ? Math.max(0, 1 - totalSold / totalCollected) : null;
+
+  return {
+    summary: events.map((e) => ({
+      eventType: e.eventType,
+      count: Number(e.count),
+      totalSol: Number(e.totalSol ?? 0),
+    })),
+    recentEvents,
+    currentBalance: latestBalance[0] ?? null,
+    retentionRate,
   };
 }

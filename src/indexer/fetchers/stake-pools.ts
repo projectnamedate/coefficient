@@ -8,6 +8,25 @@ import { POOL_REGISTRY, type PoolRegistryEntry } from "../data/pool-registry";
 // actual delegation intent.
 const MIN_MEANINGFUL_DELEGATION_SOL = 1.1;
 
+/** Safely convert BN/bigint/string to Number */
+function toBN(v: any): number {
+  if (typeof v === "bigint") return Number(v);
+  if (typeof v?.toString === "function") return Number(v.toString());
+  return Number(v ?? 0);
+}
+
+export interface PoolFeeData {
+  epochFeeNumerator: number;
+  epochFeeDenominator: number;
+  depositFeeNumerator: number;
+  depositFeeDenominator: number;
+  withdrawalFeeNumerator: number;
+  withdrawalFeeDenominator: number;
+  managerFeeAccount: string;
+  totalLamports: number;
+  lastEpochTotalLamports: number;
+}
+
 export interface PoolDelegationData {
   poolId: string;
   validators: {
@@ -15,6 +34,7 @@ export interface PoolDelegationData {
     activeSol: number;
   }[];
   totalSol: number;
+  feeData?: PoolFeeData;
   error?: string;
 }
 
@@ -48,7 +68,19 @@ async function fetchSinglePool(
       }
     }
 
-    return { poolId: pool.id, validators, totalSol };
+    const feeData: PoolFeeData = {
+      epochFeeNumerator: toBN(info.epochFee?.numerator),
+      epochFeeDenominator: toBN(info.epochFee?.denominator),
+      depositFeeNumerator: toBN(info.stakeDepositFee?.numerator),
+      depositFeeDenominator: toBN(info.stakeDepositFee?.denominator),
+      withdrawalFeeNumerator: toBN(info.stakeWithdrawalFee?.numerator),
+      withdrawalFeeDenominator: toBN(info.stakeWithdrawalFee?.denominator),
+      managerFeeAccount: String(info.managerFeeAccount ?? ""),
+      totalLamports: toBN(info.totalLamports),
+      lastEpochTotalLamports: toBN(info.lastEpochTotalLamports),
+    };
+
+    return { poolId: pool.id, validators, totalSol, feeData };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     warn(`Failed to fetch pool ${pool.id} (${pool.name}): ${msg}`);
@@ -95,7 +127,21 @@ async function fetchSanctumMultiPool(
       }
     }
 
-    return { poolId: pool.id, validators, totalSol };
+    const feeData: PoolFeeData = {
+      epochFeeNumerator: toBN(poolData.epochFee?.numerator),
+      epochFeeDenominator: toBN(poolData.epochFee?.denominator),
+      depositFeeNumerator: toBN(poolData.stakeDepositFee?.numerator),
+      depositFeeDenominator: toBN(poolData.stakeDepositFee?.denominator),
+      withdrawalFeeNumerator: toBN(poolData.stakeWithdrawalFee?.numerator),
+      withdrawalFeeDenominator: toBN(poolData.stakeWithdrawalFee?.denominator),
+      managerFeeAccount: typeof poolData.managerFeeAccount?.toBase58 === "function"
+        ? poolData.managerFeeAccount.toBase58()
+        : String(poolData.managerFeeAccount ?? ""),
+      totalLamports: toBN(poolData.totalLamports),
+      lastEpochTotalLamports: toBN(poolData.lastEpochTotalLamports),
+    };
+
+    return { poolId: pool.id, validators, totalSol, feeData };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     warn(`Failed to fetch sanctum-multi pool ${pool.id} (${pool.name}): ${msg}`);

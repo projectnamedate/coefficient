@@ -1,0 +1,1044 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "42ccb3f6-d0ba-4533-9ce4-1024a64b2395",
+  "prevId": "de493e1e-6de5-4ddd-8fb1-3c6c4e4201e0",
+  "tables": {
+    "epochs": {
+      "name": "epochs",
+      "columns": {
+        "epoch_number": {
+          "name": "epoch_number",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "start_slot": {
+          "name": "start_slot",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "end_slot": {
+          "name": "end_slot",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ended_at": {
+          "name": "ended_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "total_stake": {
+          "name": "total_stake",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "nakamoto_coefficient": {
+          "name": "nakamoto_coefficient",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "pool_delegations": {
+      "name": "pool_delegations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "epoch_number": {
+          "name": "epoch_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "pool_id": {
+          "name": "pool_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "validator_pubkey": {
+          "name": "validator_pubkey",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "delegated_sol": {
+          "name": "delegated_sol",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "pd_epoch_pool_validator": {
+          "name": "pd_epoch_pool_validator",
+          "columns": [
+            "epoch_number",
+            "pool_id",
+            "validator_pubkey"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "pool_delegations_epoch_number_epochs_epoch_number_fk": {
+          "name": "pool_delegations_epoch_number_epochs_epoch_number_fk",
+          "tableFrom": "pool_delegations",
+          "tableTo": "epochs",
+          "columnsFrom": [
+            "epoch_number"
+          ],
+          "columnsTo": [
+            "epoch_number"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pool_delegations_pool_id_stake_pools_id_fk": {
+          "name": "pool_delegations_pool_id_stake_pools_id_fk",
+          "tableFrom": "pool_delegations",
+          "tableTo": "stake_pools",
+          "columnsFrom": [
+            "pool_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pool_delegations_validator_pubkey_validators_pubkey_fk": {
+          "name": "pool_delegations_validator_pubkey_validators_pubkey_fk",
+          "tableFrom": "pool_delegations",
+          "tableTo": "validators",
+          "columnsFrom": [
+            "validator_pubkey"
+          ],
+          "columnsTo": [
+            "pubkey"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "pool_fee_balances": {
+      "name": "pool_fee_balances",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "epoch_number": {
+          "name": "epoch_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "pool_id": {
+          "name": "pool_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fee_account_address": {
+          "name": "fee_account_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "token_balance": {
+          "name": "token_balance",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sol_equivalent": {
+          "name": "sol_equivalent",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "pfb_epoch_pool": {
+          "name": "pfb_epoch_pool",
+          "columns": [
+            "epoch_number",
+            "pool_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "pool_fee_balances_epoch_number_epochs_epoch_number_fk": {
+          "name": "pool_fee_balances_epoch_number_epochs_epoch_number_fk",
+          "tableFrom": "pool_fee_balances",
+          "tableTo": "epochs",
+          "columnsFrom": [
+            "epoch_number"
+          ],
+          "columnsTo": [
+            "epoch_number"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pool_fee_balances_pool_id_stake_pools_id_fk": {
+          "name": "pool_fee_balances_pool_id_stake_pools_id_fk",
+          "tableFrom": "pool_fee_balances",
+          "tableTo": "stake_pools",
+          "columnsFrom": [
+            "pool_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "pool_fee_events": {
+      "name": "pool_fee_events",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "epoch_number": {
+          "name": "epoch_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "pool_id": {
+          "name": "pool_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount_sol": {
+          "name": "amount_sol",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tx_signature": {
+          "name": "tx_signature",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "destination": {
+          "name": "destination",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "destination_label": {
+          "name": "destination_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "block_time": {
+          "name": "block_time",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "pfe_tx_pool": {
+          "name": "pfe_tx_pool",
+          "columns": [
+            "tx_signature",
+            "pool_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "pool_fee_events_pool_id_stake_pools_id_fk": {
+          "name": "pool_fee_events_pool_id_stake_pools_id_fk",
+          "tableFrom": "pool_fee_events",
+          "tableTo": "stake_pools",
+          "columnsFrom": [
+            "pool_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "pool_fee_snapshots": {
+      "name": "pool_fee_snapshots",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "epoch_number": {
+          "name": "epoch_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "pool_id": {
+          "name": "pool_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "epoch_fee_percent": {
+          "name": "epoch_fee_percent",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "total_pool_lamports": {
+          "name": "total_pool_lamports",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "last_epoch_total_lamports": {
+          "name": "last_epoch_total_lamports",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "epoch_revenue_sol": {
+          "name": "epoch_revenue_sol",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cumulative_revenue_sol": {
+          "name": "cumulative_revenue_sol",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "manager_fee_account": {
+          "name": "manager_fee_account",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fee_source": {
+          "name": "fee_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "pfs_epoch_pool": {
+          "name": "pfs_epoch_pool",
+          "columns": [
+            "epoch_number",
+            "pool_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "pool_fee_snapshots_epoch_number_epochs_epoch_number_fk": {
+          "name": "pool_fee_snapshots_epoch_number_epochs_epoch_number_fk",
+          "tableFrom": "pool_fee_snapshots",
+          "tableTo": "epochs",
+          "columnsFrom": [
+            "epoch_number"
+          ],
+          "columnsTo": [
+            "epoch_number"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pool_fee_snapshots_pool_id_stake_pools_id_fk": {
+          "name": "pool_fee_snapshots_pool_id_stake_pools_id_fk",
+          "tableFrom": "pool_fee_snapshots",
+          "tableTo": "stake_pools",
+          "columnsFrom": [
+            "pool_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "pool_scores": {
+      "name": "pool_scores",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "epoch_number": {
+          "name": "epoch_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "pool_id": {
+          "name": "pool_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "network_health_score": {
+          "name": "network_health_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "small_validator_bias": {
+          "name": "small_validator_bias",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "self_dealing": {
+          "name": "self_dealing",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "mev_sandwich_policy": {
+          "name": "mev_sandwich_policy",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nakamoto_impact": {
+          "name": "nakamoto_impact",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "validator_set_size": {
+          "name": "validator_set_size",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "geographic_diversity": {
+          "name": "geographic_diversity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "commission_discipline": {
+          "name": "commission_discipline",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "transparency": {
+          "name": "transparency",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "active_sol_staked": {
+          "name": "active_sol_staked",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "validator_count": {
+          "name": "validator_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "median_apy": {
+          "name": "median_apy",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "epoch_fee_percent": {
+          "name": "epoch_fee_percent",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "epoch_revenue_sol": {
+          "name": "epoch_revenue_sol",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cumulative_revenue_sol": {
+          "name": "cumulative_revenue_sol",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fee_source": {
+          "name": "fee_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "ps_epoch_pool": {
+          "name": "ps_epoch_pool",
+          "columns": [
+            "epoch_number",
+            "pool_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "pool_scores_epoch_number_epochs_epoch_number_fk": {
+          "name": "pool_scores_epoch_number_epochs_epoch_number_fk",
+          "tableFrom": "pool_scores",
+          "tableTo": "epochs",
+          "columnsFrom": [
+            "epoch_number"
+          ],
+          "columnsTo": [
+            "epoch_number"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pool_scores_pool_id_stake_pools_id_fk": {
+          "name": "pool_scores_pool_id_stake_pools_id_fk",
+          "tableFrom": "pool_scores",
+          "tableTo": "stake_pools",
+          "columnsFrom": [
+            "pool_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "sandwich_list": {
+      "name": "sandwich_list",
+      "columns": {
+        "validator_pubkey": {
+          "name": "validator_pubkey",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "detected_date": {
+          "name": "detected_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sandwich_percent": {
+          "name": "sandwich_percent",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sandwich_list_validator_pubkey_validators_pubkey_fk": {
+          "name": "sandwich_list_validator_pubkey_validators_pubkey_fk",
+          "tableFrom": "sandwich_list",
+          "tableTo": "validators",
+          "columnsFrom": [
+            "validator_pubkey"
+          ],
+          "columnsTo": [
+            "pubkey"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "stake_pools": {
+      "name": "stake_pools",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lst_ticker": {
+          "name": "lst_ticker",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lst_mint": {
+          "name": "lst_mint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "program": {
+          "name": "program",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "website": {
+          "name": "website",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "self_dealing_flag": {
+          "name": "self_dealing_flag",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "self_dealing_notes": {
+          "name": "self_dealing_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "epoch_fee_numerator": {
+          "name": "epoch_fee_numerator",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "epoch_fee_denominator": {
+          "name": "epoch_fee_denominator",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "deposit_fee_numerator": {
+          "name": "deposit_fee_numerator",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "deposit_fee_denominator": {
+          "name": "deposit_fee_denominator",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "withdrawal_fee_numerator": {
+          "name": "withdrawal_fee_numerator",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "withdrawal_fee_denominator": {
+          "name": "withdrawal_fee_denominator",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "manager_fee_account": {
+          "name": "manager_fee_account",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "validator_snapshots": {
+      "name": "validator_snapshots",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "epoch_number": {
+          "name": "epoch_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "validator_pubkey": {
+          "name": "validator_pubkey",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "active_stake": {
+          "name": "active_stake",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "commission": {
+          "name": "commission",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "vote_credits": {
+          "name": "vote_credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "skip_rate": {
+          "name": "skip_rate",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "apy": {
+          "name": "apy",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "wiz_score": {
+          "name": "wiz_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "stake_tier": {
+          "name": "stake_tier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_superminority": {
+          "name": "is_superminority",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        }
+      },
+      "indexes": {
+        "vs_epoch_validator": {
+          "name": "vs_epoch_validator",
+          "columns": [
+            "epoch_number",
+            "validator_pubkey"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "validator_snapshots_epoch_number_epochs_epoch_number_fk": {
+          "name": "validator_snapshots_epoch_number_epochs_epoch_number_fk",
+          "tableFrom": "validator_snapshots",
+          "tableTo": "epochs",
+          "columnsFrom": [
+            "epoch_number"
+          ],
+          "columnsTo": [
+            "epoch_number"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "validator_snapshots_validator_pubkey_validators_pubkey_fk": {
+          "name": "validator_snapshots_validator_pubkey_validators_pubkey_fk",
+          "tableFrom": "validator_snapshots",
+          "tableTo": "validators",
+          "columnsFrom": [
+            "validator_pubkey"
+          ],
+          "columnsTo": [
+            "pubkey"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "validators": {
+      "name": "validators",
+      "columns": {
+        "pubkey": {
+          "name": "pubkey",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "icon_url": {
+          "name": "icon_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "datacenter": {
+          "name": "datacenter",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "client": {
+          "name": "client",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sfdp_status": {
+          "name": "sfdp_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

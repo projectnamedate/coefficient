@@ -60,6 +60,14 @@ export const stakePools = sqliteTable("stake_pools", {
   website: text("website"),
   selfDealingFlag: integer("self_dealing_flag", { mode: "boolean" }).default(false),
   selfDealingNotes: text("self_dealing_notes"),
+  // Fee structure (from on-chain stake pool account)
+  epochFeeNumerator: integer("epoch_fee_numerator"),
+  epochFeeDenominator: integer("epoch_fee_denominator"),
+  depositFeeNumerator: integer("deposit_fee_numerator"),
+  depositFeeDenominator: integer("deposit_fee_denominator"),
+  withdrawalFeeNumerator: integer("withdrawal_fee_numerator"),
+  withdrawalFeeDenominator: integer("withdrawal_fee_denominator"),
+  managerFeeAccount: text("manager_fee_account"),
   createdAt: text("created_at").notNull(),
 });
 
@@ -117,9 +125,81 @@ export const poolScores = sqliteTable(
     activeSolStaked: real("active_sol_staked"),
     validatorCount: integer("validator_count"),
     medianApy: real("median_apy"),
+
+    // Revenue data
+    epochFeePercent: real("epoch_fee_percent"), // e.g. 0.05 for 5%
+    epochRevenueSol: real("epoch_revenue_sol"), // SOL earned by pool operator this epoch
+    cumulativeRevenueSol: real("cumulative_revenue_sol"), // running total
+    feeSource: text("fee_source"), // "on-chain" | "estimated"
   },
   (table) => [
     uniqueIndex("ps_epoch_pool").on(table.epochNumber, table.poolId),
+  ]
+);
+
+// ------- Pool Fee Snapshots (per-epoch revenue tracking) -------
+export const poolFeeSnapshots = sqliteTable(
+  "pool_fee_snapshots",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    epochNumber: integer("epoch_number")
+      .notNull()
+      .references(() => epochs.epochNumber),
+    poolId: text("pool_id")
+      .notNull()
+      .references(() => stakePools.id),
+    epochFeePercent: real("epoch_fee_percent"),
+    totalPoolLamports: real("total_pool_lamports"),
+    lastEpochTotalLamports: real("last_epoch_total_lamports"),
+    epochRevenueSol: real("epoch_revenue_sol"),
+    cumulativeRevenueSol: real("cumulative_revenue_sol"),
+    managerFeeAccount: text("manager_fee_account"),
+    feeSource: text("fee_source"), // "on-chain" | "estimated"
+  },
+  (table) => [
+    uniqueIndex("pfs_epoch_pool").on(table.epochNumber, table.poolId),
+  ]
+);
+
+// ------- Pool Fee Events (Tier 2: sell vs hold tracking) -------
+export const poolFeeEvents = sqliteTable(
+  "pool_fee_events",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    epochNumber: integer("epoch_number"),
+    poolId: text("pool_id")
+      .notNull()
+      .references(() => stakePools.id),
+    eventType: text("event_type").notNull(), // collected | redeemed | swapped | transferred | unknown
+    amountSol: real("amount_sol"),
+    txSignature: text("tx_signature"),
+    destination: text("destination"),
+    destinationLabel: text("destination_label"),
+    blockTime: integer("block_time"),
+    createdAt: text("created_at").notNull(),
+  },
+  (table) => [
+    uniqueIndex("pfe_tx_pool").on(table.txSignature, table.poolId),
+  ]
+);
+
+// ------- Pool Fee Balances (Tier 2: per-epoch balance snapshots) -------
+export const poolFeeBalances = sqliteTable(
+  "pool_fee_balances",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    epochNumber: integer("epoch_number")
+      .notNull()
+      .references(() => epochs.epochNumber),
+    poolId: text("pool_id")
+      .notNull()
+      .references(() => stakePools.id),
+    feeAccountAddress: text("fee_account_address").notNull(),
+    tokenBalance: real("token_balance"),
+    solEquivalent: real("sol_equivalent"),
+  },
+  (table) => [
+    uniqueIndex("pfb_epoch_pool").on(table.epochNumber, table.poolId),
   ]
 );
 

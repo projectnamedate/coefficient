@@ -5,6 +5,9 @@ export const MARINADE_API = "https://validators-api.marinade.finance";
 
 export const LAMPORTS_PER_SOL = 1_000_000_000;
 
+// Approximate Solana epochs per year (each epoch ~2.5 days)
+export const EPOCHS_PER_YEAR = 146;
+
 // CLI flags
 export function parseFlags(): { dryRun: boolean; force: boolean; watch: boolean; epoch?: number } {
   const args = process.argv.slice(2);
