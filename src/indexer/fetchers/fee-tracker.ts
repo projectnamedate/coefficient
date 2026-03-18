@@ -75,7 +75,13 @@ export interface FeeAccountBalance {
  * Uses accountData.tokenBalanceChanges (the authoritative source) rather than
  * tokenTransfers (which uses wallet owner addresses, not token account addresses).
  */
-function getFeeAccountBalanceChange(tx: any, feeAccountAddress: string): { direction: "outgoing" | "incoming" | "none"; amount: number } {
+/**
+ * @param lstMint - If provided, only count balance changes for this specific token mint.
+ *   For the fee token account (which only holds one LST), this is optional.
+ *   For the manager wallet (which may hold many tokens), this is critical to
+ *   avoid flagging random token trades as pool fee sells.
+ */
+function getFeeAccountBalanceChange(tx: any, feeAccountAddress: string, lstMint?: string): { direction: "outgoing" | "incoming" | "none"; amount: number } {
   const accountData = tx.accountData ?? [];
   const feeAcctData = accountData.find((a: any) => a.account === feeAccountAddress);
 
@@ -83,6 +89,9 @@ function getFeeAccountBalanceChange(tx: any, feeAccountAddress: string): { direc
 
   const tokenChanges = feeAcctData.tokenBalanceChanges ?? [];
   for (const change of tokenChanges) {
+    // If lstMint specified, only track changes for that specific token
+    if (lstMint && change.mint !== lstMint) continue;
+
     const rawChange = change.rawTokenAmount?.tokenAmount;
     if (!rawChange) continue;
     const decimals = change.rawTokenAmount?.decimals ?? 9;
@@ -91,6 +100,10 @@ function getFeeAccountBalanceChange(tx: any, feeAccountAddress: string): { direc
     if (amount < 0) return { direction: "outgoing", amount: Math.abs(amount) };
     if (amount > 0) return { direction: "incoming", amount };
   }
+
+  // For manager wallets: also check native SOL changes (selling LST → receiving SOL)
+  // We DON'T count SOL leaving as a sell — that could be anything (rent, fees, etc.)
+  // SOL changes are only relevant as context, not as sell signals.
 
   return { direction: "none", amount: 0 };
 }
@@ -101,9 +114,9 @@ function getFeeAccountBalanceChange(tx: any, feeAccountAddress: string): { direc
  * fee account actually sent tokens out. Otherwise ignores the transaction
  * or classifies as "collected" if tokens came in.
  */
-function classifyHeliusTransaction(tx: any, feeAccountAddress: string): { type: FeeEventType; destination: string | null; label: string | null; amount: number } | null {
+function classifyHeliusTransaction(tx: any, feeAccountAddress: string, lstMint?: string): { type: FeeEventType; destination: string | null; label: string | null; amount: number } | null {
   const txType = tx.type as string;
-  const { direction, amount } = getFeeAccountBalanceChange(tx, feeAccountAddress);
+  const { direction, amount } = getFeeAccountBalanceChange(tx, feeAccountAddress, lstMint);
 
   // Skip transactions that don't change the fee account's token balance
   if (direction === "none") return null;
@@ -163,6 +176,7 @@ function classifyHeliusTransaction(tx: any, feeAccountAddress: string): { type: 
 export async function trackPoolFeeAccount(
   poolId: string,
   feeAccountAddress: string,
+  lstMint?: string,
   limit = 50,
 ): Promise<FeeEvent[]> {
   if (!HELIUS_API_KEY) {
@@ -193,7 +207,7 @@ export async function trackPoolFeeAccount(
 
     const events: FeeEvent[] = [];
     for (const tx of transactions) {
-      const classified = classifyHeliusTransaction(tx, feeAccountAddress);
+      const classified = classifyHeliusTransaction(tx, feeAccountAddress, lstMint);
       if (!classified) continue; // Transaction didn't change the fee account's token balance
       const { type, destination, label, amount } = classified;
 
@@ -254,7 +268,7 @@ export async function getFeeAccountBalance(
  */
 export async function trackAllPoolFees(
   connection: Connection,
-  poolFeeAccounts: { poolId: string; managerFeeAccount: string; managerWallet?: string }[],
+  poolFeeAccounts: { poolId: string; managerFeeAccount: string; managerWallet?: string; lstMint?: string }[],
 ): Promise<{ events: FeeEvent[]; balances: FeeAccountBalance[] }> {
   const allEvents: FeeEvent[] = [];
   const allBalances: FeeAccountBalance[] = [];
@@ -262,13 +276,17 @@ export async function trackAllPoolFees(
   for (const pool of poolFeeAccounts) {
     if (!pool.managerFeeAccount) continue;
 
+    // Get the LST mint from the fee token account (so we can filter wallet activity)
+    const balance = await getFeeAccountBalance(connection, pool.managerFeeAccount);
+    const lstMint = pool.lstMint ?? balance?.mint;
+
     // Track fee token account — collections (incoming) and withdrawals (outgoing)
-    const feeEvents = await trackPoolFeeAccount(pool.poolId, pool.managerFeeAccount);
+    const feeEvents = await trackPoolFeeAccount(pool.poolId, pool.managerFeeAccount, lstMint);
     allEvents.push(...feeEvents);
 
-    // Track manager wallet — swaps, CEX transfers, and other sell activity
-    if (pool.managerWallet) {
-      const walletEvents = await trackPoolFeeAccount(pool.poolId, pool.managerWallet);
+    // Track manager wallet — only track the pool's LST leaving the wallet (sells)
+    if (pool.managerWallet && lstMint) {
+      const walletEvents = await trackPoolFeeAccount(pool.poolId, pool.managerWallet, lstMint);
       // Only keep outgoing events from the wallet (not collections, those come from fee account)
       for (const e of walletEvents) {
         if (e.eventType !== "collected") {
@@ -278,8 +296,7 @@ export async function trackAllPoolFees(
       await new Promise((r) => setTimeout(r, 300));
     }
 
-    // Get current balance of the fee token account
-    const balance = await getFeeAccountBalance(connection, pool.managerFeeAccount);
+    // Store current balance of the fee token account
     if (balance) {
       allBalances.push({
         poolId: pool.poolId,
