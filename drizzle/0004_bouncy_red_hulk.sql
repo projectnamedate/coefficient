@@ -1,0 +1,1 @@
+ALTER TABLE `stake_pools` ADD `manager_wallet` text;

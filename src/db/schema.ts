@@ -67,7 +67,8 @@ export const stakePools = sqliteTable("stake_pools", {
   depositFeeDenominator: integer("deposit_fee_denominator"),
   withdrawalFeeNumerator: integer("withdrawal_fee_numerator"),
   withdrawalFeeDenominator: integer("withdrawal_fee_denominator"),
-  managerFeeAccount: text("manager_fee_account"),
+  managerFeeAccount: text("manager_fee_account"), // token account receiving minted LST
+  managerWallet: text("manager_wallet"), // wallet that owns the fee account — tracks sells
   createdAt: text("created_at").notNull(),
 });
 

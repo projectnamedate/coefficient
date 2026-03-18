@@ -246,13 +246,11 @@ export async function getFeeAccountBalance(
 /**
  * Track all pool fee accounts and return classified events + balances.
  *
- * Tracks the managerFeeAccount (token account) for:
- * - Incoming mints (epoch fee collection)
- * - Balance decreases (tokens withdrawn/sold — classified by transaction type)
- *
- * Note: Most pools accumulate LST in the fee account and rarely sell.
- * When a balance decrease IS detected, the transaction type reveals the method
- * (DEX swap, pool redemption, transfer to exchange, etc.)
+ * Two addresses tell the full story:
+ * 1. managerFeeAccount (token account) — LST accumulates here each epoch.
+ *    Balance increases = fee collection. Balance drops = withdrawal.
+ * 2. managerWallet (the operator's wallet) — tracks what happens after
+ *    withdrawal: DEX swaps, CEX transfers, or holding.
  */
 export async function trackAllPoolFees(
   connection: Connection,
@@ -264,9 +262,21 @@ export async function trackAllPoolFees(
   for (const pool of poolFeeAccounts) {
     if (!pool.managerFeeAccount) continue;
 
-    // Track the fee token account for both collections and withdrawals
-    const events = await trackPoolFeeAccount(pool.poolId, pool.managerFeeAccount);
-    allEvents.push(...events);
+    // Track fee token account — collections (incoming) and withdrawals (outgoing)
+    const feeEvents = await trackPoolFeeAccount(pool.poolId, pool.managerFeeAccount);
+    allEvents.push(...feeEvents);
+
+    // Track manager wallet — swaps, CEX transfers, and other sell activity
+    if (pool.managerWallet) {
+      const walletEvents = await trackPoolFeeAccount(pool.poolId, pool.managerWallet);
+      // Only keep outgoing events from the wallet (not collections, those come from fee account)
+      for (const e of walletEvents) {
+        if (e.eventType !== "collected") {
+          allEvents.push(e);
+        }
+      }
+      await new Promise((r) => setTimeout(r, 300));
+    }
 
     // Get current balance of the fee token account
     const balance = await getFeeAccountBalance(connection, pool.managerFeeAccount);

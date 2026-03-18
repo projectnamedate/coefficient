@@ -50,6 +50,7 @@ export async function writeStakePools(
     withdrawalFeeNumerator?: number;
     withdrawalFeeDenominator?: number;
     managerFeeAccount?: string;
+    managerWallet?: string;
   }[]
 ) {
   const now = new Date().toISOString();
@@ -68,6 +69,7 @@ export async function writeStakePools(
         withdrawalFeeNumerator: p.withdrawalFeeNumerator ?? null,
         withdrawalFeeDenominator: p.withdrawalFeeDenominator ?? null,
         managerFeeAccount: p.managerFeeAccount ?? null,
+        managerWallet: p.managerWallet ?? null,
         createdAt: now,
       })
       .onConflictDoUpdate({
@@ -83,6 +85,7 @@ export async function writeStakePools(
           withdrawalFeeNumerator: p.withdrawalFeeNumerator ?? null,
           withdrawalFeeDenominator: p.withdrawalFeeDenominator ?? null,
           managerFeeAccount: p.managerFeeAccount ?? null,
+          managerWallet: p.managerWallet ?? null,
         },
       });
   }

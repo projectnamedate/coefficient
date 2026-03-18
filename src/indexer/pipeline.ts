@@ -295,6 +295,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
           withdrawalFeeNumerator: fee?.withdrawalFeeNumerator,
           withdrawalFeeDenominator: fee?.withdrawalFeeDenominator,
           managerFeeAccount: fee?.managerFeeAccount,
+          managerWallet: fee?.managerWallet,
         };
       })
     );
