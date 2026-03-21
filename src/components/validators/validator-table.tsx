@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { formatSol } from "@/lib/format";
 
@@ -58,15 +58,16 @@ export function ValidatorTable({ validators, countryFilter }: { validators: Vali
     );
   });
 
-  const sorted = [...filtered].sort((a, b) => {
-    let diff: number;
-    if (sortKey === "pools") {
-      diff = a.pools.length - b.pools.length;
-    } else {
-      diff = ((a[sortKey] as number) ?? 0) - ((b[sortKey] as number) ?? 0);
-    }
-    return sortDesc ? -diff : diff;
-  });
+  const sorted = useMemo(() =>
+    [...filtered].sort((a, b) => {
+      let diff: number;
+      if (sortKey === "pools") {
+        diff = a.pools.length - b.pools.length;
+      } else {
+        diff = ((a[sortKey] as number) ?? 0) - ((b[sortKey] as number) ?? 0);
+      }
+      return sortDesc ? -diff : diff;
+    }), [filtered, sortKey, sortDesc]);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {

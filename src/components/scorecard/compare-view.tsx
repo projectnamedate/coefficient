@@ -3,16 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
-import { getBarColor } from "@/lib/grades";
+import { getBarColor, getScoreTextColor } from "@/lib/grades";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
 import { formatSol } from "@/lib/format";
-
-function getTextColor(s: number): string {
-  if (s >= 70) return "text-score-good";
-  if (s >= 40) return "text-score-mid";
-  return "text-score-bad";
-}
 
 const activeScoreKeys = (Object.entries(SCORE_WEIGHTS) as [keyof PoolScores, number][])
   .filter(([, w]) => w > 0);
@@ -145,7 +139,7 @@ export function CompareView({ pools, initialSelected = [] }: { pools: StakePool[
                         const isBest = score === best && selectedPools.length > 1;
                         return (
                           <td key={pool.id} className="px-4 py-3 text-center">
-                            <span className={`text-sm font-mono font-semibold ${getTextColor(score)} ${isBest ? "underline decoration-dotted underline-offset-2" : ""}`}>
+                            <span className={`text-sm font-mono font-semibold ${getScoreTextColor(score)} ${isBest ? "underline decoration-dotted underline-offset-2" : ""}`}>
                               {score}
                             </span>
                           </td>

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getPoolReportCard, getLatestScoredEpoch, getPoolDatacenterConcentration, getCommissionChanges, poolOverrides } from "@/db/queries";
 import { SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
 import { computeTransparencyGrade } from "@/lib/transparency";
-import { getGrade, getBarColor, getGradeColor } from "@/lib/grades";
+import { getGrade, getBarColor, getGradeColor, getScoreTextColor } from "@/lib/grades";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
 import { ScoreHistoryChart } from "@/components/scorecard/score-history-chart";
 import { ScoreBadge } from "@/components/ui/score-badge";
@@ -64,7 +64,7 @@ export default async function PoolReportCard({
   const activeScores = (Object.entries(SCORE_WEIGHTS) as [keyof PoolScores, number][])
     .filter(([, w]) => w > 0);
 
-  const countries = new Set(pool.topValidators.map((v: any) => v.country).filter(Boolean));
+  const countries = new Set(pool.topValidators.map((v: { country: string | null }) => v.country).filter(Boolean));
 
   return (
     <div>
@@ -115,9 +115,7 @@ export default async function PoolReportCard({
                         <span className="text-[10px] text-beige/25 font-mono">
                           {(weight * 100).toFixed(0)}%
                         </span>
-                        <span className={`text-xs font-mono font-semibold ${
-                          score >= 70 ? "text-score-good" : score >= 40 ? "text-score-mid" : "text-score-bad"
-                        }`}>
+                        <span className={`text-xs font-mono font-semibold ${getScoreTextColor(score)}`}>
                           {score}
                         </span>
                       </div>
@@ -143,7 +141,7 @@ export default async function PoolReportCard({
             Score History
           </h2>
           <ScoreHistoryChart
-            history={pool.history.map((h: any) => ({
+            history={pool.history.map((h: { epochNumber: number; networkHealthScore: number }) => ({
               epochNumber: h.epochNumber,
               networkHealthScore: h.networkHealthScore,
             }))}
@@ -310,7 +308,7 @@ export default async function PoolReportCard({
               </tr>
             </thead>
             <tbody>
-              {pool.topValidators.map((v: any, i: number) => (
+              {pool.topValidators.map((v: { validatorPubkey: string; validatorName: string | null; delegatedSol: number; country: string | null }, i: number) => (
                 <tr key={v.validatorPubkey} className={`border-b border-white/5 hover:bg-lavender/[0.04] transition-colors duration-200 ${i % 2 === 1 ? "bg-white/[0.01]" : ""}`}>
                   <td className="px-4 py-3 text-sm text-beige/25 font-mono">{i + 1}</td>
                   <td className="px-4 py-3">

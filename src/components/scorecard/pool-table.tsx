@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, PoolScores } from "@/lib/types";
@@ -62,10 +62,11 @@ export function PoolTable({ pools }: { pools: StakePool[] }) {
   const [sortKey, setSortKey] = useState<SortKey>("networkHealthScore");
   const [sortDesc, setSortDesc] = useState(true);
 
-  const sorted = [...pools].sort((a, b) => {
-    const diff = a[sortKey] - b[sortKey];
-    return sortDesc ? -diff : diff;
-  });
+  const sorted = useMemo(() =>
+    [...pools].sort((a, b) => {
+      const diff = a[sortKey] - b[sortKey];
+      return sortDesc ? -diff : diff;
+    }), [pools, sortKey, sortDesc]);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {

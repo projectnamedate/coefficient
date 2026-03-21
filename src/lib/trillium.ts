@@ -43,7 +43,8 @@ export async function getValidatorProfitability(
     if (!res.ok) return [];
     const data = await res.json();
     if (!Array.isArray(data)) return [];
-    return data.map((d: any) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return data.map((d: Record<string, any>) => ({
       epoch: d.epoch,
       activated_stake: d.activated_stake ?? 0,
       commission: d.commission ?? 0,
@@ -71,7 +72,8 @@ export async function getValidatorProfitability(
       identity_pubkey: d.identity_pubkey ?? pubkey,
       vote_account_pubkey: d.vote_account_pubkey ?? "",
     }));
-  } catch {
+  } catch (err) {
+    console.error("Trillium API error:", err);
     return [];
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from "react";
-import { geoNaturalEarth1, geoPath } from "d3-geo";
+import { geoNaturalEarth1, geoPath, type GeoPermissibleObjects } from "d3-geo";
 import { scaleSequential } from "d3-scale";
 import { interpolateRgbBasis } from "d3-interpolate";
 import * as topojson from "topojson-client";
@@ -119,7 +119,7 @@ export function GeoHeatmap({ data, selectedCountry, onCountryClick }: Props) {
           </filter>
         </defs>
 
-        {features.map((feature: any, idx: number) => {
+        {features.map((feature: GeoPermissibleObjects & { id?: string | number }, idx: number) => {
           const countryData = dataByNumericId.get(String(feature.id));
           const isActive = countryData && countryData.validatorCount > 0;
           const isRevealed = revealedSet.has(String(feature.id));

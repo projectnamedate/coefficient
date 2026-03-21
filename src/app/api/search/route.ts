@@ -10,6 +10,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Query too long" }, { status: 400 });
   }
 
-  const results = await searchPoolsAndValidators(q);
-  return NextResponse.json(results);
+  try {
+    const results = await searchPoolsAndValidators(q);
+    return NextResponse.json(results);
+  } catch (err) {
+    console.error("Search API error:", err);
+    return NextResponse.json({ pools: [], validators: [] }, { status: 500 });
+  }
 }

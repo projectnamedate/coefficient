@@ -1,5 +1,14 @@
 /** Shared grade and score-color utilities. Single source of truth. */
 
+export type ScoreClass = "good" | "mid" | "bad";
+
+/** Classify a score into good/mid/bad. Use this instead of inline threshold checks. */
+export function getScoreClass(score: number): ScoreClass {
+  if (score >= 70) return "good";
+  if (score >= 40) return "mid";
+  return "bad";
+}
+
 export function getGrade(score: number): string {
   if (score >= 90) return "A";
   if (score >= 85) return "A-";
@@ -13,9 +22,12 @@ export function getGrade(score: number): string {
 
 /** Tailwind class for score bar color (components). */
 export function getBarColor(s: number): string {
-  if (s >= 70) return "bg-score-good";
-  if (s >= 40) return "bg-score-mid";
-  return "bg-score-bad";
+  return `bg-score-${getScoreClass(s)}`;
+}
+
+/** Tailwind text-color class for a score value. */
+export function getScoreTextColor(s: number): string {
+  return `text-score-${getScoreClass(s)}`;
 }
 
 /** Tailwind text-color class for a letter grade. */
@@ -31,4 +43,23 @@ export function getBarColorHex(s: number): string {
   if (s >= 70) return "#abd079";
   if (s >= 40) return "#eee56e";
   return "#ae4845";
+}
+
+/** Score label for badges. */
+export function getScoreLabel(score: number): string {
+  if (score >= 70) return "Healthy";
+  if (score >= 40) return "Mixed";
+  return "Concerning";
+}
+
+/** Tailwind classes for score badge styling. */
+export function getScoreBadgeColor(score: number): string {
+  const cls = getScoreClass(score);
+  return `bg-score-${cls}/20 text-score-${cls} border-score-${cls}/30`;
+}
+
+/** Glow style for score badges. */
+export function getScoreGlow(score: number): React.CSSProperties {
+  const colors = { good: "171, 208, 121", mid: "238, 229, 110", bad: "174, 72, 69" };
+  return { boxShadow: `0 0 8px rgba(${colors[getScoreClass(score)]}, 0.1)` };
 }
