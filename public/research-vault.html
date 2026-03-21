@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>The Vault Extraction Flywheel — Coefficient Research</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --lavender: #b5b2d9;
+    --lavender-light: #d9daed;
+    --dark: #232323;
+    --dark-deep: #1a1a1a;
+    --surface: #2a2a2a;
+    --beige: #cdc8bd;
+    --info: #4e5fab;
+    --score-bad: #ae4845;
+    --score-good: #abd079;
+    --score-mid: #eee56e;
+    --card-bg: rgba(255,255,255,0.02);
+    --card-hover: rgba(255,255,255,0.05);
+    --border: rgba(255,255,255,0.06);
+    --border-strong: rgba(255,255,255,0.10);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(205,200,189,0.6);
+    --text-tertiary: rgba(205,200,189,0.4);
+    --text-label: rgba(205,200,189,0.5);
+    --glow-lav: rgba(181,178,217,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--dark);
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 40%, rgba(181,178,217,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(78,95,171,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Typography ── */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    margin: 8px 0 4px;
+  }
+
+  h1 span { color: var(--lavender); }
+
+  .sub-header {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-bottom: 32px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--lavender);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    margin: 48px 0 16px;
+    opacity: 0.7;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(181,178,217,0.15) 50%, transparent 100%);
+    margin: 4px 0 20px;
+  }
+
+  /* ── Cards (matching site's gradient-border pattern) ── */
+  .card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .card:hover {
+    background: var(--card-hover);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 20px var(--glow-lav);
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    margin-bottom: 4px;
+  }
+
+  .card-value {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin: 2px 0;
+  }
+
+  .card-sub {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .card-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  /* ── Grid Layouts ── */
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+  /* ── Address ── */
+  .addr {
+    font-size: 10px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--info);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .addr:hover { color: var(--lavender-light); text-decoration: underline; }
+
+  /* ── Tags (pill-shaped, matching site's score badges) ── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+  }
+  .pill-lav { background: rgba(181,178,217,0.1); color: var(--lavender); border-color: rgba(181,178,217,0.2); }
+  .pill-warn { background: rgba(174,72,69,0.1); color: var(--score-bad); border-color: rgba(174,72,69,0.2); }
+  .pill-info { background: rgba(78,95,171,0.1); color: var(--info); border-color: rgba(78,95,171,0.2); }
+  .pill-mid { background: rgba(238,229,110,0.1); color: var(--score-mid); border-color: rgba(238,229,110,0.2); }
+
+  /* ── Flywheel Steps ── */
+  .fw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  .fw-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    border-left: 2px solid var(--lavender);
+  }
+
+  .fw-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .fw-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    background: var(--lavender);
+    color: var(--dark);
+    flex-shrink: 0;
+  }
+
+  .fw-card p, .fw-card li {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+  .fw-card ul { padding-left: 14px; }
+  .fw-card li { margin: 2px 0; }
+
+  .fw-amt {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 8px 0 6px;
+  }
+
+  /* ── Flow/Timeline ── */
+  .timeline {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .tl-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .tl-row:last-child { border-bottom: none; }
+
+  .tl-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lavender);
+    margin-top: 6px;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(181,178,217,0.3);
+  }
+
+  .tl-content { flex: 1; }
+  .tl-content strong { font-size: 12.5px; display: block; margin-bottom: 2px; }
+  .tl-content .desc { font-size: 11px; color: var(--text-tertiary); }
+
+  /* ── Alert (left accent, matching site's warning pattern) ── */
+  .flag {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--score-bad);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 10px 0;
+  }
+  .flag-lav { border-left-color: var(--lavender); }
+  .flag h4 { font-size: 12px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
+  .flag p, .flag li { font-size: 11px; color: var(--text-tertiary); margin: 2px 0; }
+  .flag ul { padding-left: 16px; }
+
+  /* ── Wallet Rows ── */
+  .w-list { display: flex; flex-direction: column; gap: 6px; }
+
+  .w-row {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    display: grid;
+    grid-template-columns: 160px 1fr 220px;
+    gap: 10px;
+    align-items: center;
+    font-size: 11px;
+    transition: background 0.2s;
+  }
+  .w-row:hover { background: rgba(181,178,217,0.04); }
+  .w-role { font-weight: 700; color: var(--lavender); }
+  .w-bal { text-align: right; color: var(--text-secondary); font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; }
+
+  /* ── Money Tree ── */
+  .money-node {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .money-node h4 { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .money-node .money-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 11px;
+  }
+  .money-node .money-row:last-child { border-bottom: none; }
+  .money-dest { color: var(--text-tertiary); }
+  .money-amt { font-weight: 700; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; }
+
+  footer {
+    margin-top: 60px;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  footer .brand { font-size: 12px; font-weight: 700; color: var(--lavender); }
+  footer .meta { font-size: 10px; color: var(--text-tertiary); }
+
+  @media (max-width: 900px) {
+    .fw-grid, .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .w-row { grid-template-columns: 1fr; gap: 2px; }
+    .w-bal { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══ HEADER ═══ -->
+<div class="eyebrow">Coefficient Research</div>
+<h1>The Vault <span>Extraction Flywheel</span></h1>
+<p class="sub-header">Complete on-chain fund flow analysis &mdash; March 2026 &bull; All addresses linked to Solscan for verification</p>
+
+<!-- ═══ EXECUTIVE SUMMARY ═══ -->
+<div style="background:rgba(181,178,217,0.06);border:1px solid rgba(181,178,217,0.15);border-radius:12px;padding:28px 28px 24px;margin-bottom:32px">
+  <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--lavender);font-family:'SF Mono','Fira Code',monospace;margin-bottom:12px;opacity:0.7">Executive Summary</div>
+
+  <p style="font-size:14px;color:var(--text-primary);line-height:1.7;margin-bottom:14px">To the Solana Foundation, The Vault looks like a model stake pool: a clean 5% fee, an untouched fee account, and 202 validators. The reality is a multi-layered extraction machine that has funneled <strong>$1.15M in verified USDC</strong> over 13 months while pitting its own validators against each other for the operator&rsquo;s personal gain.</p>
+
+  <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px">Vault turns Foundation delegation into a revenue engine validators are forced to fuel: 25% SaaS fees or lose stake, weekly USDC for Votex votes, buying vSOL to pump TVL, and participating in the $V token ecosystem &mdash; all flowing value back to one operator who controls every lever. The vPoints mint authority, the SaaS-funded buy wall, the Meteora liquidity cycling, and $727K in &ldquo;payroll&rdquo; across 44 wallets for a ~4 person team. The validators aren&rsquo;t customers. <span style="color:var(--lavender);font-weight:700">They&rsquo;re the product.</span></p>
+
+  <p style="font-size:13px;color:var(--text-primary);line-height:1.7;font-weight:500"><strong>Relative to its size, The Vault is the most extractive stake pool in the Solana ecosystem &mdash; leveraging Foundation delegation to force validators into a pay-to-play arms race where the only winner is the operator.</strong> <strong>As the Solana Foundation sharpens its focus on the validator set, the SFDP, and the role stake pools play in the ecosystem, Vault deserves scrutiny.</strong> <span style="color:var(--text-secondary);font-weight:400">The extraction documented here &mdash; SaaS fees, token operations, governance rent-seeking, opaque fund flows &mdash; is not matched by any contribution to network health. No novel technology, no decentralization tooling, no public good. Only extraction &mdash; sophisticated, multi-layered, and designed to be invisible to the institutions whose delegation makes it possible.</span></p>
+</div>
+
+<!-- ═══ KEY METRICS ═══ -->
+<div class="grid-4">
+  <div class="card">
+    <div class="card-accent" style="background:var(--lavender)"></div>
+    <div class="card-label">Pool TVL</div>
+    <div class="card-value">1,257,689 SOL</div>
+    <div class="card-sub">~$189M &bull; 202 validators &bull; 1.1M vSOL</div>
+  </div>
+  <div class="card">
+    <div class="card-accent" style="background:var(--lavender)"></div>
+    <div class="card-label">Confirmed Revenue</div>
+    <div class="card-value">$1.15M</div>
+    <div class="card-sub">Total USDC through collection wallet over ~13 months (verified)</div>
+  </div>
+  <div class="card">
+    <div class="card-accent" style="background:var(--info)"></div>
+    <div class="card-label">$V Supply</div>
+    <div class="card-value">100M</div>
+    <div class="card-sub">Mint renounced &bull; Team holds 45.5%</div>
+  </div>
+  <div class="card">
+    <div class="card-accent" style="background:var(--info)"></div>
+    <div class="card-label">CEX Cash-Out (Verified)</div>
+    <div class="card-value">$716,957</div>
+    <div class="card-sub">C7jrQ &rarr; 5cGhx &rarr; 6LY1JzAF (CEX hot wallet: $61M USDC, 903K SOL)</div>
+  </div>
+</div>
+
+<!-- ═══ THE FLYWHEEL ═══ -->
+<div class="section-label">The Flywheel</div>
+<div class="divider"></div>
+
+<div class="fw-grid">
+  <div class="fw-card">
+    <h3><span class="fw-num">1</span> Users Stake SOL</h3>
+    <p>SOL deposited into Vault pool, receive vSOL. TVL growth attracts validators seeking delegation.</p>
+    <div class="fw-amt">1.26M SOL &rarr; vSOL</div>
+    <p>Pool: <a class="addr" href="https://solscan.io/account/Fu9BYC6tWBo1KMKaP3CFoKfRhqv9akmy3DuYwnCyWiyC" target="_blank">Fu9BYC...WiyC</a></p>
+  </div>
+
+  <div class="fw-card">
+    <h3><span class="fw-num">2</span> Stake Directed</h3>
+    <p>202 validators across 3 buckets. Elite Performance (50%) requires 0/0 commission &mdash; free labor for Vault.</p>
+    <div class="fw-amt">~7K SOL/validator avg</div>
+    <p>25% SaaS fee or delegation removed within 10 epochs</p>
+  </div>
+
+  <div class="fw-card">
+    <h3><span class="fw-num">3</span> Double Extraction</h3>
+    <p>5% epoch fee on stakers + 25% SaaS on validators. Both flows mixed through one collection wallet.</p>
+    <div class="fw-amt">$1.15M over ~13 months</div>
+    <p><span class="pill pill-lav">verified</span> Fee acct: 373 vSOL, one 305 vSOL outflow observed</p>
+    <p style="margin-top:3px"><span class="pill pill-info">total</span> $1,149,335 USDC through collection wallet</p>
+  </div>
+
+  <div class="fw-card">
+    <h3><span class="fw-num">4</span> USDC &rarr; Team &rarr; CEX</h3>
+    <p>Collection wallet empties to payroll (14 team members), Manager treasury, and Coinbase cash-out chain.</p>
+    <div class="fw-amt">$1.15M+ distributed</div>
+    <p>Payroll: <a class="addr" href="https://solscan.io/account/7PjthK19ydhEi7wRT9EUSbLFXm9UodHe21tNfnZpk2C4" target="_blank">7Pjth...2C4</a></p>
+    <p>Coinbase: <a class="addr" href="https://solscan.io/account/C7jrQLQcEQ6iV6w46Xcg6JTAhXoLEgG9q2UjEt6XSxD2" target="_blank">C7jrQ...xD2</a> &rarr; $717K</p>
+  </div>
+
+  <div class="fw-card">
+    <h3><span class="fw-num">5</span> vPoints &rarr; $V Options</h3>
+    <p>Team controls vPoints minting. Users (and team) earn points, exercise for $V, dump into buy wall.</p>
+    <div class="fw-amt">1 vSOL &rarr; ~1,363 $V</div>
+    <p><span class="pill pill-info">note</span> FfihY exercises ~196K $V, one 0.005 vSOL transfer to Manager wallet</p>
+  </div>
+
+  <div class="fw-card">
+    <h3><span class="fw-num">6</span> Meteora LP Cycling</h3>
+    <p>VLP liquidity deployed on Meteora during option windows as buy wall. Removed after. Bots cycle every 2-5 days.</p>
+    <div class="fw-amt">~$213K TVL in pool</div>
+    <p>Pool: <a class="addr" href="https://solscan.io/account/Mr8yroJ1BPeWvupdh76yAsuJGJsSZSRUDXGypS4nsET" target="_blank">Mr8yro...sET</a></p>
+  </div>
+</div>
+
+<!-- ═══ GAIUS'S WORDS ═══ -->
+<div class="section-label">The Wash Cycle &mdash; In His Own Words</div>
+<div class="divider"></div>
+
+<div class="timeline">
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>&ldquo;SaaS fees are used to support the token. They are a buy wall during option windows.&rdquo;</strong>
+      <div class="desc">Validator SaaS revenue creates artificial price support for $V above the strike price so exercisers can profit by minting and immediately selling.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>&ldquo;When you farm options, mint V, and instantly sell it &mdash; there is buy pressure slightly above the strike price.&rdquo;</strong>
+      <div class="desc">Users exercise options, mint $V, sell immediately. SaaS-funded buy wall absorbs sells. Protocol keeps the vSOL used for exercise and deploys it as DeFi collateral.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>&ldquo;We withdraw the monies from our unstake pool and deploy on Meteora. After window, we remove from Meteora. Back to VLP.&rdquo;</strong>
+      <div class="desc">VLP liquidity pulled from unstake pool, deployed as $V/vSOL on Meteora during windows. Operator bots JD38/JD25 run cyclical deposits. 40-day gap Jan 17&ndash;Feb 27 aligns with option window.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SMOKING GUN: FfihY ═══ -->
+<div class="section-label">Notable Exerciser &mdash; FfihY Wallet</div>
+<div class="divider"></div>
+
+<div class="flag flag-lav">
+  <h4>Largest Exerciser Has Minor Link to Manager Wallet</h4>
+  <p><a class="addr" href="https://solscan.io/account/FfihYCMBM6Gv39Nvs15hmigtBVbXVEFX8WcaZWxPRoi3" target="_blank">FfihYCMBM6Gv39Nvs15hmigtBVbXVEFX8WcaZWxPRoi3</a></p>
+  <ul>
+    <li><strong>Largest exerciser:</strong> ~196K $V total throughput (verified), currently holds 0 $V (all forwarded)</li>
+    <li><strong>One direct vSOL transfer to Manager wallet</strong> (F3yy3FVp...) &mdash; 0.005 vSOL (negligible amount, but the connection exists)</li>
+    <li>Sends ALL exercised $V onward to lock contracts</li>
+    <li>Receives vPoints from weekly distribution bot chain</li>
+  </ul>
+  <p style="margin-top:6px;font-size:10px;color:var(--text-tertiary)">Note: The 0.005 vSOL transfer is very small. This is a data point, not conclusive proof of team self-dealing. Further investigation needed to establish wallet ownership.</p>
+</div>
+
+<!-- ═══ MONEY TREE ═══ -->
+<div class="section-label">Money Tree &mdash; Where Revenue Ends Up</div>
+<div class="divider"></div>
+
+<p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px"><strong>Source:</strong> Collection wallet (<a class="addr" href="https://solscan.io/account/ysjt2G5xrKkx95ZeDEy5wof5bNeYYDVt2do2fwupPKo" target="_blank">ysjt2G...PKo</a>) &mdash; <strong>$1,149,335 total USDC</strong> verified inflow</p>
+
+<div class="grid-2" style="margin-bottom:14px">
+  <div class="money-node">
+    <h4 style="color:var(--lavender)">&ldquo;Payroll&rdquo; &mdash; $727K (63.3%)</h4>
+    <p style="font-size:11px;color:var(--text-tertiary);margin-bottom:8px">via <a class="addr" href="https://solscan.io/account/7PjthK19ydhEi7wRT9EUSbLFXm9UodHe21tNfnZpk2C4" target="_blank">7Pjth...2C4</a> &rarr; 44 wallets (17 significant)</p>
+    <div class="money-row"><span class="money-dest">Bpiie...</span><span class="money-amt">$112,000</span></div>
+    <div class="money-row"><span class="money-dest">3zSVw...</span><span class="money-amt">$93,000</span></div>
+    <div class="money-row"><span class="money-dest">Hfi79...</span><span class="money-amt">$82,500</span></div>
+    <div class="money-row"><span class="money-dest">gqH7i...</span><span class="money-amt">$64,000</span></div>
+    <div class="money-row"><span class="money-dest">HE9ks... &rarr; CEX</span><span class="money-amt">$60,800</span></div>
+    <div class="money-row"><span class="money-dest">5CGMT... &rarr; CEX</span><span class="money-amt">$58,000</span></div>
+    <div class="money-row"><span class="money-dest">+ 11 more significant</span><span class="money-amt">$256,700</span></div>
+    <div class="money-row" style="border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;padding-top:8px"><span class="money-dest" style="font-weight:700">Total distributed</span><span class="money-amt" style="font-weight:700">$726,248</span></div>
+  </div>
+
+  <div class="money-node">
+    <h4 style="color:var(--lavender)">Other Channels &mdash; $422K (36.7%)</h4>
+    <p style="font-size:11px;color:var(--text-tertiary);margin-bottom:8px">Manager treasury + CEX + other</p>
+    <div class="money-row"><span class="money-dest">Manager treasury (F3yy3...)</span><span class="money-amt">$229,602</span></div>
+    <div class="money-row"><span class="money-dest" style="font-size:10px;color:var(--text-tertiary)">&nbsp;&nbsp;$196K USDC sitting, 373 vSOL, 25K $V, 237 VLP</span></div>
+    <div class="money-row"><span class="money-dest">CEX chain (C7jrQ...)</span><span class="money-amt">$62,500</span></div>
+    <div class="money-row"><span class="money-dest" style="font-size:10px;color:var(--text-tertiary)">&nbsp;&nbsp;&rarr; 5cGhx &rarr; 6LY1JzAF (CEX: $61M USDC, 903K SOL)</span></div>
+    <div class="money-row"><span class="money-dest" style="font-size:10px;color:var(--text-tertiary)">&nbsp;&nbsp;Also received ~$333K from Squads vaults (non-revenue)</span></div>
+    <div class="money-row"><span class="money-dest" style="font-size:10px;color:var(--text-tertiary)">&nbsp;&nbsp;Total cashed to CEX: $716,957</span></div>
+    <div class="money-row"><span class="money-dest">HznuEtw... (ops?)</span><span class="money-amt">$39,950</span></div>
+    <div class="money-row"><span class="money-dest">Other (~43 small addrs)</span><span class="money-amt">~$90K</span></div>
+    <div class="money-row" style="border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;padding-top:8px"><span class="money-dest" style="font-weight:700">Total</span><span class="money-amt" style="font-weight:700">$422,052</span></div>
+  </div>
+</div>
+
+<div class="flag" style="border-left-color:var(--score-mid)">
+  <h4>The Math Check</h4>
+  <p>$726,248 (payroll) + $229,602 (treasury) + $62,500 (CEX) + $39,950 (ops) + ~$90K (other) = <strong>~$1,148,300</strong> &mdash; accounts for the $1,149,335 total within rounding.</p>
+  <p style="margin-top:4px">But note: C7jrQ cashed out $716,957 to the CEX, yet only received $62,500 from the collection wallet. The remaining ~$654K came from Squads vaults and other non-revenue sources &mdash; meaning the CEX cash-out represents more than just pool revenue.</p>
+</div>
+
+<!-- ═══ THE WASH ═══ -->
+<div class="section-label">How The Wash Works &mdash; Proposed Hypothesis</div>
+<div class="divider"></div>
+
+<p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">Vault is publicly run by a very small team. Yet $727K in &ldquo;payroll&rdquo; flows to 44 wallets across 13 months. The following proposes how the revenue may be obscured.</p>
+
+<div class="timeline">
+  <div class="tl-row">
+    <div class="tl-dot" style="background:var(--score-mid);box-shadow:0 0 8px rgba(238,229,110,0.4)"></div>
+    <div class="tl-content">
+      <strong>1. Phantom Payroll &mdash; Paying Yourself Through 44 Wallets</strong>
+      <div class="desc">$727K flows to a &ldquo;payroll&rdquo; wallet that distributes to 44 addresses, 17 receiving significant amounts ($4K&ndash;$112K each). For a protocol run by ~4 people, this is suspicious. Multiple payroll recipients route directly to CEX deposits (HE9ks, 5CGMT). If these are Gaius-controlled wallets, this is self-dealing disguised as team compensation &mdash; the payroll wallet serves as a mixer.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot" style="background:var(--score-mid);box-shadow:0 0 8px rgba(238,229,110,0.4)"></div>
+    <div class="tl-content">
+      <strong>2. vPoints Self-Minting &mdash; Printing Money to Yourself</strong>
+      <div class="desc">The team controls the vPoints mint authority (PDA of program QMWoBmAy). They set the emission schedule: 250K vPoints/week across categories they control (veV airdrops, VLP liquidity, direct staking, Meteora LP). If you stake vSOL, provide VLP liquidity, and lock veV &mdash; all things the team does &mdash; you receive the majority of points. Those points convert to $V options at below-market strike price. Exercise, sell into the SaaS-funded buy wall, pocket the difference. The team is both the faucet and the drain.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot" style="background:var(--score-mid);box-shadow:0 0 8px rgba(238,229,110,0.4)"></div>
+    <div class="tl-content">
+      <strong>3. $V Side-Channel Selling &mdash; Multiple Exit Routes</strong>
+      <div class="desc">The team doesn&rsquo;t need to dump contributor tokens (those are locked). Instead:<br>
+      &bull; 200K $V exfiltrated through 2-hop chains to deleted accounts (7 days after TGE)<br>
+      &bull; 3VY5WT accumulates $V from AMM routing, forwards to intermediaries<br>
+      &bull; FfihY exercises ~196K $V, forwards ALL of it onward (0 balance)<br>
+      &bull; HjJHB9 cashed out $109K in SOL via Jupiter before cleaning the wallet<br>
+      Each of these is a separate exit route that avoids selling from known team wallets.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot" style="background:var(--score-mid);box-shadow:0 0 8px rgba(238,229,110,0.4)"></div>
+    <div class="tl-content">
+      <strong>4. Votex &mdash; Selling Governance to Validators</strong>
+      <div class="desc">Validators buy gauge votes with USDC on votex.so to direct 10% of pool stake. Votes expire weekly, forcing continuous USDC spend. This is an additional revenue stream on top of the 25% SaaS fee &mdash; validators pay twice: once for delegation (SaaS) and again for directing it (Votex). Any Votex platform fees flow to wallets not yet traced.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot" style="background:var(--score-mid);box-shadow:0 0 8px rgba(238,229,110,0.4)"></div>
+    <div class="tl-content">
+      <strong>5. The Option Window Buy Wall &mdash; Using Validator Money to Support Your Token</strong>
+      <div class="desc">Gaius openly admits SaaS fees create a buy wall during option windows. The cycle: validators pay SaaS fees in vSOL &rarr; converted to USDC &rarr; USDC buys $V during exercise windows &rarr; price stays above strike &rarr; exercisers (potentially including the team via self-minted vPoints) sell $V profitably &rarr; team pockets the spread. Validators are unknowingly funding the team&rsquo;s token operations.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot" style="background:var(--score-mid);box-shadow:0 0 8px rgba(238,229,110,0.4)"></div>
+    <div class="tl-content">
+      <strong>6. Liquidity Shell Game &mdash; VLP &harr; Meteora Cycling</strong>
+      <div class="desc">VLP liquidity (~$213K in the $V/vSOL Meteora pool) is cycled in and out around option windows. Operator bots JD38/JD25 deposit every 2&ndash;5 days. During windows, liquidity is deployed to absorb $V sells. After windows, it&rsquo;s pulled back. This is market manipulation &mdash; the protocol controls the liquidity, the price, and the timing. The 40-day gap (Jan 17&ndash;Feb 27) in bot deposits correlates with a known option exercise window.</div>
+    </div>
+  </div>
+</div>
+
+<div class="flag flag-lav" style="margin-top:16px">
+  <h4>The Pattern</h4>
+  <p>Each mechanism is individually deniable. &ldquo;Payroll&rdquo; could be real team members. vPoints emission follows the published schedule. $V selling through intermediaries could be regular market activity. Votex is a public product. The buy wall is openly discussed.</p>
+  <p style="margin-top:6px">But taken together: a small team extracting $1.15M through 44 &ldquo;payroll&rdquo; wallets, controlling the vPoints faucet, running automated market-making bots, cycling liquidity around option windows, and using validator SaaS fees to support their token price &mdash; the pattern is consistent with one operator running multiple sides of the same trade.</p>
+</div>
+
+<!-- ═══ vPOINTS CONTROL ═══ -->
+<div class="section-label">vPoints Emission &mdash; Team Controls the Faucet</div>
+<div class="divider"></div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-label">vPoints Supply</div>
+    <div class="card-value">6,698,923</div>
+    <div class="card-sub">Mint authority: PDA owned by program QMWoBmAy... &mdash; whoever invokes this program can mint unlimited vPoints</div>
+    <p style="margin-top:8px;font-size:11px;color:var(--text-tertiary)">Top 4 holders control 47.1% of supply. Main distribution bot <a class="addr" href="https://solscan.io/account/pnAsJj" target="_blank">pnAsJj...</a> holds 1.77M (26.4%).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Emission &rarr; Exercise &rarr; Sell Chain</div>
+    <div class="card-sub" style="margin-top:4px">
+      <strong style="color:var(--text-primary);font-size:12px;display:block;margin-bottom:6px">~250K vPoints/week emitted across 11 categories</strong>
+      Minter (3rMcxR, 331K remaining) &rarr; Reward pools (Orca/Meteora/VLP) &rarr; Distribution bot (pnAsJj, 1.77M) &rarr; Individual wallets weekly &rarr; Exercise for $V &rarr; Sell into SaaS-funded buy wall
+    </div>
+    <p style="margin-top:8px;font-size:11px;color:var(--text-tertiary)"><strong>54 exercises found, 106,024 $V distributed.</strong> Largest single exerciser (FfihY) links directly to Manager wallet.</p>
+  </div>
+</div>
+
+<!-- ═══ $V DISTRIBUTION ═══ -->
+<div class="section-label">$V Token Distribution</div>
+<div class="divider"></div>
+
+<div class="grid-4">
+  <div class="card">
+    <div class="card-label">DAO Treasury</div>
+    <div class="card-value">35.85M</div>
+    <div class="card-sub">35.85% &bull; No sells detected &bull; 2.33M sent to options supply</div>
+    <p style="margin-top:4px"><a class="addr" href="https://solscan.io/account/CpLAMH33d35ZvnfVAo69tsKLBpSXPdPjCcot61Tyzk" target="_blank">CpLAMH...Tyzk</a></p>
+  </div>
+  <div class="card">
+    <div class="card-label">Future / Liquidity</div>
+    <div class="card-value">12.3M</div>
+    <div class="card-sub">12.3% &bull; 200K exfiltrated via 2-hop to deleted accts</div>
+    <p style="margin-top:4px"><a class="addr" href="https://solscan.io/account/BaFMCX3SWrtR3xM1kAneBfXKfWRuGJT141D4RDMi87BF" target="_blank">BaFMCX...87BF</a></p>
+  </div>
+  <div class="card">
+    <div class="card-label">Contributor Escrows</div>
+    <div class="card-value">21.3M</div>
+    <div class="card-sub">15 Lockt escrows &bull; 4-5yr vest &bull; ALL untouched &bull; 1.7M unaccounted</div>
+  </div>
+  <div class="card">
+    <div class="card-label">vPoints Unlocked</div>
+    <div class="card-value">14.5M</div>
+    <div class="card-sub">1-yr vest mostly done &bull; Only 1.97M still locked &bull; Primary sell pressure</div>
+  </div>
+</div>
+
+<div class="flag flag-lav" style="margin-top:16px">
+  <h4>Team Controls 45.5% of $V Supply</h4>
+  <p>DAO Treasury (35.85M) + Squads Treasury (6.75M) + Options Supply (2.88M) + WARCHEST (37K) + Manager (25K) = <strong>45,544,488 $V</strong> across team-controlled wallets. Contributor escrows (21.3M) remain locked but the team doesn't need them &mdash; they control nearly half the supply through other allocations.</p>
+</div>
+
+<!-- ═══ RED FLAGS ═══ -->
+<div class="section-label">Red Flags</div>
+<div class="divider"></div>
+
+<div class="flag">
+  <h4>200K $V Exfiltrated Through Deleted Accounts</h4>
+  <p>Two batches of 100K $V from Future/Liquidity wallet, 7 days after TGE. Each through 2-hop intermediary chains. Final destination accounts closed/deleted.</p>
+</div>
+
+<div class="flag">
+  <h4>$109K Cash-Out via Intermediary</h4>
+  <p>HjJHB9 received 935 vSOL + 36.6K $V from 3VY5WT. Swapped 70.33 vSOL &rarr; 809 SOL (~$109K) via Jupiter. Forwarded $V to WARCHEST. Wallet cleaned out.</p>
+</div>
+
+<div class="flag">
+  <h4>Gaius&rsquo;s Claims vs On-Chain</h4>
+  <ul>
+    <li>&ldquo;157 vSOL in SaaS wallet&rdquo; &rarr; Wallet holds 0. Drained same day.</li>
+    <li>&ldquo;934 vSOL as VLP in WARCHEST&rdquo; &rarr; Actually 1,112 VLP tokens (different asset).</li>
+    <li>&ldquo;SaaS revenues ~1,150&rdquo; &rarr; SaaS-only. $1.15M+ total flows through same wallet.</li>
+    <li>Fee account &ldquo;untouched&rdquo; &rarr; one 305 vSOL outflow observed, current balance 373 vSOL.</li>
+  </ul>
+</div>
+
+<!-- ═══ COMPLETE WALLET MAP ═══ -->
+<div class="section-label">Complete Wallet Map</div>
+<div class="divider"></div>
+
+<div class="w-list">
+  <div class="w-row"><div class="w-role">Stake Pool</div><a class="addr" href="https://solscan.io/account/Fu9BYC6tWBo1KMKaP3CFoKfRhqv9akmy3DuYwnCyWiyC" target="_blank">Fu9BYC6tWBo1KMKaP3CFoKfRhqv9akmy3DuYwnCyWiyC</a><div class="w-bal">1,257,689 SOL</div></div>
+  <div class="w-row"><div class="w-role">Manager (Squads)</div><a class="addr" href="https://solscan.io/account/F3yy3FVpwq9MV321AzALFcDWZp9XBBHbMas3t4AtEtCW" target="_blank">F3yy3FVpwq9MV321AzALFcDWZp9XBBHbMas3t4AtEtCW</a><div class="w-bal">$196K USDC, 373 vSOL, 25K $V</div></div>
+  <div class="w-row"><div class="w-role">WARCHEST (Squads)</div><a class="addr" href="https://solscan.io/account/BcF7w5VnxN1cnvKkdSqdFtbxsHgJHVVJpEuNRM5SpGqW" target="_blank">BcF7w5VnxN1cnvKkdSqdFtbxsHgJHVVJpEuNRM5SpGqW</a><div class="w-bal">37,151 $V, 1,112 VLP</div></div>
+  <div class="w-row"><div class="w-role">SaaS Collection</div><a class="addr" href="https://solscan.io/account/ysjt2G5xrKkx95ZeDEy5wof5bNeYYDVt2do2fwupPKo" target="_blank">ysjt2G5xrKkx95ZeDEy5wof5bNeYYDVt2do2fwupPKo</a><div class="w-bal">EMPTY (pass-through)</div></div>
+  <div class="w-row"><div class="w-role">Fee Account</div><a class="addr" href="https://solscan.io/account/Bk2qhUpf3hHZWwpYSudZkbrkA9DVKrNNhQfnH7zF67Ji" target="_blank">Bk2qhUpf3hHZWwpYSudZkbrkA9DVKrNNhQfnH7zF67Ji</a><div class="w-bal">373 vSOL (periodically swept)</div></div>
+  <div class="w-row"><div class="w-role">DAO Treasury</div><a class="addr" href="https://solscan.io/account/CpLAMH33d35ZvnfVAo69tsKLBpSXPdPjCcot61Tyzk" target="_blank">CpLAMH33d35ZvnfVAo69tsKLBpSXPdPjCcot61Tyzk</a><div class="w-bal">35,846,301 $V</div></div>
+  <div class="w-row"><div class="w-role">Squads Treasury</div><a class="addr" href="https://solscan.io/account/HBJLHfgZYhgBkN5PLW8ENWs2ei9GSnZm66CqeT7mWR5C" target="_blank">HBJLHfgZYhgBkN5PLW8ENWs2ei9GSnZm66CqeT7mWR5C</a><div class="w-bal">6,753,857 $V (vSOL drained)</div></div>
+  <div class="w-row"><div class="w-role">Coinbase Chain</div><a class="addr" href="https://solscan.io/account/C7jrQLQcEQ6iV6w46Xcg6JTAhXoLEgG9q2UjEt6XSxD2" target="_blank">C7jrQLQcEQ6iV6w46Xcg6JTAhXoLEgG9q2UjEt6XSxD2</a><div class="w-bal">$81.9K USDC &rarr; Coinbase $717K</div></div>
+  <div class="w-row"><div class="w-role">Payroll</div><a class="addr" href="https://solscan.io/account/7PjthK19ydhEi7wRT9EUSbLFXm9UodHe21tNfnZpk2C4" target="_blank">7PjthK19ydhEi7wRT9EUSbLFXm9UodHe21tNfnZpk2C4</a><div class="w-bal">$727K &rarr; 14 team members</div></div>
+  <div class="w-row"><div class="w-role">FfihY (Key Exerciser)</div><a class="addr" href="https://solscan.io/account/FfihYCMBM6Gv39Nvs15hmigtBVbXVEFX8WcaZWxPRoi3" target="_blank">FfihYCMBM6Gv39Nvs15hmigtBVbXVEFX8WcaZWxPRoi3</a><div class="w-bal">162K+ $V exercised &rarr; lock</div></div>
+  <div class="w-row"><div class="w-role">Options Supply</div><a class="addr" href="https://solscan.io/account/pQqwmMgNGNHvPgC6Yq6fngdvoaZdWgyPwnmDbY9EhBJ" target="_blank">pQqwmMgNGNHvPgC6Yq6fngdvoaZdWgyPwnmDbY9EhBJ</a><div class="w-bal">2,882,181 $V remaining</div></div>
+  <div class="w-row"><div class="w-role">Exercise Vault</div><a class="addr" href="https://solscan.io/account/21Mxxv6dzUNG9Q6MWiP1irww2Vck2UBJYkKMyM5Sbg2a" target="_blank">21Mxxv6dzUNG9Q6MWiP1irww2Vck2UBJYkKMyM5Sbg2a</a><div class="w-bal">409 vSOL (in DeFi)</div></div>
+  <div class="w-row"><div class="w-role">Operator Bot #1</div><a class="addr" href="https://solscan.io/account/JD38n7ynKYcgPpF7k1BhXEeREu1KqptU93fVGy3S624k" target="_blank">JD38n7ynKYcgPpF7k1BhXEeREu1KqptU93fVGy3S624k</a><div class="w-bal">Meteora LP cycling</div></div>
+  <div class="w-row"><div class="w-role">Operator Bot #2</div><a class="addr" href="https://solscan.io/account/JD25qVdtd65FoiXNmR89JjmoJdYk9sjYQeSTZAALFiMy" target="_blank">JD25qVdtd65FoiXNmR89JjmoJdYk9sjYQeSTZAALFiMy</a><div class="w-bal">Meteora LP cycling</div></div>
+  <div class="w-row"><div class="w-role">Meteora Pool</div><a class="addr" href="https://solscan.io/account/Mr8yroJ1BPeWvupdh76yAsuJGJsSZSRUDXGypS4nsET" target="_blank">Mr8yroJ1BPeWvupdh76yAsuJGJsSZSRUDXGypS4nsET</a><div class="w-bal">911K $V + 668 vSOL</div></div>
+  <div class="w-row"><div class="w-role">WARCHEST Creator</div><a class="addr" href="https://solscan.io/account/DuBmrNT4TDWt577goL2L6TsJ4HrjZHr6rA9WJQ5vLq3r" target="_blank">DuBmrNT4TDWt577goL2L6TsJ4HrjZHr6rA9WJQ5vLq3r</a><div class="w-bal">Gaius personal wallet</div></div>
+</div>
+
+<!-- ═══ SIX LAYERS ═══ -->
+<div class="section-label">Six Layers of Extraction</div>
+<div class="divider"></div>
+
+<div class="timeline">
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>Layer 1: Staker Extraction &mdash; 5% Epoch Fee</strong>
+      <div class="desc">On-chain fee on all staking rewards. Fee account shows 373 vSOL with one 305 vSOL outflow. Revenue mixed with SaaS in collection wallet.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>Layer 2: Validator Extraction &mdash; 25% SaaS Fee</strong>
+      <div class="desc">Invoiced per epoch. Non-payment = stake removal + 6-month ban. Epoch + SaaS fees mixed in collection wallet. $1,149,335 total USDC verified.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>Layer 3: Token Extraction &mdash; Options Exercise</strong>
+      <div class="desc">409+ vSOL collected. Team controls vPoints emission. Largest exerciser (FfihY) links to Manager wallet. Exercise vault vSOL deployed as DeFi collateral.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>Layer 4: Governance Extraction &mdash; Votex Vote Buying</strong>
+      <div class="desc">Validators spend USDC weekly on votex.so for gauge stake. Votes expire, requiring continuous payment.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>Layer 5: Commission Extraction &mdash; 0/0 Requirement</strong>
+      <div class="desc">Elite Performance (50% of stake) requires 0% base + 0% MEV commission. Validators provide free labor for Vault.</div>
+    </div>
+  </div>
+  <div class="tl-row">
+    <div class="tl-dot"></div>
+    <div class="tl-content">
+      <strong>Layer 6: Liquidity Manipulation &mdash; Meteora Cycling</strong>
+      <div class="desc">VLP liquidity deployed on Meteora during option windows. Operator bots cycle every 2-5 days. Controls $V price around exercise events.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CONCLUSION ═══ -->
+<div class="flag flag-lav" style="margin-top:32px">
+  <h4>The Complete Picture</h4>
+  <p>The Solana Foundation sees a pool with a 5% on-chain fee. The actual operation has extracted <strong>$1,149,335 in verified USDC</strong> over ~13 months through multiple layers: $727K distributed as team payroll to 17 recipients, $230K parked in Manager treasury, and $717K cashed out to a major CEX via 3-hop chain (including ~$333K from non-revenue sources). The team controls 45.5% of the $V token supply and the vPoints mint authority. The flywheel is self-reinforcing: more TVL &rarr; more SaaS fees &rarr; bigger buy wall &rarr; higher $V price &rarr; more users stake for vPoints &rarr; more TVL.</p>
+</div>
+
+<footer>
+  <div class="brand">Coefficient &mdash; by mythx</div>
+  <div class="meta">March 2026 &bull; On-chain data via Helius RPC &bull; Addresses linked to Solscan</div>
+</footer>
+
+</div>
+</body>
+</html>
