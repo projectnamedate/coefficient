@@ -347,17 +347,17 @@
 <!-- ═══ HEADER ═══ -->
 <div class="eyebrow">Coefficient Research</div>
 <h1>The Vault <span>Extraction Flywheel</span></h1>
-<p class="sub-header">Complete on-chain fund flow analysis &mdash; March 2026 &bull; All addresses linked to Solscan for verification</p>
+<p class="sub-header">How one stake pool turns Foundation delegation into a validator-vs-validator arms race &mdash; March 2026 &bull; All addresses linked to Solscan for verification</p>
 
 <!-- ═══ EXECUTIVE SUMMARY ═══ -->
 <div style="background:rgba(181,178,217,0.06);border:1px solid rgba(181,178,217,0.15);border-radius:12px;padding:28px 28px 24px;margin-bottom:32px">
   <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--lavender);font-family:'SF Mono','Fira Code',monospace;margin-bottom:12px;opacity:0.7">Executive Summary</div>
 
-  <p style="font-size:14px;color:var(--text-primary);line-height:1.7;margin-bottom:14px">To the Solana Foundation, The Vault looks like a model stake pool: a clean 5% fee, an untouched fee account, and 202 validators. The reality is a multi-layered extraction machine that has funneled <strong>$1.15M in verified USDC</strong> over 13 months while pitting its own validators against each other for the operator&rsquo;s personal gain.</p>
+  <p style="font-size:14px;color:var(--text-primary);line-height:1.7;margin-bottom:14px">To the Solana Foundation, The Vault looks like a model stake pool: a clean 5% fee, an untouched fee account, and 202 validators. But beyond that visible fee, validators inside the pool face a multi-layered extraction structure &mdash; <strong>$1.15M in verified USDC</strong> has flowed through the operation over 13 months, far exceeding what the on-chain fee alone would generate.</p>
 
-  <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px">Vault turns Foundation delegation into a revenue engine validators are forced to fuel: 25% SaaS fees or lose stake, weekly USDC for Votex votes, buying vSOL to pump TVL, and participating in the $V token ecosystem &mdash; all flowing value back to one operator who controls every lever. The vPoints mint authority, the SaaS-funded buy wall, the Meteora liquidity cycling, and $727K in &ldquo;payroll&rdquo; across 44 wallets for a ~4 person team. The validators aren&rsquo;t customers. <span style="color:var(--lavender);font-weight:700">They&rsquo;re the product.</span></p>
+  <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px">The pool&rsquo;s structure pits validators against each other in a pay-to-play arms race: 25% SaaS fees or lose your delegation within 10 epochs. Elite Performance tier requires 0% base and 0% MEV commission &mdash; validators provide free labor just to keep their stake. On top of that, weekly USDC payments for Votex gauge votes, pressure to buy vSOL to maintain TVL, and participation in the $V token ecosystem where the operator controls the vPoints mint authority, the SaaS-funded buy wall, and the Meteora liquidity cycling. <span style="color:var(--lavender);font-weight:700">The validators aren&rsquo;t customers. They&rsquo;re the product.</span></p>
 
-  <p style="font-size:13px;color:var(--text-primary);line-height:1.7;font-weight:500"><strong>Relative to its size, The Vault is the most extractive stake pool in the Solana ecosystem &mdash; leveraging Foundation delegation to force validators into a pay-to-play arms race where the only winner is the operator.</strong> <strong>As the Solana Foundation sharpens its focus on the validator set, the SFDP, and the role stake pools play in the ecosystem, Vault deserves scrutiny.</strong> <span style="color:var(--text-secondary);font-weight:400">The extraction documented here &mdash; SaaS fees, token operations, governance rent-seeking, opaque fund flows &mdash; is not matched by any contribution to network health. No novel technology, no decentralization tooling, no public good. Only extraction &mdash; sophisticated, multi-layered, and designed to be invisible to the institutions whose delegation makes it possible.</span></p>
+  <p style="font-size:13px;color:var(--text-primary);line-height:1.7;font-weight:500"><strong>The Vault&rsquo;s structure creates misaligned incentives that harm validators and the broader Solana staking ecosystem.</strong> <strong>As the Solana Foundation sharpens its focus on the validator set, the SFDP, and the role stake pools play in the ecosystem, this pool&rsquo;s practices warrant closer scrutiny.</strong> <span style="color:var(--text-secondary);font-weight:400">What follows is on-chain evidence of extraction layers built on top of the Foundation-visible fee &mdash; SaaS fees, token operations, governance rent-seeking, and opaque fund flows &mdash; none of which are matched by contributions to network health. No novel technology, no decentralization tooling, no public good. The space is already competitive enough for validators without a stake pool turning Foundation delegation into a weapon against the very operators it&rsquo;s meant to support.</span></p>
 </div>
 
 <!-- ═══ KEY METRICS ═══ -->
@@ -408,11 +408,11 @@
   </div>
 
   <div class="fw-card">
-    <h3><span class="fw-num">3</span> Double Extraction</h3>
-    <p>5% epoch fee on stakers + 25% SaaS on validators. Both flows mixed through one collection wallet.</p>
+    <h3><span class="fw-num">3</span> The Hidden Tax</h3>
+    <p>Beyond the Foundation-visible 5% epoch fee, validators pay a 25% SaaS fee per epoch or face delegation removal. Both flows mix through one collection wallet &mdash; obscuring how much comes from which source.</p>
     <div class="fw-amt">$1.15M over ~13 months</div>
-    <p><span class="pill pill-lav">verified</span> Fee acct: 373 vSOL, one 305 vSOL outflow observed</p>
-    <p style="margin-top:3px"><span class="pill pill-info">total</span> $1,149,335 USDC through collection wallet</p>
+    <p><span class="pill pill-warn">key</span> $1,149,335 USDC through collection wallet &mdash; far exceeding the visible on-chain fee</p>
+    <p style="margin-top:3px"><span class="pill pill-info">note</span> Fee acct: 373 vSOL, one 305 vSOL outflow observed</p>
   </div>
 
   <div class="fw-card">
@@ -524,10 +524,10 @@
 </div>
 
 <!-- ═══ THE WASH ═══ -->
-<div class="section-label">How The Wash Works &mdash; Proposed Hypothesis</div>
+<div class="section-label">Extraction Mechanisms &mdash; How Validators Pay</div>
 <div class="divider"></div>
 
-<p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">Vault is publicly run by a very small team. Yet $727K in &ldquo;payroll&rdquo; flows to 44 wallets across 13 months. The following proposes how the revenue may be obscured.</p>
+<p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">Validators inside Vault face extraction from multiple directions simultaneously. The 5% epoch fee is visible on-chain and known to the Foundation. Everything below is built on top of that &mdash; additional layers that turn Foundation delegation into a pay-to-play system.</p>
 
 <div class="timeline">
   <div class="tl-row">
@@ -582,7 +582,7 @@
 <div class="flag flag-lav" style="margin-top:16px">
   <h4>The Pattern</h4>
   <p>Each mechanism is individually deniable. &ldquo;Payroll&rdquo; could be real team members. vPoints emission follows the published schedule. $V selling through intermediaries could be regular market activity. Votex is a public product. The buy wall is openly discussed.</p>
-  <p style="margin-top:6px">But taken together: a small team extracting $1.15M through 44 &ldquo;payroll&rdquo; wallets, controlling the vPoints faucet, running automated market-making bots, cycling liquidity around option windows, and using validator SaaS fees to support their token price &mdash; the pattern is consistent with one operator running multiple sides of the same trade.</p>
+  <p style="margin-top:6px">But taken together, they form a system where validators are extracted from every angle: forced SaaS fees fund the operator&rsquo;s token buy wall, 0/0 commission requirements strip validator revenue, Votex charges validators again for directing the stake they already pay for, and the operator controls the vPoints faucet, the liquidity, and the timing. The pattern is consistent with one operator running multiple sides of the same trade &mdash; and validators are on the losing end of all of them.</p>
 </div>
 
 <!-- ═══ vPOINTS CONTROL ═══ -->
@@ -689,22 +689,22 @@
 </div>
 
 <!-- ═══ SIX LAYERS ═══ -->
-<div class="section-label">Six Layers of Extraction</div>
+<div class="section-label">Six Layers of Validator Extraction</div>
 <div class="divider"></div>
 
 <div class="timeline">
   <div class="tl-row">
     <div class="tl-dot"></div>
     <div class="tl-content">
-      <strong>Layer 1: Staker Extraction &mdash; 5% Epoch Fee</strong>
-      <div class="desc">On-chain fee on all staking rewards. Fee account shows 373 vSOL with one 305 vSOL outflow. Revenue mixed with SaaS in collection wallet.</div>
+      <strong>Layer 1: Staker Extraction &mdash; 5% Epoch Fee (Foundation-Visible)</strong>
+      <div class="desc">The on-chain fee the Foundation already sees. Fee account shows 373 vSOL with one 305 vSOL outflow. Revenue mixed with SaaS in collection wallet &mdash; making it difficult to separate this known fee from the extraction layers below.</div>
     </div>
   </div>
   <div class="tl-row">
     <div class="tl-dot"></div>
     <div class="tl-content">
       <strong>Layer 2: Validator Extraction &mdash; 25% SaaS Fee</strong>
-      <div class="desc">Invoiced per epoch. Non-payment = stake removal + 6-month ban. Epoch + SaaS fees mixed in collection wallet. $1,149,335 total USDC verified.</div>
+      <div class="desc">Invoiced per epoch. Non-payment = stake removal + 6-month ban. This is the core PvP mechanism: validators must pay or lose Foundation-sourced delegation. $1,149,335 total USDC verified through the collection wallet.</div>
     </div>
   </div>
   <div class="tl-row">
@@ -725,7 +725,7 @@
     <div class="tl-dot"></div>
     <div class="tl-content">
       <strong>Layer 5: Commission Extraction &mdash; 0/0 Requirement</strong>
-      <div class="desc">Elite Performance (50% of stake) requires 0% base + 0% MEV commission. Validators provide free labor for Vault.</div>
+      <div class="desc">Elite Performance (50% of stake) requires 0% base + 0% MEV commission. Validators provide free labor for Vault &mdash; while simultaneously paying SaaS fees for the privilege of doing so.</div>
     </div>
   </div>
   <div class="tl-row">
@@ -740,7 +740,7 @@
 <!-- ═══ CONCLUSION ═══ -->
 <div class="flag flag-lav" style="margin-top:32px">
   <h4>The Complete Picture</h4>
-  <p>The Solana Foundation sees a pool with a 5% on-chain fee. The actual operation has extracted <strong>$1,149,335 in verified USDC</strong> over ~13 months through multiple layers: $727K distributed as team payroll to 17 recipients, $230K parked in Manager treasury, and $717K cashed out to a major CEX via 3-hop chain (including ~$333K from non-revenue sources). The team controls 45.5% of the $V token supply and the vPoints mint authority. The flywheel is self-reinforcing: more TVL &rarr; more SaaS fees &rarr; bigger buy wall &rarr; higher $V price &rarr; more users stake for vPoints &rarr; more TVL.</p>
+  <p>The Solana Foundation sees a pool with a 5% on-chain fee. What it doesn&rsquo;t see is the extraction built on top: <strong>$1,149,335 in verified USDC</strong> flowing through the operation over ~13 months &mdash; $727K distributed as payroll to 17+ recipients, $230K parked in Manager treasury, and $717K cashed out to a major CEX via 3-hop chain. Meanwhile, validators are caught in a system designed to extract from every direction: pay 25% SaaS or lose delegation, run 0/0 commission for Elite Performance, spend USDC weekly on Votex votes, and participate in a token ecosystem where the operator controls the mint, the buy wall, and the liquidity. The flywheel is self-reinforcing: more TVL &rarr; more SaaS fees &rarr; bigger buy wall &rarr; higher $V price &rarr; more users stake for vPoints &rarr; more TVL. <strong>This pool&rsquo;s structure creates misaligned incentives that harm validators and the broader Solana staking ecosystem. It warrants closer scrutiny.</strong></p>
 </div>
 
 <footer>
