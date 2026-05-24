@@ -115,7 +115,7 @@ The indexer runs daily via Vercel cron (`/api/cron`):
 4. Load sandwich validator blacklist
 5. Compute all sub-scores and weighted composite
 6. Write epoch snapshot to database
-7. Send alerts via webhook (Discord/Slack) on significant changes
+7. Send webhook alerts only when the cron indexer errors
 
 ## Development
 
@@ -147,7 +147,7 @@ npm run build
 | `TURSO_DATABASE_URL` | Yes | Turso database URL |
 | `TURSO_AUTH_TOKEN` | Yes | Turso authentication token |
 | `CRON_SECRET` | Yes | Secret for Vercel cron authentication |
-| `ALERT_WEBHOOK_URL` | No | Discord/Slack webhook for alerts |
+| `ALERT_WEBHOOK_URL` | No | Telegram, Discord, or Slack webhook for cron error alerts |
 
 ## Built by Mythx
 

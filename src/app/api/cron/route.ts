@@ -49,13 +49,6 @@ export async function GET(request: Request) {
 
   try {
     const result = await runIndexer();
-
-    // Send success summary if webhook is configured
-    if (process.env.ALERT_WEBHOOK_URL) {
-      const summary = `Coefficient indexer ${result.status}: epoch ${result.epoch ?? "?"}, ${result.pools ?? 0} pools, ${result.elapsed ?? "?"}s`;
-      await sendAlert(summary);
-    }
-
     return NextResponse.json(result);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
