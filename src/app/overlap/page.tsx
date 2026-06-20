@@ -3,13 +3,11 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { formatSol } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
 
 export default async function OverlapPage() {
-  const [overlap, epoch] = await Promise.all([
-    getCrossPoolOverlap(),
-    getLatestScoredEpoch(),
-  ]);
+  const epoch = await getLatestScoredEpoch();
+  const overlap = await getCrossPoolOverlap(epoch ?? undefined);
 
   const maxPools = Math.max(...overlap.map((v) => v.pools.length), 0);
   const totalOverlapValidators = overlap.length;

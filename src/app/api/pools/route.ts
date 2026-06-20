@@ -4,10 +4,10 @@ import { getPoolsWithScores, getLatestScoredEpoch } from "@/db/queries";
 export async function GET() {
   try {
     const epoch = await getLatestScoredEpoch();
-    const pools = await getPoolsWithScores();
+    const pools = await getPoolsWithScores(epoch ?? undefined);
 
     return NextResponse.json({ epoch, pools }, {
-      headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200" },
+      headers: { "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400" },
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

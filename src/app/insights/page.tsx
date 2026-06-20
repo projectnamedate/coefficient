@@ -12,20 +12,20 @@ import Link from "next/link";
 import { formatSol } from "@/lib/format";
 import { getGradeColor } from "@/lib/grades";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
 
 export default async function InsightsPage() {
-  const [deltas, epoch, pools] = await Promise.all([
+  const [deltas, epoch] = await Promise.all([
     getScoreDeltas(),
     getLatestScoredEpoch(),
-    getPoolsWithScores(),
   ]);
+  const pools = await getPoolsWithScores(epoch ?? undefined);
 
   const commissionResults = await Promise.all(
     pools.map(async (p) => ({
       poolId: p.id,
       poolName: p.name,
-      changes: await getCommissionChanges(p.id),
+      changes: await getCommissionChanges(p.id, epoch ?? undefined),
     }))
   );
 

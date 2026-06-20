@@ -4,14 +4,16 @@ import { StatCard } from "@/components/ui/stat-card";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
 
 export default async function ValidatorsPage() {
-  const [validators, epoch, countryData] = await Promise.all([
-    getValidatorLeaderboard(),
-    getLatestScoredEpoch(),
-    getCountryDistribution(),
-  ]);
+  const epoch = await getLatestScoredEpoch();
+  const [validators, countryData] = epoch
+    ? await Promise.all([
+        getValidatorLeaderboard(epoch),
+        getCountryDistribution(epoch),
+      ])
+    : [[], []];
 
   const sandwichCount = validators.filter((v) => v.isSandwich).length;
   const smallCount = validators.filter((v) => v.stakeTier === "small").length;

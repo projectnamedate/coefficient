@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getValidatorDetail } from "@/db/queries";
+import { getLatestScoredEpoch, getValidatorDetail } from "@/db/queries";
 import { getValidatorProfitability } from "@/lib/trillium";
 import { ValidatorProfitability } from "@/components/validators/validator-profitability";
 import { ScoreBadge } from "@/components/ui/score-badge";
@@ -9,7 +9,7 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { formatSol } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
 
 export async function generateMetadata({
   params,
@@ -33,8 +33,11 @@ export default async function ValidatorDetailPage({
   const { pubkey } = await params;
   if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(pubkey)) notFound();
 
+  const epoch = await getLatestScoredEpoch();
+  if (!epoch) notFound();
+
   const [val, trilliumData] = await Promise.all([
-    getValidatorDetail(pubkey),
+    getValidatorDetail(pubkey, epoch),
     getValidatorProfitability(pubkey),
   ]);
 

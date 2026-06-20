@@ -11,8 +11,13 @@ import { ScoreBadge } from "@/components/ui/score-badge";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { HeroSection } from "@/components/ui/hero-section";
 import { formatSol } from "@/lib/format";
+import { POOL_REGISTRY } from "@/indexer/data/pool-registry";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
+
+export function generateStaticParams() {
+  return POOL_REGISTRY.map((pool) => ({ id: pool.id }));
+}
 
 export async function generateMetadata({
   params,
@@ -40,10 +45,13 @@ export default async function PoolReportCard({
   const { id } = await params;
   if (!/^[a-z0-9-]+$/.test(id)) notFound();
 
+  const epoch = await getLatestScoredEpoch();
+  if (!epoch) notFound();
+
   const [pool, datacenters, commissionChanges] = await Promise.all([
-    getPoolReportCard(id),
-    getPoolDatacenterConcentration(id),
-    getCommissionChanges(id),
+    getPoolReportCard(id, epoch),
+    getPoolDatacenterConcentration(id, epoch),
+    getCommissionChanges(id, epoch),
   ]);
 
   if (!pool) notFound();

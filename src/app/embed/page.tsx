@@ -3,7 +3,7 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { EmbedPreview } from "@/components/embed/embed-preview";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
 
 export default async function EmbedPage() {
   const pools = await getPoolsWithScores();

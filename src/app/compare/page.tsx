@@ -3,18 +3,18 @@ import { CompareView } from "@/components/scorecard/compare-view";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
 
 export default async function ComparePage({
   searchParams,
 }: {
   searchParams: Promise<{ pools?: string }>;
 }) {
-  const [pools, epoch, params] = await Promise.all([
-    getPoolsWithScores(),
+  const [epoch, params] = await Promise.all([
     getLatestScoredEpoch(),
     searchParams,
   ]);
+  const pools = await getPoolsWithScores(epoch ?? undefined);
 
   const initialSelected = params.pools
     ? params.pools.split(",").filter(Boolean)

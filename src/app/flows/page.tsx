@@ -4,11 +4,11 @@ import { StatCard } from "@/components/ui/stat-card";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
 
 export default async function FlowsPage() {
-  const flowData = await getDelegationFlows();
   const epoch = await getLatestScoredEpoch();
+  const flowData = await getDelegationFlows(epoch ?? undefined);
 
   const totalFlowSol = flowData.flows.reduce((sum, f) => sum + f.value, 0);
   const avgDelegation = flowData.flows.length

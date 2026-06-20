@@ -4,12 +4,14 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { getPoolsWithScores, getLatestScoredEpoch, getEpochInfo } from "@/db/queries";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 21600;
 
 export default async function ScorecardPage() {
-  const pools = await getPoolsWithScores();
   const latestEpoch = await getLatestScoredEpoch();
-  const epochInfo = latestEpoch ? await getEpochInfo(latestEpoch) : null;
+  const [pools, epochInfo] = await Promise.all([
+    getPoolsWithScores(latestEpoch ?? undefined),
+    latestEpoch ? getEpochInfo(latestEpoch) : Promise.resolve(null),
+  ]);
 
   const totalStake = pools.reduce((sum, p) => sum + p.activeSolStaked, 0);
   const avgScore = pools.length

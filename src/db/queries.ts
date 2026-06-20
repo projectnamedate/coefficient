@@ -267,8 +267,8 @@ export async function getAllPoolScoresByEpoch() {
 }
 
 /** Get a single pool's full data for report card */
-export async function getPoolReportCard(poolId: string) {
-  const epoch = await getLatestScoredEpoch();
+export async function getPoolReportCard(poolId: string, epochNumber?: number) {
+  const epoch = epochNumber ?? (await getLatestScoredEpoch());
   if (!epoch) return null;
 
   const poolRow = await db
@@ -558,8 +558,8 @@ export async function getScoreDeltas() {
 export { default as poolOverrides } from "@/indexer/data/pool-overrides.json";
 
 /** Get a single validator's detail by pubkey */
-export async function getValidatorDetail(pubkey: string) {
-  const epoch = await getLatestScoredEpoch();
+export async function getValidatorDetail(pubkey: string, epochNumber?: number) {
+  const epoch = epochNumber ?? (await getLatestScoredEpoch());
   if (!epoch) return null;
 
   const valRow = await db
