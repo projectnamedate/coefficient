@@ -5,7 +5,7 @@ import { getPoolsWithScores, getLatestScoredEpoch } from "@/db/queries";
 import { getBarColorHex as getBarColor } from "@/lib/grades";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 export const alt = "Coefficient – Compare Stake Pools";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

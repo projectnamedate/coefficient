@@ -7,7 +7,7 @@ export async function GET() {
     const pools = await getPoolsWithScores(epoch ?? undefined);
 
     return NextResponse.json({ epoch, pools }, {
-      headers: { "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400" },
+      headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=86400" },
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

@@ -13,7 +13,7 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { formatSol } from "@/lib/format";
 import { POOL_REGISTRY } from "@/indexer/data/pool-registry";
 
-export const revalidate = 21600;
+export const revalidate = 86400;
 
 export function generateStaticParams() {
   return POOL_REGISTRY.map((pool) => ({ id: pool.id }));

@@ -3,7 +3,7 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { EmbedPreview } from "@/components/embed/embed-preview";
 
-export const revalidate = 21600;
+export const revalidate = 86400;
 
 export default async function EmbedPage() {
   const pools = await getPoolsWithScores();

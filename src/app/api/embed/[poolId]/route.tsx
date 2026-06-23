@@ -5,8 +5,11 @@ import { join } from "node:path";
 import { getPoolReportCard } from "@/db/queries";
 import { getGrade, getBarColorHex as getColor } from "@/lib/grades";
 
-export const dynamic = "force-dynamic";
-
+// Cache per-pool OG images at the CDN so bot/preview traffic doesn't read the DB
+// on every hit — origin (and Turso) is touched at most ~once/day per pool.
+const CACHE_HEADERS = {
+  "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=172800",
+};
 
 export async function GET(
   _request: NextRequest,
@@ -21,7 +24,7 @@ export async function GET(
           Invalid pool ID
         </div>
       ),
-      { width: 320, height: 160 }
+      { width: 320, height: 160, headers: CACHE_HEADERS }
     );
   }
 
@@ -38,7 +41,7 @@ export async function GET(
           Pool not found
         </div>
       ),
-      { width: 320, height: 160 }
+      { width: 320, height: 160, headers: CACHE_HEADERS }
     );
   }
 
@@ -100,6 +103,7 @@ export async function GET(
     {
       width: 320,
       height: 160,
+      headers: CACHE_HEADERS,
       fonts: [
         {
           name: "BN Rigidly",

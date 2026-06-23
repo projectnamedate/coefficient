@@ -12,7 +12,7 @@ import Link from "next/link";
 import { formatSol } from "@/lib/format";
 import { getGradeColor } from "@/lib/grades";
 
-export const revalidate = 21600;
+export const revalidate = 86400;
 
 export default async function InsightsPage() {
   const [deltas, epoch] = await Promise.all([

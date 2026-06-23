@@ -4,7 +4,7 @@ import { StatCard } from "@/components/ui/stat-card";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 
-export const revalidate = 21600;
+export const revalidate = 86400;
 
 export default async function ValidatorsPage() {
   const epoch = await getLatestScoredEpoch();
