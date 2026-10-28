@@ -252,16 +252,6 @@ export default async function InsightsPage() {
               25% SaaS fee on yield. Kamino offers up to 7.5x leverage on vSOL, and USDC bribes on governance gauges direct stake — a full token flywheel where delegation is purchasable.
             </p>
           </Link>
-
-          <Link href="/pool/edgevana" className="gradient-border bg-white/[0.02] rounded-xl p-4 backdrop-blur-sm hover:bg-lavender/[0.04] transition-colors">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-mono">Closed Ecosystem</span>
-              <span className="text-sm font-semibold text-white">Edgevana</span>
-            </div>
-            <p className="text-xs text-beige/50 leading-relaxed">
-              Validators must use Edgevana bare-metal hosting to receive delegation. Edgevana profits from both hosting fees and pool management — a direct infrastructure revenue flywheel.
-            </p>
-          </Link>
         </div>
       </AnimatedSection>
 

@@ -5,7 +5,6 @@ import { cache } from "react";
 import { getValidatorDetail } from "@/db/queries";
 import { getValidatorProfitability } from "@/lib/trillium";
 import { ValidatorProfitability } from "@/components/validators/validator-profitability";
-import { ScoreBadge } from "@/components/ui/score-badge";
 import { HeroSection } from "@/components/ui/hero-section";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { formatSol } from "@/lib/format";

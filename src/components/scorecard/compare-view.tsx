@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { StakePool, SCORE_LABELS, SCORE_WEIGHTS, type PoolScores } from "@/lib/types";
-import { getBarColor, getScoreTextColor } from "@/lib/grades";
+import { getScoreTextColor } from "@/lib/grades";
 import { ScoreBadge } from "@/components/ui/score-badge";
 import { ScoreRadar } from "@/components/scorecard/score-radar";
 import { formatSol } from "@/lib/format";

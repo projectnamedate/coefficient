@@ -1,5 +1,5 @@
 import { Connection } from "@solana/web3.js";
-import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, log, fatal } from "../config";
+import { SOLANA_RPC_URL, PUBLIC_RPC_URL, LAMPORTS_PER_SOL, log, warn } from "../config";
 
 export interface EpochData {
   epoch: number;
@@ -18,11 +18,22 @@ export interface RpcValidator {
   isDelinquent: boolean;
 }
 
-function getConnection(): Connection {
-  if (!SOLANA_RPC_URL) {
-    fatal("SOLANA_RPC_URL environment variable is not set");
+// Sends each request to the primary RPC and repeats it on the public RPC when the
+// primary errors or answers with a non-2xx status (429, 401 from a revoked key, 5xx).
+async function fetchWithFallback(input: string | URL | Request, init?: RequestInit): Promise<Response> {
+  if (SOLANA_RPC_URL === PUBLIC_RPC_URL) return fetch(input, init);
+  try {
+    const res = await fetch(input, init);
+    if (res.ok) return res;
+    warn(`Primary RPC returned HTTP ${res.status}; retrying on public RPC`);
+  } catch (err) {
+    warn(`Primary RPC failed (${err instanceof Error ? err.message : err}); retrying on public RPC`);
   }
-  return new Connection(SOLANA_RPC_URL, "finalized");
+  return fetch(PUBLIC_RPC_URL, init);
+}
+
+function getConnection(): Connection {
+  return new Connection(SOLANA_RPC_URL, { commitment: "finalized", fetch: fetchWithFallback });
 }
 
 export async function fetchEpochInfo(): Promise<EpochData> {

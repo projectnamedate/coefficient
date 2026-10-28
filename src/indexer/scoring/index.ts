@@ -48,6 +48,28 @@ function median(values: number[]): number {
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
+/** Median stake, superminority threshold and Nakamoto coefficient for a set of positive stakes. */
+export function computeNetworkThresholds(stakes: number[]) {
+  // Superminority threshold: stake of the validator that crosses the halt line
+  const sortedStakes = [...stakes].sort((a, b) => b - a);
+  const totalStake = sortedStakes.reduce((s, v) => s + v, 0);
+  let cumulative = 0;
+  let superminorityThreshold = sortedStakes[0] ?? 0;
+  for (const stake of sortedStakes) {
+    cumulative += stake;
+    if (cumulative > totalStake * HALT_STAKE_SHARE) {
+      superminorityThreshold = stake;
+      break;
+    }
+  }
+  return {
+    totalStake,
+    medianStake: median(stakes),
+    superminorityThreshold,
+    nakamotoCoefficient: computeNakamoto(stakes),
+  };
+}
+
 export function computeAllPoolScores(
   poolDelegations: Map<string, DelegationEntry[]>, // poolId → delegations
   validators: ValidatorInfo[],
@@ -68,23 +90,8 @@ export function computeAllPoolScores(
 
   // Compute network-wide metrics
   const allStakeValues = Array.from(allStakes.values()).filter((s) => s > 0);
-  const medianStake = median(allStakeValues);
   const totalNetworkCountries = new Set(countries.values()).size;
-
-  // Superminority threshold: stake of the validator that crosses the halt line
-  const sortedStakes = [...allStakeValues].sort((a, b) => b - a);
-  const totalStake = sortedStakes.reduce((s, v) => s + v, 0);
-  let cumulative = 0;
-  let superminorityThreshold = sortedStakes[0] ?? 0;
-  for (const stake of sortedStakes) {
-    cumulative += stake;
-    if (cumulative > totalStake * HALT_STAKE_SHARE) {
-      superminorityThreshold = stake;
-      break;
-    }
-  }
-
-  const nakamotoCoefficient = computeNakamoto(allStakeValues);
+  const { medianStake, superminorityThreshold, nakamotoCoefficient } = computeNetworkThresholds(allStakeValues);
   log(`Network: ${validators.length} validators, median stake ${(medianStake / 1000).toFixed(0)}K SOL, Nakamoto ${nakamotoCoefficient}, ${totalNetworkCountries} countries`);
 
   const results: PoolScoreResult[] = [];

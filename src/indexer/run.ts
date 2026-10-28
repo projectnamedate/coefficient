@@ -16,7 +16,7 @@ import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-import { parseFlags, log, warn, fatal } from "./config";
+import { parseFlags, log, warn } from "./config";
 import { runPipeline } from "./pipeline";
 
 const __filename = fileURLToPath(import.meta.url);

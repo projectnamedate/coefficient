@@ -1,4 +1,6 @@
-export const SOLANA_RPC_URL = process.env.SOLANA_RPC_URL;
+export const PUBLIC_RPC_URL = "https://api.mainnet-beta.solana.com";
+// Primary RPC (Helius in production); the public endpoint is the fallback.
+export const SOLANA_RPC_URL = process.env.SOLANA_RPC_URL?.trim() || PUBLIC_RPC_URL;
 
 export const STAKEWIZ_API = "https://api.stakewiz.com";
 export const MARINADE_API = "https://validators-api.marinade.finance";
@@ -45,9 +47,4 @@ export function log(msg: string) {
 
 export function warn(msg: string) {
   console.warn(`[${new Date().toISOString().slice(11, 19)}] ⚠ ${msg}`);
-}
-
-export function fatal(msg: string): never {
-  console.error(`[${new Date().toISOString().slice(11, 19)}] ✗ FATAL: ${msg}`);
-  process.exit(1);
 }

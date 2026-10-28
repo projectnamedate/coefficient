@@ -98,15 +98,6 @@
     "mevTipsToStakers": true,
     "mevCommissionCap": null
   },
-  "edgevana": {
-    "selfDealingScore": 42,
-    "selfDealingNotes": "Validators MUST use Edgevana bare-metal infrastructure to receive delegation. Infrastructure requirement creates direct revenue flywheel — Edgevana profits from both hosting fees and pool management. Algorithm: 50% performance (vote credits, 10-epoch avg) + 10% published info + 10% operating history + 10% Edgevana region weighting.",
-    "transparencyNotes": "Delegation algorithm published at docs.stake.edgevana.com. 1% rewards fee (lowest among multi-validator pools). 5 epochs notice before validator removal. Closed ecosystem — only paying customers eligible.",
-    "mevPolicy": "Jito available on Edgevana infrastructure. Commission-adjusted MEV performance tracked. Algorithm rewards validators who distribute more MEV to stakers.",
-    "jitoClient": true,
-    "mevTipsToStakers": true,
-    "mevCommissionCap": null
-  },
   "definity": {
     "selfDealingScore": 90,
     "selfDealingNotes": "No token flywheel. APAC-focused geographic delegation strategy. Uses Sanctum Multi program.",
@@ -122,15 +113,6 @@
     "transparencyNotes": "Layer33 validator dashboard at validators.layer33.com. Presented at Breakpoint 2025. Active community presence. Controls ~4.14% of total Solana network stake across members.",
     "mevPolicy": "No formal MEV redistribution policy. Individual validators may run Jito independently. Partners with bloXroute and Astralane for SWQoS routing.",
     "jitoClient": "partial",
-    "mevTipsToStakers": false,
-    "mevCommissionCap": null
-  },
-  "sharkpool": {
-    "selfDealingScore": 82,
-    "selfDealingNotes": "Education-focused pool delegating to university-partnered validators (Princeton, UPenn, others). SharkLabs funds and trains student teams. Limited transparency on delegation criteria. All 10 validators in a single datacenter.",
-    "transparencyNotes": "Dashboard at app.sharkpool.org. Limited formal documentation — no whitepaper, no public delegation algorithm. SHARK token exists on pump.fun but unclear if official governance token.",
-    "mevPolicy": "No explicit MEV/Jito policy documented. University validators may run Jito independently.",
-    "jitoClient": "unknown",
     "mevTipsToStakers": false,
     "mevCommissionCap": null
   }

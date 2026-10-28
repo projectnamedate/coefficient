@@ -9,10 +9,8 @@ import {
   poolDelegations,
   sandwichList,
   poolFeeSnapshots,
-  poolFeeEvents,
-  poolFeeBalances,
 } from "./schema";
-import type { StakePool, PoolScores } from "@/lib/types";
+import type { StakePool } from "@/lib/types";
 
 // SPL stake pools maintain ~1 SOL minimum per validator stake account.
 // Filter out these placeholder entries across all queries.
@@ -686,51 +684,5 @@ export async function getDelegationFlows(epochNumber?: number) {
       target: f.validatorPubkey,
       value: f.delegatedSol,
     })),
-  };
-}
-
-/** Get fee behavior summary for a pool (Tier 2) */
-export async function getPoolFeeBehavior(poolId: string) {
-  const events = await db
-    .select({
-      eventType: poolFeeEvents.eventType,
-      count: sql<number>`count(*)`,
-      totalSol: sql<number>`sum(${poolFeeEvents.amountSol})`,
-    })
-    .from(poolFeeEvents)
-    .where(eq(poolFeeEvents.poolId, poolId))
-    .groupBy(poolFeeEvents.eventType);
-
-  const recentEvents = await db
-    .select()
-    .from(poolFeeEvents)
-    .where(eq(poolFeeEvents.poolId, poolId))
-    .orderBy(desc(poolFeeEvents.blockTime))
-    .limit(20);
-
-  // Latest balance
-  const latestBalance = await db
-    .select()
-    .from(poolFeeBalances)
-    .where(eq(poolFeeBalances.poolId, poolId))
-    .orderBy(desc(poolFeeBalances.epochNumber))
-    .limit(1);
-
-  // Calculate retention rate
-  const totalCollected = events.find((e) => e.eventType === "collected")?.totalSol ?? 0;
-  const totalSold = (events.find((e) => e.eventType === "swapped")?.totalSol ?? 0)
-    + (events.find((e) => e.eventType === "redeemed")?.totalSol ?? 0)
-    + (events.find((e) => e.eventType === "transferred")?.totalSol ?? 0);
-  const retentionRate = totalCollected > 0 ? Math.max(0, 1 - totalSold / totalCollected) : null;
-
-  return {
-    summary: events.map((e) => ({
-      eventType: e.eventType,
-      count: Number(e.count),
-      totalSol: Number(e.totalSol ?? 0),
-    })),
-    recentEvents,
-    currentBalance: latestBalance[0] ?? null,
-    retentionRate,
   };
 }

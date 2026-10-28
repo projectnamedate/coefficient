@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { timingSafeEqual } from "crypto";
 import { runIndexer } from "@/indexer/cron-entry";
 
@@ -49,6 +50,8 @@ export async function GET(request: Request) {
 
   try {
     const result = await runIndexer();
+    // Pages are cached for 24h; refresh them as soon as a new epoch lands.
+    if (result.status === "indexed") revalidatePath("/", "layout");
     return NextResponse.json(result);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

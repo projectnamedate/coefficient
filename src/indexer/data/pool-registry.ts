@@ -87,13 +87,6 @@ export const POOL_REGISTRY: PoolRegistryEntry[] = [
     program: "spl-stake-pool",
   },
   {
-    id: "edgevana",
-    name: "Edgevana",
-    lstTicker: "edgeSOL",
-    stakePoolAddress: "edgejNWAqkePLpi5sHRxT9vHi7u3kSHP9cocABPKiWZ",
-    program: "spl-stake-pool",
-  },
-  {
     id: "definity",
     name: "Definity",
     lstTicker: "dfSOL",
@@ -105,13 +98,6 @@ export const POOL_REGISTRY: PoolRegistryEntry[] = [
     name: "IndieSOL",
     lstTicker: "indSOL",
     stakePoolAddress: "74dxJToX8wgJAueLQNVhSbbQkNd9qeVp6m9mts6M7cUb", // Layer33 collective, LST mint: L33mHftsNpaj39z1omnGbGbuA5eKqSsbmr91rjTod48
-    program: "spl-stake-pool",
-  },
-  {
-    id: "sharkpool",
-    name: "SharkPool",
-    lstTicker: "sharkSOL",
-    stakePoolAddress: "HQLwnQJFH7t9nBTP4vbdW4eHy62aecfDnj8te8VzqkFL",
     program: "spl-stake-pool",
   },
 ];

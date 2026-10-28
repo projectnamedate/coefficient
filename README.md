@@ -29,10 +29,8 @@ Coefficient tracks multi-validator stake pools with 10+ validators. Single-valid
 | STKE | stkeSOL | SPL Stake Pool |
 | Marinade | mSOL | Marinade |
 | Shinobi | shinSOL | SPL Stake Pool |
-| Edgevana | edgeSOL | SPL Stake Pool |
 | Definity | dfSOL | Sanctum Multi |
 | IndieSOL | indSOL | SPL Stake Pool |
-| SharkPool | sharkSOL | SPL Stake Pool |
 
 ## Scoring
 
@@ -126,7 +124,7 @@ npm install
 # Run development server
 npm run dev
 
-# Run indexer (requires .env with SOLANA_RPC_URL, TURSO_DATABASE_URL, TURSO_AUTH_TOKEN)
+# Run indexer (requires .env with TURSO_DATABASE_URL, TURSO_AUTH_TOKEN)
 npm run index
 
 # Dry run (no DB writes)
@@ -143,7 +141,7 @@ npm run build
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `SOLANA_RPC_URL` | Yes | Solana mainnet RPC endpoint |
+| `SOLANA_RPC_URL` | No | Primary Solana mainnet RPC (e.g. Helius); falls back to the public `api.mainnet-beta.solana.com` on errors, and is used alone when unset |
 | `TURSO_DATABASE_URL` | Yes | Turso database URL |
 | `TURSO_AUTH_TOKEN` | Yes | Turso authentication token |
 | `CRON_SECRET` | Yes | Secret for Vercel cron authentication |

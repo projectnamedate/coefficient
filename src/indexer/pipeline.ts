@@ -3,7 +3,7 @@
  * the CLI entry point (run.ts) and the Vercel cron entry (cron-entry.ts).
  */
 
-import { SOLANA_RPC_URL, LAMPORTS_PER_SOL, log, warn } from "./config";
+import { LAMPORTS_PER_SOL, log, warn } from "./config";
 import { classifyStakeTier } from "./classify-tier";
 import { fetchEpochInfo, fetchVoteAccounts, getConnection } from "./fetchers/solana-rpc";
 import { fetchStakeWizValidators } from "./fetchers/stakewiz";
@@ -11,9 +11,8 @@ import { fetchMarinadeValidators } from "./fetchers/marinade";
 import { fetchAllPoolDelegations } from "./fetchers/stake-pools";
 import { fetchSfdpParticipants } from "./fetchers/sfdp";
 import { fetchOnChainValidatorInfo } from "./fetchers/validator-info";
-import { computeAllPoolScores } from "./scoring/index";
-import { computeNakamoto, HALT_STAKE_SHARE } from "./scoring/nakamoto-impact";
-import { computeAllPoolRevenue, type PoolRevenueResult } from "./scoring/revenue";
+import { computeAllPoolScores, computeNetworkThresholds } from "./scoring/index";
+import { computeAllPoolRevenue } from "./scoring/revenue";
 import {
   isEpochIndexed,
   writeEpoch,
@@ -24,8 +23,6 @@ import {
   writeSandwichList,
   writePoolScores,
   writePoolFeeSnapshots,
-  writePoolFeeEvents,
-  writePoolFeeBalances,
   getPreviousCumulativeRevenue,
 } from "./writers/db-writer";
 import { POOL_REGISTRY } from "./data/pool-registry";
@@ -62,17 +59,12 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
   const { sandwichData, validatorOverrides, dryRun, force, epoch: overrideEpoch } = opts;
   const startTime = Date.now();
 
-  // 1. Validate RPC
-  if (!SOLANA_RPC_URL) {
-    throw new Error("SOLANA_RPC_URL is not set");
-  }
-
-  // 2. Fetch epoch info
+  // 1. Fetch epoch info
   const epochData = await fetchEpochInfo();
   const epochNumber = overrideEpoch ?? epochData.epoch;
   log(`Target epoch: ${epochNumber}`);
 
-  // 3. Idempotency check
+  // 2. Idempotency check
   if (!force && !dryRun) {
     const alreadyIndexed = await isEpochIndexed(epochNumber);
     if (alreadyIndexed) {
@@ -81,7 +73,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     }
   }
 
-  // 4. Parallel fetches: RPC validators + StakeWiz + Marinade + SFDP + On-chain info
+  // 3. Parallel fetches: RPC validators + StakeWiz + Marinade + SFDP + On-chain info
   log("Fetching data from all sources...");
   const connection = getConnection();
   const [rpcValidators, stakewizValidators, marinadeValidators, sfdpMap, onChainInfoMap] = await Promise.all([
@@ -96,7 +88,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     throw new Error("RPC returned 0 validators — cannot proceed");
   }
 
-  // 5. Build StakeWiz lookup (vote pubkey -> enrichment data)
+  // 4. Build StakeWiz lookup (vote pubkey -> enrichment data)
   const wizLookup = new Map(
     stakewizValidators.map((v) => [v.vote_identity, v])
   );
@@ -108,29 +100,14 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     if (v.identity) identityToVote.set(v.identity, v.vote_identity);
   }
 
-  // 6. Merge: RPC = source of truth, StakeWiz = enrichment
+  // 5. Merge: RPC = source of truth, StakeWiz = enrichment
   const allStakes = rpcValidators.map((v) => v.activatedStake).filter((s) => s > 0);
-  const sortedStakes = [...allStakes].sort((a, b) => b - a);
-  const totalNetworkStake = sortedStakes.reduce((sum, s) => sum + s, 0);
-
-  // Compute median and superminority threshold
-  const sortedAsc = [...allStakes].sort((a, b) => a - b);
-  const mid = Math.floor(sortedAsc.length / 2);
-  const medianStake = sortedAsc.length % 2
-    ? sortedAsc[mid]
-    : (sortedAsc[mid - 1] + sortedAsc[mid]) / 2;
-
-  let cumulative = 0;
-  let superminorityThreshold = sortedStakes[0] ?? 0;
-  for (const stake of sortedStakes) {
-    cumulative += stake;
-    if (cumulative > totalNetworkStake * HALT_STAKE_SHARE) {
-      superminorityThreshold = stake;
-      break;
-    }
-  }
-
-  const nakamotoCoefficient = computeNakamoto(allStakes);
+  const {
+    totalStake: totalNetworkStake,
+    medianStake,
+    superminorityThreshold,
+    nakamotoCoefficient,
+  } = computeNetworkThresholds(allStakes);
   log(`Network: ${rpcValidators.length} validators, ${(totalNetworkStake / 1_000_000).toFixed(2)}M SOL staked, Nakamoto ${nakamotoCoefficient}`);
 
   // Build vote pubkey -> SFDP status lookup
@@ -174,10 +151,10 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
   const namedCount = mergedValidators.filter((v) => v.name).length;
   log(`Name resolution: ${namedCount}/${mergedValidators.length} validators have names (on-chain: ${onChainInfoMap.size}, StakeWiz: ${wizLookup.size}, overrides: ${Object.keys(validatorOverrides).length})`);
 
-  // 7. Fetch pool delegations from on-chain
+  // 6. Fetch pool delegations from on-chain
   const splPoolDelegations = await fetchAllPoolDelegations(connection);
 
-  // 8. Handle Marinade separately (uses its own API, not SPL on-chain)
+  // 7. Handle Marinade separately (uses its own API, not SPL on-chain)
   const marinadePool = POOL_REGISTRY.find((p) => p.id === "marinade");
   if (marinadePool && marinadeValidators.length > 0) {
     const marinadeDelegations = marinadeValidators
@@ -197,11 +174,11 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     warn("Marinade delegation data unavailable");
   }
 
-  // 9. Sandwich list
+  // 8. Sandwich list
   const sandwichValidatorSet = new Set(sandwichData.map((e) => e.validator_pubkey));
   log(`Sandwich list: ${sandwichData.length} validators flagged`);
 
-  // 10. Build pool delegation map for scoring
+  // 9. Build pool delegation map for scoring
   const poolDelegationMap = new Map<string, { validatorPubkey: string; delegatedSol: number }[]>();
   for (const pool of splPoolDelegations) {
     if (pool.error) continue;
@@ -214,7 +191,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     );
   }
 
-  // 11. Compute scores
+  // 10. Compute scores
   log("Computing pool health scores...");
   const validatorInfoForScoring = mergedValidators.map((v) => ({
     pubkey: v.pubkey,
@@ -230,11 +207,11 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     sandwichValidatorSet
   );
 
-  // 11b. Compute pool revenue
+  // 10b. Compute pool revenue
   log("Computing pool revenue...");
   const previousCumulatives = dryRun ? new Map<string, number>() : await getPreviousCumulativeRevenue(epochNumber);
   const poolRevenueData = splPoolDelegations
-    .filter((p) => !(p as any).error)
+    .filter((p) => !p.error)
     .map((p) => ({
       poolId: p.poolId,
       feeData: p.feeData,
@@ -247,7 +224,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     previousCumulatives,
   );
 
-  // 12. Print summary
+  // 11. Print summary
   log("\n=== Pool Health Scores ===");
   const sorted = [...poolScores].sort((a, b) => b.networkHealthScore - a.networkHealthScore);
   for (const s of sorted) {
@@ -260,7 +237,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
     );
   }
 
-  // 13. Write to DB (unless dry-run)
+  // 12. Write to DB (unless dry-run)
   if (dryRun) {
     log("\nDry run complete — no data written to database.");
   } else {
@@ -355,26 +332,6 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
 
     // Write pool fee snapshots
     await writePoolFeeSnapshots(epochNumber, revenueResults);
-
-    // Tier 2: Fee destination tracking (opt-in)
-    if (process.env.ENABLE_FEE_TRACKING === "true") {
-      log("Running fee destination tracker (Tier 2)...");
-      const { trackAllPoolFees } = await import("./fetchers/fee-tracker");
-      const poolFeeAccounts = revenueResults
-        .filter((r) => r.managerFeeAccount)
-        .map((r) => {
-          const poolData = splPoolDelegations.find((p) => p.poolId === r.poolId);
-          return {
-            poolId: r.poolId,
-            managerFeeAccount: r.managerFeeAccount!,
-            managerWallet: poolData?.feeData?.managerWallet,
-          };
-        });
-
-      const { events, balances } = await trackAllPoolFees(connection, poolFeeAccounts);
-      await writePoolFeeEvents(epochNumber, events);
-      await writePoolFeeBalances(epochNumber, balances);
-    }
 
     log("Database write complete.");
   }

@@ -1,10 +1,9 @@
 import { db } from "../../db/index";
-import { eq, lt, sql, inArray, desc } from "drizzle-orm";
+import { eq, lt, sql } from "drizzle-orm";
 import * as schema from "../../db/schema";
 import { log, warn } from "../config";
 import type { PoolScoreResult } from "../scoring/index";
 import type { PoolRevenueResult } from "../scoring/revenue";
-import type { FeeEvent, FeeAccountBalance } from "../fetchers/fee-tracker";
 
 function chunk<T>(arr: T[], size: number): T[][] {
   return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
@@ -343,55 +342,6 @@ export async function writePoolFeeSnapshots(
       });
   }
   log(`Wrote ${revenueResults.length} pool fee snapshots`);
-}
-
-export async function writePoolFeeEvents(
-  epochNumber: number,
-  events: FeeEvent[]
-) {
-  const now = new Date().toISOString();
-  const valid = events.filter((e) => e.txSignature);
-  const batches = chunk(valid, 50);
-  for (const batch of batches) {
-    const values = batch.map((e) => ({
-      epochNumber,
-      poolId: e.poolId,
-      eventType: e.eventType,
-      amountSol: e.amountSol,
-      txSignature: e.txSignature,
-      destination: e.destination,
-      destinationLabel: e.destinationLabel,
-      blockTime: e.blockTime,
-      createdAt: now,
-    }));
-    await db.insert(schema.poolFeeEvents).values(values).onConflictDoNothing();
-  }
-  log(`Wrote ${valid.length} pool fee events`);
-}
-
-export async function writePoolFeeBalances(
-  epochNumber: number,
-  balances: FeeAccountBalance[]
-) {
-  for (const b of balances) {
-    await db
-      .insert(schema.poolFeeBalances)
-      .values({
-        epochNumber,
-        poolId: b.poolId,
-        feeAccountAddress: b.feeAccountAddress,
-        tokenBalance: b.tokenBalance,
-        solEquivalent: b.solEquivalent,
-      })
-      .onConflictDoUpdate({
-        target: [schema.poolFeeBalances.epochNumber, schema.poolFeeBalances.poolId],
-        set: {
-          tokenBalance: b.tokenBalance,
-          solEquivalent: b.solEquivalent,
-        },
-      });
-  }
-  log(`Wrote ${balances.length} pool fee balances`);
 }
 
 export async function getPreviousCumulativeRevenue(beforeEpoch: number): Promise<Map<string, number>> {
