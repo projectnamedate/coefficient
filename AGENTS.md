@@ -2,7 +2,7 @@
 
 ## Shared Obsidian AgentMemory
 
-Coefficient is ported to the shared vault at `/Users/hammer/Obsidian/AgentMemory/Projects/coefficient/coefficient.md`. After reading this file, read `/Users/hammer/Obsidian/AgentMemory/AGENTS.md` and the Coefficient project note before acting. Treat vault notes as durable cross-agent memory, not a replacement for repo docs or live runtime truth. At wrap-up, update the project note and append a dated session summary; never store secrets in the vault.
+Coefficient is ported to the shared vault at `/Users/hammer/Obsidian/AgentMemory/Projects/coefficient/coefficient.md`. After reading this file, read `/Users/hammer/Obsidian/AgentMemory/AGENTS.md` and the Coefficient project note before acting. Treat vault notes as durable cross-agent memory, not a replacement for repo docs or live runtime truth. At wrap-up, run the **end-session-sweep** skill (Codex: `$end-session-sweep`) — it forces the vault session write and runs the full per-project closeout: update the project note and append a dated session summary. Never store secrets in the vault.
 
 ## VPS Migration Notice
 
