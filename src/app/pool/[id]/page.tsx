@@ -14,6 +14,8 @@ import { formatSol } from "@/lib/format";
 import { POOL_REGISTRY } from "@/indexer/data/pool-registry";
 
 export const revalidate = 86400;
+// Pools are a fixed registry; any other id is a real 404 without a DB read.
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return POOL_REGISTRY.map((pool) => ({ id: pool.id }));
