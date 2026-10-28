@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "index": "node --env-file=.env --import tsx/esm src/indexer/run.ts",
     "index:dry": "node --env-file=.env --import tsx/esm src/indexer/run.ts --dry-run",
     "index:force": "node --env-file=.env --import tsx/esm src/indexer/run.ts --force",

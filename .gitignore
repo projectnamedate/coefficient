@@ -43,3 +43,7 @@ yarn-error.log*
 *.swp
 *.swo
 *.tsbuildinfo
+
+# Local-only: archived research and Codex project config
+/archive/
+/.codex/
