@@ -36,6 +36,13 @@
       "when": 1773860294012,
       "tag": "0004_bouncy_red_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1793148702542,
+      "tag": "0005_wet_joseph",
+      "breakpoints": true
     }
   ]
 }

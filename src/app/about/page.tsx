@@ -8,7 +8,7 @@ export default function AboutPage() {
         eyebrow="About"
         title="Why"
         accent="Coefficient"
-        description="Solana has a Nakamoto Coefficient of ~20. That means just 20 validators control a third of all staked SOL. Stake pools can fix this — or make it worse."
+        description="Solana has a Nakamoto Coefficient of ~25. That means just 25 validators control 40% of all staked SOL — enough to halt finality under Alpenglow. Stake pools can fix this — or make it worse."
         gradient="lavender"
       />
 
@@ -105,7 +105,7 @@ export default function AboutPage() {
               Validators are classified into size tiers based on their active stake relative to the
               network median:{" "}
               <span className="text-lavender">superminority</span> (stake large enough to be in the
-              top-33% cumulative set),{" "}
+              top-40% cumulative set),{" "}
               <span className="text-lavender">large</span> (≥ 1.5× median),{" "}
               <span className="text-lavender">medium</span> (≥ 0.75× median), and{" "}
               <span className="text-lavender">small</span> (below 0.75× median).

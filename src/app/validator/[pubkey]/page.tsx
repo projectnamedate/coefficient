@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getLatestScoredEpoch, getValidatorDetail } from "@/db/queries";
+import { cache } from "react";
+import { getValidatorDetail } from "@/db/queries";
 import { getValidatorProfitability } from "@/lib/trillium";
 import { ValidatorProfitability } from "@/components/validators/validator-profitability";
 import { ScoreBadge } from "@/components/ui/score-badge";
@@ -11,13 +12,20 @@ import { formatSol } from "@/lib/format";
 
 export const revalidate = 86400;
 
+const PUBKEY_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+// Shared by generateMetadata and the page so a render queries the DB once.
+const getDetail = cache((pubkey: string) =>
+  PUBKEY_RE.test(pubkey) ? getValidatorDetail(pubkey) : Promise.resolve(null)
+);
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ pubkey: string }>;
 }): Promise<Metadata> {
   const { pubkey } = await params;
-  const val = await getValidatorDetail(pubkey);
+  const val = await getDetail(pubkey);
   if (!val) return { title: "Validator Not Found | Coefficient" };
   return {
     title: `${val.name || pubkey.slice(0, 8)} | Coefficient`,
@@ -31,13 +39,10 @@ export default async function ValidatorDetailPage({
   params: Promise<{ pubkey: string }>;
 }) {
   const { pubkey } = await params;
-  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(pubkey)) notFound();
-
-  const epoch = await getLatestScoredEpoch();
-  if (!epoch) notFound();
+  if (!PUBKEY_RE.test(pubkey)) notFound();
 
   const [val, trilliumData] = await Promise.all([
-    getValidatorDetail(pubkey, epoch),
+    getDetail(pubkey),
     getValidatorProfitability(pubkey),
   ]);
 

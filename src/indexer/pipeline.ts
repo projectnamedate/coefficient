@@ -12,7 +12,7 @@ import { fetchAllPoolDelegations } from "./fetchers/stake-pools";
 import { fetchSfdpParticipants } from "./fetchers/sfdp";
 import { fetchOnChainValidatorInfo } from "./fetchers/validator-info";
 import { computeAllPoolScores } from "./scoring/index";
-import { computeNakamoto } from "./scoring/nakamoto-impact";
+import { computeNakamoto, HALT_STAKE_SHARE } from "./scoring/nakamoto-impact";
 import { computeAllPoolRevenue, type PoolRevenueResult } from "./scoring/revenue";
 import {
   isEpochIndexed,
@@ -124,7 +124,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
   let superminorityThreshold = sortedStakes[0] ?? 0;
   for (const stake of sortedStakes) {
     cumulative += stake;
-    if (cumulative >= totalNetworkStake / 3) {
+    if (cumulative > totalNetworkStake * HALT_STAKE_SHARE) {
       superminorityThreshold = stake;
       break;
     }
@@ -232,7 +232,7 @@ export async function runPipeline(opts: PipelineOpts): Promise<PipelineResult> {
 
   // 11b. Compute pool revenue
   log("Computing pool revenue...");
-  const previousCumulatives = dryRun ? new Map<string, number>() : await getPreviousCumulativeRevenue();
+  const previousCumulatives = dryRun ? new Map<string, number>() : await getPreviousCumulativeRevenue(epochNumber);
   const poolRevenueData = splPoolDelegations
     .filter((p) => !(p as any).error)
     .map((p) => ({

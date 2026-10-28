@@ -1,5 +1,5 @@
 import { db } from "../../db/index";
-import { eq, sql, inArray, desc } from "drizzle-orm";
+import { eq, lt, sql, inArray, desc } from "drizzle-orm";
 import * as schema from "../../db/schema";
 import { log, warn } from "../config";
 import type { PoolScoreResult } from "../scoring/index";
@@ -394,11 +394,12 @@ export async function writePoolFeeBalances(
   log(`Wrote ${balances.length} pool fee balances`);
 }
 
-export async function getPreviousCumulativeRevenue(): Promise<Map<string, number>> {
-  // Get latest epoch with fee data
+export async function getPreviousCumulativeRevenue(beforeEpoch: number): Promise<Map<string, number>> {
+  // Latest epoch with fee data before this one, so a forced re-index doesn't add its own revenue twice
   const latestEpoch = await db
     .select({ epoch: sql<number>`max(${schema.poolFeeSnapshots.epochNumber})` })
-    .from(schema.poolFeeSnapshots);
+    .from(schema.poolFeeSnapshots)
+    .where(lt(schema.poolFeeSnapshots.epochNumber, beforeEpoch));
   const maxEpoch = latestEpoch[0]?.epoch;
   if (!maxEpoch) return new Map();
 

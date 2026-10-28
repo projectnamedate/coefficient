@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real, uniqueIndex, index } from "drizzle-orm/sqlite-core";
 
 // ------- Epochs -------
 export const epochs = sqliteTable("epochs", {
@@ -47,6 +47,7 @@ export const validatorSnapshots = sqliteTable(
   },
   (table) => [
     uniqueIndex("vs_epoch_validator").on(table.epochNumber, table.validatorPubkey),
+    index("vs_validator").on(table.validatorPubkey),
   ]
 );
 

@@ -634,7 +634,7 @@ export async function searchPoolsAndValidators(query: string) {
       lstTicker: stakePools.lstTicker,
     })
     .from(stakePools)
-    .where(sql`${stakePools.name} LIKE ${pattern} OR ${stakePools.lstTicker} LIKE ${pattern} OR ${stakePools.id} LIKE ${pattern}`)
+    .where(sql`${stakePools.name} LIKE ${pattern} ESCAPE '\\' OR ${stakePools.lstTicker} LIKE ${pattern} ESCAPE '\\' OR ${stakePools.id} LIKE ${pattern} ESCAPE '\\'`)
     .limit(10);
 
   const validatorResults = await db
@@ -644,7 +644,7 @@ export async function searchPoolsAndValidators(query: string) {
       country: validators.country,
     })
     .from(validators)
-    .where(sql`${validators.name} LIKE ${pattern} OR ${validators.pubkey} LIKE ${pattern}`)
+    .where(sql`${validators.name} LIKE ${pattern} ESCAPE '\\' OR ${validators.pubkey} LIKE ${pattern} ESCAPE '\\'`)
     .limit(10);
 
   return {

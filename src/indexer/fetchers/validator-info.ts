@@ -11,6 +11,22 @@ export interface OnChainValidatorInfo {
   iconUrl: string | null;
 }
 
+const MAX_ATTEMPTS = 3;
+
+// The 3.7 MB response is sometimes cut off mid-body by the RPC ("terminated").
+// Still throws after the last attempt: an empty map would overwrite stored names.
+async function getConfigAccountsWithRetry(connection: Connection) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await connection.getProgramAccounts(CONFIG_PROGRAM_ID);
+    } catch (err) {
+      if (attempt >= MAX_ATTEMPTS) throw err;
+      warn(`ValidatorInfo fetch failed (attempt ${attempt}/${MAX_ATTEMPTS}): ${err instanceof Error ? err.message : err}`);
+      await new Promise((r) => setTimeout(r, attempt * 1000));
+    }
+  }
+}
+
 /**
  * Fetch all ValidatorInfo entries from the on-chain Config program.
  * Returns a Map keyed by identity pubkey (nodePubkey from getVoteAccounts).
@@ -20,7 +36,7 @@ export async function fetchOnChainValidatorInfo(
 ): Promise<Map<string, OnChainValidatorInfo>> {
   log("Fetching on-chain ValidatorInfo from Config program...");
 
-  const configAccounts = await connection.getProgramAccounts(CONFIG_PROGRAM_ID);
+  const configAccounts = await getConfigAccountsWithRetry(connection);
   const infoMap = new Map<string, OnChainValidatorInfo>();
 
   for (const { account } of configAccounts) {

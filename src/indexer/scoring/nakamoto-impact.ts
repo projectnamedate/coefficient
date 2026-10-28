@@ -7,17 +7,21 @@
 
 import type { DelegationEntry } from "./types";
 
+// Alpenglow (live since epoch 1064) needs 60% of stake for slow-path certificates,
+// so more than 40% of stake withholding votes halts finality. TowerBFT's line was 1/3.
+export const HALT_STAKE_SHARE = 0.4;
+
 function computeNakamoto(stakes: number[]): number {
   if (stakes.length === 0) return 0;
   const sorted = [...stakes].sort((a, b) => b - a);
   const totalStake = sorted.reduce((sum, s) => sum + s, 0);
   if (totalStake === 0) return 0;
 
-  const threshold = totalStake / 3; // 33.33%
+  const threshold = totalStake * HALT_STAKE_SHARE;
   let cumulative = 0;
   for (let i = 0; i < sorted.length; i++) {
     cumulative += sorted[i];
-    if (cumulative >= threshold) return i + 1;
+    if (cumulative > threshold) return i + 1;
   }
   return sorted.length;
 }

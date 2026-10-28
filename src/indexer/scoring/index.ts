@@ -7,7 +7,7 @@ import { SCORE_WEIGHTS } from "../../lib/types";
 import { scoreSmallValidatorBias } from "./small-validator-bias";
 import { scoreSelfDealing } from "./self-dealing";
 import { scoreMevSandwich } from "./mev-sandwich";
-import { scoreNakamotoImpact, computeNakamoto } from "./nakamoto-impact";
+import { scoreNakamotoImpact, computeNakamoto, HALT_STAKE_SHARE } from "./nakamoto-impact";
 import { scoreStakeDistribution } from "./validator-set-size";
 import { scoreGeographicDiversity } from "./geographic-diversity";
 import { scoreCommissionDiscipline } from "./commission-discipline";
@@ -71,14 +71,14 @@ export function computeAllPoolScores(
   const medianStake = median(allStakeValues);
   const totalNetworkCountries = new Set(countries.values()).size;
 
-  // Superminority threshold: stake of the validator at cumulative 33.33%
+  // Superminority threshold: stake of the validator that crosses the halt line
   const sortedStakes = [...allStakeValues].sort((a, b) => b - a);
   const totalStake = sortedStakes.reduce((s, v) => s + v, 0);
   let cumulative = 0;
   let superminorityThreshold = sortedStakes[0] ?? 0;
   for (const stake of sortedStakes) {
     cumulative += stake;
-    if (cumulative >= totalStake / 3) {
+    if (cumulative > totalStake * HALT_STAKE_SHARE) {
       superminorityThreshold = stake;
       break;
     }

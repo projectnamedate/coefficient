@@ -1,0 +1,1 @@
+CREATE INDEX `vs_validator` ON `validator_snapshots` (`validator_pubkey`);
